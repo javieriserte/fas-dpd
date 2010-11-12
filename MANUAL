@@ -1,0 +1,28 @@
+FAS-DPD:
+Family Specific Degenerate Primer Design program: 
+
+Version 1.1.1
+
+FAS-DPD is a command line software that designs degenerated oligonucleotides to use in PCR in order to amplify new members of a family of sequences.
+FAS-DPD is written in Java, so you will need a Java Virtual Machine to run it.
+
+Usage:
+	java -cp \bin;\lib\* fasdpd.FASDPD 'OPTIONS'
+
+	Options:
+		Required:
+			Infile: '/infile' : Path to a Fasta file with the starting alignment.
+			Outfile: '/outfile' : Path to a file where resulting primers will be stored.
+			GCfile: '/gcfile' : Path to a file containg the genetic code that will be used.
+		Optional:
+			Length: '/len' : The length of resulting primers.
+			Quantity: '/q' : The number of primers to search.
+			Staring Point: '/startingpoint' : The position of the alignment where start the search.
+			Ending Point: '/endpoint' : The position of the alignment where finish the search.
+			Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences.
+			Is Protein: '/isprotein' : Treat the sequences in input alignment as protein sequences.
+			Filter Repeated End: '/frep' : Discard primers with the last two bases repeated.
+			Filter Degenerated End: '/fdeg' : Discar Primers with the last base degenerated.
+			Complementary Strand: '/ComplementaryStrand' : Search the primers in the complementary strand.
+			Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.
+	

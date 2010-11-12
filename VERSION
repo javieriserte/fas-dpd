@@ -1,0 +1,10 @@
+------------------------------------------
+FASDPD Package Version Number 1.1.2 Alpha.
+------------------------------------------
+	Major Version Number: 1
+	Minor Version Number: 1
+	Revision : 2
+
+	Major Version Number: Changes only when the entire design of the project changes.
+	Minor Revision Number: Changes when a new feature is added, or any important algorithm is optimized. Even number indicates stables release, Odd number indicates non stables releases.
+	Revision: Changes when bugs are fixed, any lesser change in code, changes in documentation, etc.

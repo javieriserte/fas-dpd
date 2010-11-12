@@ -1,0 +1,14 @@
+----------------------------------
+Next features and Fixes of FAS-DPD
+----------------------------------
+1  - Implement Melting Point Calculation.
+2  - Search pairs of primers.
+3  - Look for dimerization of primer and self-complementary primers.
+4  - Implemtent more filters of primers:
+	 - Longer Run of bases at 3', or in any position.
+	 - Filter by C+G %
+5  - Search for inespecific matches with oringial template or other molecules.
+6  - Export eps graphics (may be using jlibeps)
+7  - Decouples FastaIO into an external library.
+8  - Modify cote to do not require a genetic code if is working with DNA sequences.
+9  - Create '.exe' files to easy run the program in win32 environment.
