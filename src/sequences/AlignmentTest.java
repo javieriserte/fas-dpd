@@ -35,6 +35,7 @@ import degeneration.GeneticCode;
 import junit.framework.TestCase;
 /**
  * Test Case
+ * Modificanción
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
  * @version 1.1.2
