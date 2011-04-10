@@ -27,28 +27,28 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fastaIO;
+package filters.singlePrimer;
 
-import java.io.File;
-import java.io.FileFilter;
+import degeneration.BaseDeg;
+import filters.validator.ValidatorSimple;
+import sequences.dna.Primer;
 /**
- * This class is a subclass a FileFilter that recognizes common extensions for Fasta files.
- * 
+ * This class represents the condition that a primer have a degenerated base in the 3' position.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * @version 1.1.3
  */
-public class FastaFilter implements FileFilter {
+public class FilterDegeneratedEnd extends FilterSinglePrimer {
 
+	/**
+	 * Validates that a primer is degenerated in the last position.
+	 * 
+	 * Returns true if the end is degenerated.
+	 * 			false otherwise.
+	 */
+	public boolean filter(Primer p) {
+		
+		return BaseDeg.getDegValueFromChar(p.getSequence().charAt(p.getLength()-1))==1;
+	}
 	
-	@Override
-	public boolean accept(File arg0) {
-		String a = arg0.getName().toLowerCase();
-		return (a.endsWith  (".fasta") || a.endsWith(".fas") || a.endsWith(".fa"));
-	}
-
-	public String getDescription(File arg0) {
-		return "Fasta Files (*.fas, *.fasta, *.fa)";
-	}
-
 	
 }

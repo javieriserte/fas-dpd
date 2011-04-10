@@ -27,28 +27,32 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fastaIO;
+package filters.validator;
 
-import java.io.File;
-import java.io.FileFilter;
 /**
- * This class is a subclass a FileFilter that recognizes common extensions for Fasta files.
+ * This class represents the boolean operation NOT to use with a Validator Object
  * 
- * @author Javier Iserte <jiserte@unq.edu.ar>
+ * @author "Javier Iserte <jiserte@unq.edu.ar>"
  * @version 1.1.1
  */
-public class FastaFilter implements FileFilter {
+public class Validate_NOT extends ValidatorBoolean {
 
+	private Validator op1;
+	/**
+	 * Creates a new instance of Validate_NOT.
+	 * One Validator is necessary.
+	 */
+	// CONSTRUTOR
+	public Validate_NOT(Validator op1) {
+		super();
+		this.op1 = op1;
+	}
+	
 	
 	@Override
-	public boolean accept(File arg0) {
-		String a = arg0.getName().toLowerCase();
-		return (a.endsWith  (".fasta") || a.endsWith(".fas") || a.endsWith(".fa"));
+	public boolean validate(Validable p) {
+		return (!this.op1.validate(p));
 	}
 
-	public String getDescription(File arg0) {
-		return "Fasta Files (*.fas, *.fasta, *.fa)";
-	}
 
-	
 }

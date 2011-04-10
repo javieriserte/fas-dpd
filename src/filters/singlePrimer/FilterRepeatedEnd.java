@@ -27,28 +27,25 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fastaIO;
+package filters.singlePrimer;
 
-import java.io.File;
-import java.io.FileFilter;
+import sequences.dna.Primer;
 /**
- * This class is a subclass a FileFilter that recognizes common extensions for Fasta files.
- * 
+ * This class filters primers that has the two last positions base the same base. 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * @version 1.1.2
  */
-public class FastaFilter implements FileFilter {
-
+public class FilterRepeatedEnd extends FilterSinglePrimer {
+	/**
+	 * Validates that a primer is repeated in the last two position.
+	 * 
+	 * @return false if the end is repeated
+	 * 			true otherwise.
+	 */
+	public boolean filter(Primer p) {
+		return !((p.getSequence().charAt(p.getSequence().length()-1)) == 
+			    (p.getSequence().charAt(p.getSequence().length()-2)));
+	}
 	
-	@Override
-	public boolean accept(File arg0) {
-		String a = arg0.getName().toLowerCase();
-		return (a.endsWith  (".fasta") || a.endsWith(".fas") || a.endsWith(".fa"));
-	}
-
-	public String getDescription(File arg0) {
-		return "Fasta Files (*.fas, *.fasta, *.fa)";
-	}
-
 	
 }

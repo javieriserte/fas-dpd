@@ -27,28 +27,24 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fastaIO;
+package filters.validator;
 
-import java.io.File;
-import java.io.FileFilter;
+
 /**
- * This class is a subclass a FileFilter that recognizes common extensions for Fasta files.
+ * This class represents conditions that can be satisfied by a Primer.
+ * There is simple conditions, that test one thing.
+ * And multiple conditions that performs boolean operations of one or between any two conditions.
+ * It is implemented using a 'composite' pattern.  
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
  * @version 1.1.1
  */
-public class FastaFilter implements FileFilter {
+public abstract class Validator {
+	/**
+	 * Validate method is used to verify if a primer satisfy a condition.
+	 * @param p the primer that is tested.
+	 * @return a boolean. True if the condition is satisfied, false otherwise.
+	 */
+	public abstract boolean validate(Validable p);
 
-	
-	@Override
-	public boolean accept(File arg0) {
-		String a = arg0.getName().toLowerCase();
-		return (a.endsWith  (".fasta") || a.endsWith(".fas") || a.endsWith(".fa"));
-	}
-
-	public String getDescription(File arg0) {
-		return "Fasta Files (*.fas, *.fasta, *.fa)";
-	}
-
-	
 }
