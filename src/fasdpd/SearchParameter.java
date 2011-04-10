@@ -11,16 +11,16 @@ import cmdGA.exceptions.IncorrectParameterTypeException;
 import cmdGA.parameterType.FloatParameter;
 import cmdGA.parameterType.IntegerParameter;
 import cmdGA.parameterType.StringParameter;
+import filters.singlePrimer.FilterDegeneratedEnd;
+import filters.singlePrimer.FilterRepeatedEnd;
+import filters.validator.ValidateAlways;
+import filters.validator.ValidateForFilterSinglePrimer;
+import filters.validator.Validate_AND;
+import filters.validator.Validator;
 
 //import fasdpd.tokens.*;
 
 
-import validator.ValidateDegeneratedEnd;
-import validator.ValidateRepeatedEnd;
-import validator.ValidateAlways;
-import validator.Validate_AND;
-import validator.Validate_NOT;
-import validator.Validator;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -113,6 +113,7 @@ public class SearchParameter {
 		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		NoOption complementary = new NoOption(parser, false , "/ComplementaryStrand");
 		
+		// TODO  add command line options for new filters !!!!
 		
 		
 		
@@ -157,8 +158,8 @@ public class SearchParameter {
 		Validator v1 = new ValidateAlways();
 		Validator v2 = new ValidateAlways();
 		
-		if ((Boolean) filterRep.getValue()) v1 = new Validate_NOT(new ValidateRepeatedEnd());
-		if ((Boolean) filterDeg.getValue()) v1 = new Validate_NOT(new ValidateDegeneratedEnd());
+		if ((Boolean) filterRep.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterRepeatedEnd () );
+		if ((Boolean) filterDeg.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd() );
 		
 		this.setFilter(new Validate_AND(v1, v2));
 			// creates a filter and passes it.

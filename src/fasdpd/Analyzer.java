@@ -1,9 +1,10 @@
 package fasdpd;
 
 import degeneration.GeneticCode;
-import sequences.DNASeq;
-import sequences.Primer;
-import validator.Validator;
+import filters.validator.PrimerValidable;
+import filters.validator.Validator;
+import sequences.dna.DNASeq;
+import sequences.dna.Primer;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -87,7 +88,7 @@ public class Analyzer {
 		
 		DNASeq mySeq=null;
 		
-		if (directStrand) {mySeq = seq;} else {mySeq=(DNASeq) seq.getComplementary();}
+		if (directStrand) {mySeq = seq;} else {mySeq=(DNASeq) seq.getReverseComplementary();}
 		
 		if (EndPoint==-1) {
 			// EndPoint == -1 means that the end of the search coincides with the end of the sequence
@@ -96,8 +97,8 @@ public class Analyzer {
 		
 		for (int x=StartPoint-1; x<EndPoint-primerLength+1; x++) {
 			Primer p = mySeq.designPrimer(x+1, x+primerLength, directStrand);
-			
-			if (Filter.validate(p)) {
+						
+			if (Filter.validate( new PrimerValidable(p))) {
 				p.setScore(this.calculatePrimerScore(p));
 				lp.addValue(p);
 			}

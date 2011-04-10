@@ -28,6 +28,9 @@
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
 package sequences;
+
+import sequences.alignment.Apilable;
+
 /**
  * This abstract class represents a sequence. 
  * Stores the sequence itself and a description useful to identify it.

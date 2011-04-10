@@ -9,10 +9,6 @@ import degeneration.GeneticCode;
 
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
-import sequences.Alignment;
-import sequences.DNASeq;
-import sequences.Primer;
-import sequences.ProtSeq;
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -42,6 +38,10 @@ import sequences.ProtSeq;
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
+import sequences.alignment.Alignment;
+import sequences.dna.DNASeq;
+import sequences.dna.Primer;
+import sequences.protein.ProtSeq;
 
 /**
  * Executable Class For FAS-DPD program

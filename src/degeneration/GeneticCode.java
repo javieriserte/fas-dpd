@@ -50,7 +50,6 @@ public class GeneticCode {
 	private Map<String,List<String>> aminoToCodonList;
 	private Map<String,String> aminoToDegCodon;
 	private Map<String,String> codonToAmino;
-	private BaseDeg bd = BaseDeg.newBaseDeg();
 	
 	// CONSTRUCTOR
 	/**
@@ -168,7 +167,7 @@ public class GeneticCode {
 		StringBuilder sb = new StringBuilder(DNAseq1.length());
 
 		for(int x=0;x<DNAseq1.length();x++) {
-			sb.append(this.getBaseDegTool().pileUpBase(DNAseq1.charAt(x), DNAseq2.charAt(x)));
+			sb.append(BaseDeg.pileUpBase(DNAseq1.charAt(x), DNAseq2.charAt(x)));
 		}
 		return sb.toString();
 	}
@@ -187,7 +186,7 @@ public class GeneticCode {
 	 * @return int value from 0 to 4.
 	 */
 	public int calculateDegValue(char base){
-		return this.getBaseDegTool().calculateDegValue(base);
+		return BaseDeg.getDegValueFromChar(base);
 		
 	}
 
@@ -260,8 +259,5 @@ public class GeneticCode {
 	}
 	protected void setCodonToAmino(Map<String, String> codonToAmino) {
 		this.codonToAmino = codonToAmino;
-	}
-	protected BaseDeg getBaseDegTool() {
-		return bd;
 	}
 }
