@@ -128,6 +128,8 @@ public class GeneticCodeTest extends TestCase {
 		assertTrue(gc.translate("GCG").equals("A"));
 	}
 
+	
+	
 	public void testPileUp() {
 		GeneticCode gc = new GeneticCode("StandardCode");
 		
