@@ -58,7 +58,6 @@ public class FASDPD {
 
 		
 		FASDPD myProgram = new FASDPD();
-
 			
 		SearchParameter sp = new SearchParameter();
 			// sp will store all the parameters for the search 
@@ -71,8 +70,8 @@ public class FASDPD {
 		} catch (InvalidCommandLineException e) {
 
 			System.out.println(FASDPD.getHelp());
-			
 			System.out.println(e.getMessage());
+			
 			return;
 		}
 		myProgram.DoSearch(sp);

@@ -4,6 +4,7 @@ package fasdpd;
 //import java.util.List;
 //import java.util.Vector;
 
+import cmdGA.MultipleOption;
 import cmdGA.NoOption;
 import cmdGA.Parser;
 import cmdGA.SingleOption;
@@ -63,7 +64,10 @@ public class SearchParameter {
 	private String gcfile;
 	private String profile="";
 	private int len;
+	private int lenMin;
+	private int lenMax;
 	private Validator filter= new ValidateAlways();
+	private Validator filterpair= new ValidateAlways();
 	private int quantity=20;
 	private int startPoint=1; // The number of the first position is One, not Zero.
 	private int endPoint=-1; // -1 represents the end the sequence.
@@ -73,7 +77,7 @@ public class SearchParameter {
 	private float Ny;
 	private float pA;
 	
-	
+	private boolean searchPair=false;
 
 
 	// CONSTRUCTOR
@@ -93,6 +97,10 @@ public class SearchParameter {
 		Parser parser = new Parser();
 		
 		SingleOption len = new SingleOption(parser, 20 , "/len", IntegerParameter.getParameter());
+		
+		SingleOption lenMin = new SingleOption(parser, 20, "/lenMin", IntegerParameter.getParameter());
+		SingleOption lenMax = new SingleOption(parser, 25, "/lenMax", IntegerParameter.getParameter());
+		
 		SingleOption infile = new SingleOption(parser, null , "/infile", StringParameter.getParameter());
 		SingleOption outfile = new SingleOption(parser, null , "/outfile", StringParameter.getParameter());
 		SingleOption gcfile = new SingleOption(parser, null , "/gcfile", StringParameter.getParameter());
@@ -104,19 +112,33 @@ public class SearchParameter {
 		SingleOption nx = new SingleOption(parser, (float)1 , "/nx", FloatParameter.getParameter());
 		SingleOption ny = new SingleOption(parser, (float)1 , "/ny", FloatParameter.getParameter());
 		SingleOption pa = new SingleOption(parser, (float)0 , "/pa", FloatParameter.getParameter());
-
 		
 		NoOption isDna = new NoOption(parser, true , "/isDNA");
 		NoOption isProtein = new NoOption(parser, false , "/isProtein");
 		
-		NoOption filterRep = new NoOption(parser, false , "/frep");
-		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		NoOption complementary = new NoOption(parser, false , "/ComplementaryStrand");
 		
-		// TODO  add command line options for new filters !!!!
+		NoOption pair = new NoOption(parser, false, "/pair");
+		NoOption tmSL = new NoOption(parser, true, "/tmsantalucia");
+		NoOption tmsimple = new NoOption(parser, false, "/tmsimple"); 
 		
+		// FILTERS
 		
+		NoOption filterRep = new NoOption(parser, false , "/frep");
+		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		
+		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatParameter.getParameter());
+		SingleOption end5v3 = new SingleOption(parser, 1.5, "/end5v3", FloatParameter.getParameter());
+		SingleOption baserun = new SingleOption(parser, 4,"/baserun", IntegerParameter.getParameter());
+		SingleOption homodimer = new SingleOption(parser, 5 , "/homodimer", IntegerParameter.getParameter());
+		SingleOption homodimerfixedEnd = new SingleOption(parser, 3 , "/homodimer3", IntegerParameter.getParameter());
+		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
+
+		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
+		SingleOption gccomp = new SingleOption(parser, 10, "/gccomp", FloatParameter.getParameter());
+		SingleOption heterodimer = new SingleOption(parser, 5 , "/hetdimer", IntegerParameter.getParameter());
+		SingleOption heterodimerfixedEnd = new SingleOption(parser, 3 , "/hetdimer3", IntegerParameter.getParameter());
+		SingleOption tmcomp = new SingleOption(parser, 5, "/tmcomp", FloatParameter.getParameter());
 		
 		try {
 			parser.parseEx(args);
@@ -153,16 +175,17 @@ public class SearchParameter {
 		}
 		this.setDNA(isDna.getValue());
 		if (isProtein.isPresent()) this.setDNA(isProtein.getValue());
-
 		
 		Validator v1 = new ValidateAlways();
 		Validator v2 = new ValidateAlways();
 		
-		if ((Boolean) filterRep.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterRepeatedEnd () );
+		if ((Boolean) filterRep.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterRepeatedEnd   () );
 		if ((Boolean) filterDeg.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd() );
 		
 		this.setFilter(new Validate_AND(v1, v2));
 			// creates a filter and passes it.
+
+		
 		
 		this.setNx( (Float) nx.getValue());
 		this.setNy( (Float) ny.getValue());
