@@ -4,7 +4,9 @@ import cmdGA.parameterType.ParameterType;
 
 public class FloatArrayParameter extends ParameterType {
 
-	
+	/**
+	 * Mod1
+	 */
 	protected static FloatArrayParameter  singleton = new FloatArrayParameter();
 	/**
 	 * No instance variables are used, so there is no need of more than one instance.
