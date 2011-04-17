@@ -5,7 +5,7 @@ import cmdGA.parameterType.ParameterType;
 public class FloatArrayParameter extends ParameterType {
 
 	/**
-	 * Mod1
+	 * Parses a string fragment from a command line into an array of float values.
 	 */
 	protected static FloatArrayParameter  singleton = new FloatArrayParameter();
 	/**
