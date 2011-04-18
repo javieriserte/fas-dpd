@@ -48,9 +48,9 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	 * 
 	 */
 	@Override public boolean filter(Primer p) {
-		this.deltaG5 = this.calculateStability(p.getSequence().subSequence(0, len-1));
+		this.deltaG5 = this.calculateStability(p.getSequence().subSequence(0, p.getLength()-1));
 		this.deltaG3 = this.calculateStability(p.getSequence().subSequence(
-				p.getSequence().length()-this.len, 
+				p.getSequence().length()-p.getLength(), 
 				p.getSequence().length()-1)
 				);
 		System.out.println(this.deltaG5 + " + " + this.deltaGLimit + " < " + this.deltaG3);

@@ -4,6 +4,13 @@ package fasdpd;
 //import java.util.List;
 //import java.util.Vector;
 
+import java.util.List;
+import java.util.Vector;
+
+import sequences.util.tmcalculator.SantaluciaTmEstimator;
+import sequences.util.tmcalculator.SimpleTmEstimator;
+import sequences.util.tmcalculator.TmEstimator;
+
 import cmdGA.MultipleOption;
 import cmdGA.NoOption;
 import cmdGA.Parser;
@@ -12,7 +19,9 @@ import cmdGA.exceptions.IncorrectParameterTypeException;
 import cmdGA.parameterType.FloatParameter;
 import cmdGA.parameterType.IntegerParameter;
 import cmdGA.parameterType.StringParameter;
+import filters.singlePrimer.Filter5vs3Stability;
 import filters.singlePrimer.FilterDegeneratedEnd;
+import filters.singlePrimer.FilterMeltingPointTemperature;
 import filters.singlePrimer.FilterRepeatedEnd;
 import filters.validator.ValidateAlways;
 import filters.validator.ValidateForFilterSinglePrimer;
@@ -78,6 +87,7 @@ public class SearchParameter {
 	private float pA;
 	
 	private boolean searchPair=false;
+	private boolean useSantaLuciaToEstimateTm = true;
 
 
 	// CONSTRUCTOR
@@ -127,9 +137,15 @@ public class SearchParameter {
 		NoOption filterRep = new NoOption(parser, false , "/frep");
 		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		
-		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatParameter.getParameter());
-		SingleOption end5v3 = new SingleOption(parser, 1.5, "/end5v3", FloatParameter.getParameter());
+		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatArrayParameter.getParameter());
+		SingleOption end5v3 = new SingleOption(parser, 1.5, "/end5v3", FloatParameter.getParameter()); // TODO extend a new parameter to store the parameters of end5v3 option
 		SingleOption baserun = new SingleOption(parser, 4,"/baserun", IntegerParameter.getParameter());
+		// TODO para todos los parámetros que tengan valores por defecto. 
+		// Podría hacer una nueva opción que diga si quiere usar ese filtro o no.
+		// Es decir que por ejemplo para '/baserun' podrías tener existir un '/nobaserun' que diga que no quiero usar ese filtro.
+		// Si lo quiero usar con parámetros default. No lo escribo en la línea de comandos.
+		// Si lo quiero usar con mis parámetros, lo escribo en la línea de comandos.
+		// Si no lo quiero usar. Escribo en la línea de comandos la opción '/nobaserun'
 		SingleOption homodimer = new SingleOption(parser, 5 , "/homodimer", IntegerParameter.getParameter());
 		SingleOption homodimerfixedEnd = new SingleOption(parser, 3 , "/homodimer3", IntegerParameter.getParameter());
 		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
@@ -175,21 +191,51 @@ public class SearchParameter {
 		}
 		this.setDNA(isDna.getValue());
 		if (isProtein.isPresent()) this.setDNA(isProtein.getValue());
+		// TODO Check the last line. May be a bug.!!!!!!
+
+		this.setUseSantaLuciaToEstimateTm( tmSL.getValue());
+		if (tmsimple.isPresent()) this.setUseSantaLuciaToEstimateTm(false);
+		TmEstimator tme;
+		if (this.useSantaLuciaToEstimateTm) {tme = new SantaluciaTmEstimator();}
+		else {tme = new SimpleTmEstimator();}
+
 		
 		Validator v1 = new ValidateAlways();
 		Validator v2 = new ValidateAlways();
 		
-		if ((Boolean) filterRep.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterRepeatedEnd   () );
-		if ((Boolean) filterDeg.getValue()) v1 = new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd() );
+		List<ValidateForFilterSinglePrimer> vffsp = new Vector<ValidateForFilterSinglePrimer>(); 
+		
+		if (filterRep.getValue()) vffsp.add(new ValidateForFilterSinglePrimer(new FilterRepeatedEnd   () ));
+		if (filterDeg.getValue()) vffsp.add(new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd() ));
+
+		if (tmSL.isPresent() && tmsimple.isPresent() ) {
+			// These options can not be in the commandline at the same time.
+			throw new InvalidCommandLineException("Can not use both Tm estimators at the same time. Choose one.");
+		}
+		
+		vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature(((Float[])tm.getValue())[0], ((Float[])tm.getValue())[1], tme) ));
+		vffsp.add(new ValidateForFilterSinglePrimer(Filter5vs3Stability.getStandard5vs3StabilityFilter()));
+		// TODO para este filtro, debería tener dos opciones. Una, si quiere usar el filtro standard y otra si quiere uno a medida.
 		
 		this.setFilter(new Validate_AND(v1, v2));
 			// creates a filter and passes it.
 
-		
-		
 		this.setNx( (Float) nx.getValue());
 		this.setNy( (Float) ny.getValue());
 		this.setpA( (Float) pa.getValue());
+		
+		if((Integer)lenMin.getValue() > (Integer)lenMax.getValue() ) {
+			// Primer Min can not be greater than Primer Max.
+			throw new InvalidCommandLineException("Max length is lesser than Min length");
+		}  		
+		this.setLenMin( (Integer) lenMin.getValue());
+		this.setLenMax( (Integer) lenMax.getValue());
+		
+		this.setSearchPair( (Boolean) pair.getValue() );
+			// Overrides directstrand option.
+		
+		
+		
 		
 	}
 	
@@ -296,4 +342,45 @@ public class SearchParameter {
 		return this.pA;
 	}
 
+	public int getLenMin() {
+		return lenMin;
+	}
+
+	public void setLenMin(int lenMin) {
+		this.lenMin = lenMin;
+	}
+
+	public int getLenMax() {
+		return lenMax;
+	}
+
+	public void setLenMax(int lenMax) {
+		this.lenMax = lenMax;
+	}
+
+	public Validator getFilterpair() {
+		return filterpair;
+	}
+
+	public void setFilterpair(Validator filterpair) {
+		this.filterpair = filterpair;
+	}
+
+	public boolean isSearchPair() {
+		return searchPair;
+	}
+
+	public void setSearchPair(boolean searchPair) {
+		this.searchPair = searchPair;
+	}
+
+	public boolean isUseSantaLuciaToEstimateTm() {
+		return useSantaLuciaToEstimateTm;
+	}
+
+	public void setUseSantaLuciaToEstimateTm(boolean useSantaLuciaToEstimateTm) {
+		this.useSantaLuciaToEstimateTm = useSantaLuciaToEstimateTm;
+	}
+
+	
 }
