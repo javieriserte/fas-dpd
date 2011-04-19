@@ -7,7 +7,7 @@ public class GCContent {
 	/**
 	 * Calculates the G+C content of a DNA sequence.
 	 * 
-	 * @param sequence. Is a non-degenerated DNA sequence in uppercase.
+	 * @param sequence. Is a DNA sequence in uppercase. Can be a degenerated sequence.
 	 * @return
 	 */
 	static public float calculateGCContent(String sequence) {
