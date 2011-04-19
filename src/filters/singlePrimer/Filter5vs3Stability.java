@@ -15,6 +15,8 @@ import sequences.util.santaLuciaEnergeticParameters.SantaLuciaEnergetics;
  */
 public class Filter5vs3Stability extends FilterSinglePrimer{
 
+	// TODO modify filter to accept degenerated sequences.
+	
 	private double deltaGLimit;
 	private double deltaG3;
 	private double deltaG5;

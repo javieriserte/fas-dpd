@@ -2,9 +2,16 @@ package filters.singlePrimer;
 
 import sequences.dna.Primer;
 
+/**
+ * 
+ * @author Javier Iserte
+ *
+ */
 public class FilterBaseRuns extends FilterSinglePrimer {
 	private int maxRunLengthAccepted;
-	
+
+	// TODO modify filter to accept degenerated sequences.
+
 	public FilterBaseRuns(int maxRunLengthAccepted) {
 		super();
 		this.maxRunLengthAccepted = maxRunLengthAccepted;

@@ -7,9 +7,11 @@ package fasdpd;
 import java.util.List;
 import java.util.Vector;
 
+import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import sequences.util.tmcalculator.SantaluciaTmEstimator;
 import sequences.util.tmcalculator.SimpleTmEstimator;
 import sequences.util.tmcalculator.TmEstimator;
+import tests.filters.FilterMeltingTempCompatibilityTest;
 
 import cmdGA.MultipleOption;
 import cmdGA.NoOption;
@@ -19,11 +21,22 @@ import cmdGA.exceptions.IncorrectParameterTypeException;
 import cmdGA.parameterType.FloatParameter;
 import cmdGA.parameterType.IntegerParameter;
 import cmdGA.parameterType.StringParameter;
+import fasdpd.End5v3ParameterType.Result;
+import filters.primerpair.FilterAmpliconSize;
+import filters.primerpair.FilterGCCompatibility;
+import filters.primerpair.FilterHeteroDimer;
+import filters.primerpair.FilterHeteroDimerFixed3;
+import filters.primerpair.FilterMeltingTempCompatibility;
 import filters.singlePrimer.Filter5vs3Stability;
+import filters.singlePrimer.FilterBaseRuns;
+import filters.singlePrimer.FilterCGContent;
 import filters.singlePrimer.FilterDegeneratedEnd;
+import filters.singlePrimer.FilterHomoDimer;
+import filters.singlePrimer.FilterHomoDimerFixed3;
 import filters.singlePrimer.FilterMeltingPointTemperature;
 import filters.singlePrimer.FilterRepeatedEnd;
 import filters.validator.ValidateAlways;
+import filters.validator.ValidateForFilterPrimerPair;
 import filters.validator.ValidateForFilterSinglePrimer;
 import filters.validator.Validate_AND;
 import filters.validator.Validator;
@@ -72,7 +85,7 @@ public class SearchParameter {
 	private String outfile;
 	private String gcfile;
 	private String profile="";
-	private int len;
+	private int len; // TODO <- OBSOLETE. MUST DELETE 
 	private int lenMin;
 	private int lenMax;
 	private Validator filter= new ValidateAlways();
@@ -87,7 +100,7 @@ public class SearchParameter {
 	private float pA;
 	
 	private boolean searchPair=false;
-	private boolean useSantaLuciaToEstimateTm = true;
+	private boolean useSantaLuciaToEstimateTm = true; // TODO MAY BE USELESS. 
 
 
 	// CONSTRUCTOR
@@ -105,6 +118,10 @@ public class SearchParameter {
 	public void retrieveFromCommandLine(String[] args) throws InvalidCommandLineException {
 	
 		Parser parser = new Parser();
+	
+		//////////////////
+		// DEFINE OPTIONS
+		//////////////////
 		
 		SingleOption len = new SingleOption(parser, 20 , "/len", IntegerParameter.getParameter());
 		
@@ -129,32 +146,55 @@ public class SearchParameter {
 		NoOption complementary = new NoOption(parser, false , "/ComplementaryStrand");
 		
 		NoOption pair = new NoOption(parser, false, "/pair");
+		
 		NoOption tmSL = new NoOption(parser, true, "/tmsantalucia");
 		NoOption tmsimple = new NoOption(parser, false, "/tmsimple"); 
 		
-		// FILTERS
+		//////////////////
+		// DEFINE OPTIONS FOR FILTERS
+		//////////////////
 		
 		NoOption filterRep = new NoOption(parser, false , "/frep");
 		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		
 		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatArrayParameter.getParameter());
-		SingleOption end5v3 = new SingleOption(parser, 1.5, "/end5v3", FloatParameter.getParameter()); // TODO extend a new parameter to store the parameters of end5v3 option
+		NoOption notm = new NoOption(parser, false, "/notm");
+		
+		SingleOption end5v3 = new SingleOption(parser, new End5v3ParameterType.Result(1.5, 37, 0.05, 5), "/end5v3", End5v3ParameterType.getParameter()); 
+		NoOption noend5v3 = new NoOption(parser, false, "/nobaserunend5v3");
+		
 		SingleOption baserun = new SingleOption(parser, 4,"/baserun", IntegerParameter.getParameter());
-		// TODO para todos los parámetros que tengan valores por defecto. 
-		// Podría hacer una nueva opción que diga si quiere usar ese filtro o no.
-		// Es decir que por ejemplo para '/baserun' podrías tener existir un '/nobaserun' que diga que no quiero usar ese filtro.
-		// Si lo quiero usar con parámetros default. No lo escribo en la línea de comandos.
-		// Si lo quiero usar con mis parámetros, lo escribo en la línea de comandos.
-		// Si no lo quiero usar. Escribo en la línea de comandos la opción '/nobaserun'
+		NoOption nobaserun = new NoOption(parser, false, "/nobaserun");
+
 		SingleOption homodimer = new SingleOption(parser, 5 , "/homodimer", IntegerParameter.getParameter());
+		NoOption nohomodimer= new NoOption(parser, false, "/nohomodimer");		
+		
 		SingleOption homodimerfixedEnd = new SingleOption(parser, 3 , "/homodimer3", IntegerParameter.getParameter());
+		NoOption nohomodimerfixedEnd= new NoOption(parser, false, "/nohomodimerfixedEnd");		
+		
 		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
+		NoOption nogccontent = new NoOption(parser, false, "/nogccontent");		
 
 		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
+		NoOption noampsize = new NoOption(parser, false, "/nosize");		
+		
 		SingleOption gccomp = new SingleOption(parser, 10, "/gccomp", FloatParameter.getParameter());
+		NoOption nogccomp= new NoOption(parser, false, "/nogccomp");		
+		
 		SingleOption heterodimer = new SingleOption(parser, 5 , "/hetdimer", IntegerParameter.getParameter());
+		NoOption noheterodimer= new NoOption(parser, false, "/nohetdimer");		
+		
 		SingleOption heterodimerfixedEnd = new SingleOption(parser, 3 , "/hetdimer3", IntegerParameter.getParameter());
+		NoOption noheterodimerfixedEnd= new NoOption(parser, false, "/nohetdimer3");		
+		
 		SingleOption tmcomp = new SingleOption(parser, 5, "/tmcomp", FloatParameter.getParameter());
+		NoOption notmcomp = new NoOption(parser, false, "/notmcomp");		
+		
+		
+		
+		//////////////////////////
+		// READ COMMAND LINE
+		/////////////////////////
 		
 		try {
 			parser.parseEx(args);
@@ -162,12 +202,42 @@ public class SearchParameter {
 			e.printStackTrace();
 		}
 		
-		// Set Values
+		
+		/////////////////////////////
+		// CHECK COMMAND LINE SYNTAX
+		/////////////////////////////
+		
+	
 		if (! (infile.isPresent()&&outfile.isPresent()&&gcfile.isPresent())) {
 			// infile, outfile and gcfile are required!
 			// if one of them is not present then the command line is not well formed.
 			throw new InvalidCommandLineException("Infile, Outfile and GCfile are required arguments");
 		}
+		
+		if (isDna.isPresent()&&isProtein.isPresent()) {
+			// both option can not be in the command line at the same moment.
+			throw new InvalidCommandLineException("isDna option and isProtein Option can not be in the command line at the same time.");
+		}
+
+		if (tmSL.isPresent() && tmsimple.isPresent() ) {
+			// These options can not be in the commandline at the same time.
+			throw new InvalidCommandLineException("Can not use both Tm estimators at the same time. Choose one.");
+		}
+
+		if((Integer)lenMin.getValue() > (Integer)lenMax.getValue() ) {
+			// Primer Min can not be greater than Primer Max.
+			throw new InvalidCommandLineException("Max length is lesser than Min length");
+		}  		
+
+
+		
+		
+		
+		/////////////////////////////
+		// SET VALUES
+		/////////////////////////////
+
+		
 		if (infile.isPresent()) this.setInfile((String)infile.getValue());
 		if (outfile.isPresent()) this.setOutfile((String)outfile.getValue());
 		if (gcfile.isPresent()) this.setGCfile((String)gcfile.getValue());
@@ -185,10 +255,6 @@ public class SearchParameter {
 		this.setDirectStrand(! complementary.getValue());
 			// pass if it is complementary.
 		
-		if (isDna.isPresent()&&isProtein.isPresent()) {
-			// both option can not be in the command line at the same moment.
-			throw new InvalidCommandLineException("isDna option and isProtein Option can not be in the command line at the same time.");
-		}
 		this.setDNA(isDna.getValue());
 		if (isProtein.isPresent()) this.setDNA(isProtein.getValue());
 		// TODO Check the last line. May be a bug.!!!!!!
@@ -198,38 +264,72 @@ public class SearchParameter {
 		TmEstimator tme;
 		if (this.useSantaLuciaToEstimateTm) {tme = new SantaluciaTmEstimator();}
 		else {tme = new SimpleTmEstimator();}
-
 		
-		Validator v1 = new ValidateAlways();
-		Validator v2 = new ValidateAlways();
 		
-		List<ValidateForFilterSinglePrimer> vffsp = new Vector<ValidateForFilterSinglePrimer>(); 
 		
-		if (filterRep.getValue()) vffsp.add(new ValidateForFilterSinglePrimer(new FilterRepeatedEnd   () ));
-		if (filterDeg.getValue()) vffsp.add(new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd() ));
-
-		if (tmSL.isPresent() && tmsimple.isPresent() ) {
-			// These options can not be in the commandline at the same time.
-			throw new InvalidCommandLineException("Can not use both Tm estimators at the same time. Choose one.");
-		}
-		
-		vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature(((Float[])tm.getValue())[0], ((Float[])tm.getValue())[1], tme) ));
-		vffsp.add(new ValidateForFilterSinglePrimer(Filter5vs3Stability.getStandard5vs3StabilityFilter()));
-		// TODO para este filtro, debería tener dos opciones. Una, si quiere usar el filtro standard y otra si quiere uno a medida.
-		
-		this.setFilter(new Validate_AND(v1, v2));
-			// creates a filter and passes it.
-
 		this.setNx( (Float) nx.getValue());
 		this.setNy( (Float) ny.getValue());
 		this.setpA( (Float) pa.getValue());
 		
-		if((Integer)lenMin.getValue() > (Integer)lenMax.getValue() ) {
-			// Primer Min can not be greater than Primer Max.
-			throw new InvalidCommandLineException("Max length is lesser than Min length");
-		}  		
 		this.setLenMin( (Integer) lenMin.getValue());
 		this.setLenMax( (Integer) lenMax.getValue());
+
+		/////////////////////////////
+		// SET VALUES FOR FILTERS
+		/////////////////////////////
+		
+		Validator vf = new ValidateAlways();
+		
+		List<ValidateForFilterSinglePrimer>    vffsp = new Vector<ValidateForFilterSinglePrimer>(); 
+		
+		if (filterRep.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterRepeatedEnd                       ()));
+		
+		if (filterDeg.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd                    ()));
+
+		if (! notm.isPresent())                vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature           (((Float[])tm.getValue())[0], ((Float[])tm.getValue())[1], tme) ));
+		
+		End5v3ParameterType.Result r = (Result) end5v3.getValue();
+		if (! noend5v3.isPresent())            vffsp.add(new ValidateForFilterSinglePrimer(new Filter5vs3Stability                     (r.dg, r.ktemp, r.monov, r.len)));
+		
+		if (! nobaserun.isPresent())           vffsp.add(new ValidateForFilterSinglePrimer(new FilterBaseRuns                          ((Integer) baserun.getValue())));
+		
+		if (! nohomodimer.isPresent())         vffsp.add(new ValidateForFilterSinglePrimer(new FilterHomoDimer                         ((Integer) homodimer.getValue(), new DegeneratedDNAMatchingStrategy())));
+		
+		if (! nohomodimerfixedEnd.isPresent()) vffsp.add(new ValidateForFilterSinglePrimer(new FilterHomoDimerFixed3                   ((Integer) homodimerfixedEnd.getValue(), new DegeneratedDNAMatchingStrategy())));
+		
+		if (! nogccontent.isPresent())         vffsp.add(new ValidateForFilterSinglePrimer(new FilterCGContent                         (((Float[]) gccontent.getValue())[0],((Float[]) gccontent.getValue())[1])));
+		
+		for (ValidateForFilterSinglePrimer vr : vffsp) {
+			vf = new Validate_AND(vf, vr);
+		}
+		
+		this.setFilter(vf);
+		
+		//////////////////////////////////////////
+		// SET VALUES FOR FILTERS OF PRIMER PAIRS 
+		//////////////////////////////////////////
+		
+		if ( pair.isPresent()) {
+		
+			List<ValidateForFilterPrimerPair>    vffpp = new Vector<ValidateForFilterPrimerPair>();
+			Validator vfp = new ValidateAlways(); 		
+			
+			if (! noampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) ampsize.getValue())));
+	
+			if (! nogccomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterGCCompatibility((Float) gccomp.getValue())));
+	
+			if (! noheterodimer.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterHeteroDimer((Integer) heterodimer.getValue(), new DegeneratedDNAMatchingStrategy())));
+			
+			if (! noheterodimerfixedEnd.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterHeteroDimerFixed3((Integer) heterodimerfixedEnd.getValue(), new DegeneratedDNAMatchingStrategy())));
+			
+			if (! notmcomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterMeltingTempCompatibility((Double) tmcomp.getValue(), tme )));
+	
+			for (ValidateForFilterPrimerPair vr : vffpp) { vf = new Validate_AND(vfp, vr); }
+			
+			this.setFilterpair(vfp);
+
+		}
+
 		
 		this.setSearchPair( (Boolean) pair.getValue() );
 			// Overrides directstrand option.

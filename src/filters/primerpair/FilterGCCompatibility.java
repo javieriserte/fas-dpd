@@ -2,7 +2,10 @@ package filters.primerpair;
 
 import sequences.dna.Primer;
 import sequences.util.gccontent.GCContent;
-
+/**
+ * 
+ * @author Javier Iserte
+ */
 public class FilterGCCompatibility extends FilterPrimerPair {
 
 	private double maxDifferencePercentageAccepted;
