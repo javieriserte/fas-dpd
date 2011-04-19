@@ -11,6 +11,7 @@ public class EnergeticValues {
 	public void add(EnergeticValues other) {
 		this.deltaH += other.getDeltaH(); 
 		this.deltaS += other.getDeltaS();
+		this.deltaG += other.getDeltaG();
 	}
 	
 	public String toString() {

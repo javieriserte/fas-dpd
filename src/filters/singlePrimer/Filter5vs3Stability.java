@@ -1,5 +1,6 @@
 package filters.singlePrimer;
 
+import sequences.dna.DegeneratedPrimerIterator;
 import sequences.dna.Primer;
 import sequences.util.santaLuciaEnergeticParameters.EnergeticValues;
 import sequences.util.santaLuciaEnergeticParameters.SantaLuciaEnergetics;
@@ -50,9 +51,9 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	 * 
 	 */
 	@Override public boolean filter(Primer p) {
-		this.deltaG5 = this.calculateStability(p.getSequence().subSequence(0, p.getLength()-1));
+		this.deltaG5 = this.calculateStability(p.getSequence().subSequence(0, this.len-1));
 		this.deltaG3 = this.calculateStability(p.getSequence().subSequence(
-				p.getSequence().length()-p.getLength(), 
+				p.getSequence().length()-this.len, 
 				p.getSequence().length()-1)
 				);
 		System.out.println(this.deltaG5 + " + " + this.deltaGLimit + " < " + this.deltaG3);
@@ -72,11 +73,24 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	 */
 	private double calculateStability(CharSequence subSequence) {
 
-		SantaLuciaEnergetics sle = new SantaLuciaEnergetics();
-		EnergeticValues ev = sle.getDuplexStability(subSequence.toString(), this.kelvinTemp);
-		ev = sle.SaltCorrection(this.monovalentMolar, 0, ev, this.len);
+		// TODO implement a dynamic programming strategy 
 		
-		return ev.getDeltaG();
+		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(subSequence.toString(), 1000);
+		
+		EnergeticValues r = new EnergeticValues();
+		dpi.start();
+		int counter =0;
+		while (dpi.hasNext()) {
+			counter++;
+			SantaLuciaEnergetics sle = new SantaLuciaEnergetics();
+			EnergeticValues ev = sle.getDuplexStability(dpi.next(), this.kelvinTemp);
+			ev = sle.SaltCorrection(this.monovalentMolar, 0, ev, this.len);
+			r.add(ev);
+			
+		}
+
+		return r.getDeltaG()/counter;
+	
 	}
 
 }

@@ -11,9 +11,7 @@ import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import sequences.util.tmcalculator.SantaluciaTmEstimator;
 import sequences.util.tmcalculator.SimpleTmEstimator;
 import sequences.util.tmcalculator.TmEstimator;
-import tests.filters.FilterMeltingTempCompatibilityTest;
 
-import cmdGA.MultipleOption;
 import cmdGA.NoOption;
 import cmdGA.Parser;
 import cmdGA.SingleOption;
@@ -160,7 +158,7 @@ public class SearchParameter {
 		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatArrayParameter.getParameter());
 		NoOption notm = new NoOption(parser, false, "/notm");
 		
-		SingleOption end5v3 = new SingleOption(parser, new End5v3ParameterType.Result(1.5, 37, 0.05, 5), "/end5v3", End5v3ParameterType.getParameter()); 
+		SingleOption end5v3 = new SingleOption(parser, new End5v3ParameterType.Result(1.5, 273 + 37, 0.05, 5), "/end5v3", End5v3ParameterType.getParameter()); 
 		NoOption noend5v3 = new NoOption(parser, false, "/nobaserunend5v3");
 		
 		SingleOption baserun = new SingleOption(parser, 4,"/baserun", IntegerParameter.getParameter());

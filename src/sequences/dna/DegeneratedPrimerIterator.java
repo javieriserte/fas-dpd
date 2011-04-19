@@ -5,6 +5,7 @@ import degeneration.BaseDeg;
 public class DegeneratedPrimerIterator {
 	private String initialSeq;
 	private int skipFrom;
+	// TODO skipFrom is not used. Implement or remove.
 	private int max;
 	private int counter=0;
 	
