@@ -24,6 +24,7 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		} else {
 			// Case Degenerated			
 			DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(primer.getSequence(), 0 );
+			// TODO implement a dymanic programming strategy for degenerated primers
 			float total = 0;
 			int n=0;
 			dpi.start();

@@ -19,6 +19,10 @@ public class FilterBaseRunsTest extends TestCase {
 		Primer p4 = new Primer("CCCC", "desc", 1, 20, false);
 		Primer p5 = new Primer("CCCCC", "desc", 1, 20, false);
 		
+		Primer p6 = new Primer("CCCN", "desc", 1, 20, false);
+		Primer p7 = new Primer("CCCS", "desc", 1, 20, false);
+		Primer p8 = new Primer("CCCW", "desc", 1, 20, false);
+		
 		FilterSinglePrimer filter = new FilterBaseRuns(2);
 		FilterSinglePrimer filter1 = new FilterBaseRuns(3);
 		FilterSinglePrimer filter2 = new FilterBaseRuns(4);
@@ -28,19 +32,30 @@ public class FilterBaseRunsTest extends TestCase {
 		assertFalse(filter.filter(p3));
 		assertFalse(filter.filter(p4));
 		assertFalse(filter.filter(p5));
+		assertFalse(filter.filter(p6));
+		assertFalse(filter.filter(p7));
+		assertFalse(filter.filter(p8));
 		
 		assertTrue(filter1.filter(p1));
 		assertTrue(filter1.filter(p2));
 		assertTrue(filter1.filter(p3));
 		assertFalse(filter1.filter(p4));
 		assertFalse(filter1.filter(p5));
+		assertFalse(filter1.filter(p6));
+		assertFalse(filter1.filter(p7));
+		assertTrue(filter1.filter(p8));
 
 		assertTrue(filter2.filter(p1));
 		assertTrue(filter2.filter(p2));
 		assertTrue(filter2.filter(p3));
 		assertTrue(filter2.filter(p4));
 		assertFalse(filter2.filter(p5));
+		assertTrue(filter2.filter(p6));
+		assertTrue(filter2.filter(p7));
+		assertTrue(filter2.filter(p8));
 
+		
+		
 	}
 
 }

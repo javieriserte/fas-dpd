@@ -1,5 +1,6 @@
 package filters.singlePrimer;
 
+import degeneration.BaseDeg;
 import sequences.dna.Primer;
 
 /**
@@ -10,8 +11,7 @@ import sequences.dna.Primer;
 public class FilterBaseRuns extends FilterSinglePrimer {
 	private int maxRunLengthAccepted;
 
-	// TODO modify filter to accept degenerated sequences.
-
+	
 	public FilterBaseRuns(int maxRunLengthAccepted) {
 		super();
 		this.maxRunLengthAccepted = maxRunLengthAccepted;
@@ -19,11 +19,17 @@ public class FilterBaseRuns extends FilterSinglePrimer {
 
 	@Override
 	public boolean filter(Primer p) {
-		int baseR =1;
-		for (int i=1; i<p.getLength(); i++) {
-			baseR = (p.getSequence().charAt(i)==p.getSequence().charAt(i-1) ? baseR+=1 : 1);
-			if (baseR>this.maxRunLengthAccepted) return false;
+		int baseR =0;
+
+		for (int j=0; j<4;j++) {
+			baseR = 0;
+			for (int i=0; i<p.getLength(); i++) {
+				
+				baseR = (BaseDeg.containsBaseIntInChar(j,p.getSequence().charAt(i)) ? baseR+=1 : 0);
+				if (baseR>this.maxRunLengthAccepted) return false;
+			}
 		}
+		
 		return true;
 	}
 
