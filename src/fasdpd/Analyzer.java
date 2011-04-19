@@ -1,7 +1,12 @@
 package fasdpd;
 
+import java.util.List;
+import java.util.Vector;
+
 import degeneration.GeneticCode;
+import filters.validator.PrimerPairValidable;
 import filters.validator.PrimerValidable;
+import filters.validator.ValidateForFilterPrimerPair;
 import filters.validator.Validator;
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
@@ -106,6 +111,53 @@ public class Analyzer {
 		}
 		
 		return lp;
+	}
+	
+	public PriorityList<Primer> searchBestPrimers(int numberOfPrimers, DNASeq seq, int primerLengthMin, int primerLengthMax, boolean directStrand, Validator Filter, int StartPoint, int EndPoint) {
+		// PRECONDTITION : StartPoint is equal o greater than one and is lesser than (sequence length - primer length)
+		//               : End point is greater than startpoint plus primer length and lesser than sequence length. 
+		
+		PriorityList<Primer> lp = new PriorityList<Primer>(numberOfPrimers);
+		PriorityList<Primer> lppartial = new PriorityList<Primer>(numberOfPrimers);
+		
+		for (int i = primerLengthMin; i<=primerLengthMax;i++) {
+			lppartial = this.searchBestPrimers(numberOfPrimers, seq, i, directStrand, Filter, StartPoint, EndPoint);
+			
+			for (Primer primer: lppartial.ExtractSortedList()) {
+				lp.addValue(primer);
+			}
+			
+		}
+		
+		return lp;
+	}
+	
+
+	/**
+	 * Search compatible primers.
+	 * This method can be expensive, if the input list are large.
+	 *  
+	 * @param forward is a list of candidate forward primers 
+	 * @param reverse is a list of candidate reverse primers
+	 * @param Filter gives the selection conditions.
+	 * @return a list of pairs of compatible primers. 
+	 */
+	public List<PrimerPair> searchPrimerPairs(List<Primer> forward, List<Primer> reverse, Validator Filter) {
+		List<PrimerPair> result = new Vector<PrimerPair>();
+		
+		for (Primer primerf : forward) {
+			
+			for (Primer primerr : reverse) {
+				
+				ValidateForFilterPrimerPair filter = (ValidateForFilterPrimerPair) Filter;
+				PrimerPairValidable ppv = new PrimerPairValidable (primerf,primerr); 
+				if (filter.validate(ppv)) result.add(new PrimerPair(primerf,primerr));
+				
+			}
+			
+		}
+		
+		return result;
 	}
 	
 	/**

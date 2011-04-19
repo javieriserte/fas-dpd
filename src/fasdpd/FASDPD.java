@@ -118,23 +118,31 @@ public class FASDPD {
 		DNASeq consense = al.pileUp(myGC);
 			// Generates the degenerated consensus 
 		Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(),  myGC);
-		
-		// TODO modify to search a range of primer lenght
-		
 			// creates a new analyzer with standard parameters
-		PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLen(), mySp.isDirectStrand(),mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
-			// Do the search !!
-		List<Primer> sorted = result.ExtractSortedList();
-			// Get the results
-		if (mySp.getProfile()!=null) {
-			// if profile == null means that no profile generations is needed  
-			exportDistributionProfile(mySp.getProfile(),sorted, al.lenght());
-				// creates and exports a histogram distribution
-		}
-		exportPrimers(mySp.getOutfile(),sorted);
-		  // send primers list to file
+
+		if (!mySp.isSearchPair()) {
 		
-		if (mySp.isSearchPair()) {
+			PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), mySp.isDirectStrand(),mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+				// Do the search !!
+	
+			
+			List<Primer> sorted = result.ExtractSortedList();
+				// Get the results
+			if (mySp.getProfile()!=null) {
+				// if profile == null means that no profile generations is needed  
+				exportDistributionProfile(mySp.getProfile(),sorted, al.lenght());
+					// creates and exports a histogram distribution
+			}
+			exportPrimers(mySp.getOutfile(),sorted);
+			  // send primers list to file
+		
+		} else {
+			
+			PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+			
+			List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(), resultreverse.ExtractSortedList(), mySp.getFilterpair());
+			
 			// TODO modify Analyzer class in order to perform searches of primer pairs.
 			// TODO maybe a filter for primer score is needed in this step. otherwise, an scoring strategy for primers pair is needed.
 			// For pair search, the list of primers must be separated in two lists: Forward and reverse.
@@ -219,6 +227,38 @@ public class FASDPD {
 			}
 		}
 		return pos;
+	}
+	
+	/**
+	 * Send a primer list to a file.
+	 * @param outfile a string containing the path of the file
+	 * @param list a List of Primer objects
+	 */
+	public void exportPairs(String outfile, List<PrimerPair> list){
+		
+		try {
+			FileWriter fr = new FileWriter(outfile);
+			fr.write("Sequence\tScore\tStart\tEnd\tDirectStrand\tSequence\tScore\tStart\tEnd\tDirectStrand\t\n");
+			for (PrimerPair primer : list) {
+				fr.write(primer.getForward().getSequence()+"\t");
+				fr.write(primer.getForward().getScore()+"\t");
+				fr.write(primer.getForward().getStart()+"\t");
+				fr.write(primer.getForward().getEnd()+"\t");
+				fr.write(primer.getForward().isDirectStrand()+"\n");
+				
+				fr.write(primer.getReverse().getSequence()+"\t");
+				fr.write(primer.getReverse().getScore()+"\t");
+				fr.write(primer.getReverse().getStart()+"\t");
+				fr.write(primer.getReverse().getEnd()+"\t");
+				fr.write(primer.getReverse().isDirectStrand()+"\n");
+				
+			}
+			fr.flush();
+			fr.close();
+			
+		} catch (IOException e) {
+			System.out.println("There was an error in the file. No primer list file was generated.");
+		}
 	}
 	
 	/**

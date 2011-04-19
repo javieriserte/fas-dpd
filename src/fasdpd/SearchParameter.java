@@ -32,6 +32,7 @@ import filters.singlePrimer.FilterDegeneratedEnd;
 import filters.singlePrimer.FilterHomoDimer;
 import filters.singlePrimer.FilterHomoDimerFixed3;
 import filters.singlePrimer.FilterMeltingPointTemperature;
+import filters.singlePrimer.FilterPrimerScore;
 import filters.singlePrimer.FilterRepeatedEnd;
 import filters.validator.ValidateAlways;
 import filters.validator.ValidateForFilterPrimerPair;
@@ -171,7 +172,10 @@ public class SearchParameter {
 		NoOption nohomodimerfixedEnd= new NoOption(parser, false, "/nohomodimerfixedEnd");		
 		
 		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
-		NoOption nogccontent = new NoOption(parser, false, "/nogccontent");		
+		NoOption nogccontent = new NoOption(parser, false, "/nogccontent");	
+		
+		SingleOption score = new SingleOption(parser, 0.8f, "/score", FloatParameter.getParameter());
+		NoOption noscore = new NoOption(parser, false, "/noscore");	
 
 		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
 		NoOption noampsize = new NoOption(parser, false, "/nosize");		
@@ -205,7 +209,7 @@ public class SearchParameter {
 		// CHECK COMMAND LINE SYNTAX
 		/////////////////////////////
 		
-	
+		// TODO Add conditions to syntax check in command line
 		if (! (infile.isPresent()&&outfile.isPresent()&&gcfile.isPresent())) {
 			// infile, outfile and gcfile are required!
 			// if one of them is not present then the command line is not well formed.
@@ -283,6 +287,8 @@ public class SearchParameter {
 		if (filterRep.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterRepeatedEnd                       ()));
 		
 		if (filterDeg.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterDegeneratedEnd                    ()));
+		
+		if (! noscore.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterPrimerScore                       ((Double)score.getValue())));		
 
 		if (! notm.isPresent())                vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature           (((Float[])tm.getValue())[0], ((Float[])tm.getValue())[1], tme) ));
 		
