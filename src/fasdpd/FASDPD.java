@@ -78,6 +78,18 @@ public class FASDPD {
 			// start the search of primers
 	}
 
+	////////////////////////////
+	// New Search Strategy
+	//
+	// 1) Look if in the searchParameters indicates that must be search pair of primer or single primers.
+	// 2) If single primers are asked, do the search like before.
+	// 3) If primer pairs are searched, a list of primers must be submitted. 
+	//               In command line this list is made searching single primers first.
+	//               But, can be given as a file. ( TODO modify input parameters to read a list of primers from a file)
+	//               Search primerpairs, 
+	//
+	////////////////////////////
+	
 	public void DoSearch(SearchParameter mySp) {
 		Alignment al = new Alignment();
 		FastaMultipleReader fmr = new FastaMultipleReader();
@@ -107,6 +119,7 @@ public class FASDPD {
 			// Generates the degenerated consensus 
 		Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(),  myGC);
 		
+		// TODO modify to search a range of primer lenght
 		
 			// creates a new analyzer with standard parameters
 		PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLen(), mySp.isDirectStrand(),mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
@@ -120,6 +133,15 @@ public class FASDPD {
 		}
 		exportPrimers(mySp.getOutfile(),sorted);
 		  // send primers list to file
+		
+		if (mySp.isSearchPair()) {
+			// TODO modify Analyzer class in order to perform searches of primer pairs.
+			// TODO maybe a filter for primer score is needed in this step. otherwise, an scoring strategy for primers pair is needed.
+			// For pair search, the list of primers must be separated in two lists: Forward and reverse.
+			// The cartesian product of the two sets is done. (this step may be expensive if the primer list is large.)
+			// Each resulting pair is filtered.
+			// 
+		}
 	}
 	
 	/**

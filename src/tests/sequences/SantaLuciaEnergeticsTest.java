@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 public class SantaLuciaEnergeticsTest extends TestCase {
 
+	// TODO Implemeted test for SantaLuciaEnergetics
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
