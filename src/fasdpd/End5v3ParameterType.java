@@ -20,15 +20,13 @@ public class End5v3ParameterType extends ParameterType {
 	
 	@Override
 	protected Object parse(String parameter) {
-		Result result = new Result();
 		String[] p = parameter.split(",");
-		
-		result.dg = Double.parseDouble(p[0]);
-		result.ktemp= Double.parseDouble(p[1]);
-		result.monov = Double.parseDouble(p[2]);
-		result.len = Integer.parseInt(p[3]);
-		
-		return result;
+
+		return new Result(Double.parseDouble(p[0]),
+				          Double.parseDouble(p[1]),
+				          Double.parseDouble(p[2]),
+				          Integer.parseInt(p[3])
+		);
 	}
 
 	public static class Result {
