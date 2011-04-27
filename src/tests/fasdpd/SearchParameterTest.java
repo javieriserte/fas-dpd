@@ -27,8 +27,10 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fasdpd;
+package tests.fasdpd;
 
+import fasdpd.InvalidCommandLineException;
+import fasdpd.SearchParameter;
 import junit.framework.TestCase;
 /**
  * Test Case.

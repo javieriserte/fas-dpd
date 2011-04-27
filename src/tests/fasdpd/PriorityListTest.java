@@ -27,9 +27,11 @@
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
-package fasdpd;
+package tests.fasdpd;
 
 import java.util.List;
+
+import fasdpd.PriorityList;
 
 import junit.framework.TestCase;
 
