@@ -67,12 +67,29 @@ public class SearchParameterTest extends TestCase {
 		assertEquals(20,s.getLenMin());
 		assertEquals(25,s.getLenMax());
 		assertNull(s.getProfile());
+
+		assertTrue(s.getFilter().toString().contains("FilterDegeneratedEnd"));// TODO implement toString in Filters and Validators.
+		assertTrue(s.getFilter().toString().contains("FilterPrimerScore"));
+		assertTrue(s.getFilter().toString().contains("FilterMeltingPointTemperature"));
+		assertTrue(s.getFilter().toString().contains("Filter5vs3Stability"));
+		assertTrue(s.getFilter().toString().contains("FilterBaseRuns"));
+		assertTrue(s.getFilter().toString().contains("FilterHomoDimer"));
+		assertTrue(s.getFilter().toString().contains("FilterHomoDimerFixed3"));
+		assertTrue(s.getFilter().toString().contains("FilterCGContent"));
+		
+		assertFalse(s.getFilterpair().toString().contains("FilterOverlapping"));
+		assertFalse(s.getFilterpair().toString().contains("FilterAmpliconSize"));
+		assertFalse(s.getFilterpair().toString().contains("FilterGCCompatibility"));
+		assertFalse(s.getFilterpair().toString().contains("FilterHeteroDimer"));
+		assertFalse(s.getFilterpair().toString().contains("FilterHeteroDimerFixed3"));
+		assertFalse(s.getFilterpair().toString().contains("FilterMeltingTempCompatibility"));
+
+		
+		System.out.println(s.getFilter());
+		System.out.println(s.getFilterpair());
 		
 		
-		System.out.println(s.getFilter());// TODO implement toString in Filters and Validators.
-		
-		
-		cl ="/PAIR /Q:30 /FDEG /LENMIN:18 /LENMAX:35 /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
+		cl ="/PAIR /Q:30 /NOBASERUNS /NOSIZE /FDEG /LENMIN:18 /LENMAX:35 /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
 		
 		try { s = new SearchParameter();
 			s.retrieveFromCommandLine(cl);
@@ -95,6 +112,25 @@ public class SearchParameterTest extends TestCase {
 		assertEquals(35,s.getLenMax());
 		assertNull(s.getProfile());
 		
+		assertTrue(s.getFilter().toString().contains("FilterDegeneratedEnd"));
+		assertTrue(s.getFilter().toString().contains("FilterPrimerScore"));
+		assertTrue(s.getFilter().toString().contains("FilterMeltingPointTemperature"));
+		assertTrue(s.getFilter().toString().contains("Filter5vs3Stability"));
+		assertFalse(s.getFilter().toString().contains("FilterBaseRuns"));
+		assertTrue(s.getFilter().toString().contains("FilterHomoDimer"));
+		assertTrue(s.getFilter().toString().contains("FilterHomoDimerFixed3"));
+		assertTrue(s.getFilter().toString().contains("FilterCGContent"));
+		
+		System.out.println(s.getFilterpair());
+		
+		assertTrue(s.getFilterpair().toString().contains("FilterOverlapping"));
+		assertFalse(s.getFilterpair().toString().contains("FilterAmpliconSize"));
+		assertTrue(s.getFilterpair().toString().contains("FilterGCCompatibility"));
+		assertTrue(s.getFilterpair().toString().contains("FilterHeteroDimer"));
+		assertTrue(s.getFilterpair().toString().contains("FilterHeteroDimerFixed3"));
+		assertTrue(s.getFilterpair().toString().contains("FilterMeltingTempCompatibility"));
+		
+
 	}
 
 }

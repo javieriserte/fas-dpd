@@ -388,7 +388,7 @@ public class SearchParameter {
 			
 			if (! notmcomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterMeltingTempCompatibility((Double) tmcomp.getValue(), tme )));
 	
-			for (ValidateForFilterPrimerPair vr : vffpp) { vf = new Validate_AND(vfp, vr); }
+			for (ValidateForFilterPrimerPair vr : vffpp) { vfp = new Validate_AND(vfp, vr); }
 			
 			this.setFilterpair(vfp);
 
