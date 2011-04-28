@@ -31,6 +31,7 @@ package tests.fasdpd;
 
 import fasdpd.InvalidCommandLineException;
 import fasdpd.SearchParameter;
+import filters.validator.Validate_AND;
 import junit.framework.TestCase;
 /**
  * Test Case.
@@ -53,13 +54,25 @@ public class SearchParameterTest extends TestCase {
 			s.retrieveFromCommandLine(cl);
 		} catch (InvalidCommandLineException e) {e.printStackTrace(); fail(); }
 		
-//		assertEquals(s.getInfile(),"\"c:\\javier\\archivo.txt\"");
-//		assertEquals(s.getLen(), 20);
-//		assertEquals(s.getQuantity(), 30);
-//		assertEquals(s.getEndPoint(), -1);
-//		assertEquals(s.getStartPoint(), 0);
+		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile());
+		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile());
+		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile());
+		assertEquals(1f,s.getNx());
+		assertEquals(1f,s.getNy());
+		assertEquals(0f,s.getpA());
+		assertEquals(30,s.getQuantity());
+		assertEquals(-1, s.getEndPoint());
+		assertEquals(1, s.getStartPoint());
+		assertFalse(s.isSearchPair());
+		assertEquals(20,s.getLenMin());
+		assertEquals(25,s.getLenMax());
+		assertNull(s.getProfile());
 		
-		cl ="/Q:30 /FDEG /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
+		
+		System.out.println(s.getFilter());// TODO implement toString in Filters and Validators.
+		
+		
+		cl ="/PAIR /Q:30 /FDEG /LENMIN:18 /LENMAX:35 /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
 		
 		try { s = new SearchParameter();
 			s.retrieveFromCommandLine(cl);
@@ -68,12 +81,19 @@ public class SearchParameterTest extends TestCase {
 			fail();
 		}
 		
-		assertEquals(s.getInfile(),"\"c:\\javier\\archivo.txt\"");
-//		assertEquals(s.getLen(), 20);
-		assertEquals(s.getQuantity(), 30);
-		assertEquals(s.getOutfile(), "\"c:\\javier\\archivo2.txt\"");
-		assertEquals(s.getEndPoint(), -1);
-		assertEquals(s.getStartPoint(), 1);
+		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile());
+		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile());
+		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile());
+		assertEquals(1f,s.getNx());
+		assertEquals(1f,s.getNy());
+		assertEquals(0f,s.getpA());
+		assertEquals(30,s.getQuantity());
+		assertEquals(-1, s.getEndPoint());
+		assertEquals(1, s.getStartPoint());
+		assertFalse(!s.isSearchPair());
+		assertEquals(18,s.getLenMin());
+		assertEquals(35,s.getLenMax());
+		assertNull(s.getProfile());
 		
 	}
 

@@ -175,7 +175,7 @@ public class SearchParameter {
 		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
 		NoOption noampsize = new NoOption(parser, false, "/nosize");		
 		
-		SingleOption gccomp = new SingleOption(parser, 10, "/gccomp", FloatParameter.getParameter());
+		SingleOption gccomp = new SingleOption(parser, 10f, "/gccomp", FloatParameter.getParameter());
 		NoOption nogccomp= new NoOption(parser, false, "/nogccomp");		
 		
 		SingleOption heterodimer = new SingleOption(parser, 5 , "/hetdimer", IntegerParameter.getParameter());
@@ -184,7 +184,7 @@ public class SearchParameter {
 		SingleOption heterodimerfixedEnd = new SingleOption(parser, 3 , "/hetdimer3", IntegerParameter.getParameter());
 		NoOption noheterodimerfixedEnd= new NoOption(parser, false, "/nohetdimer3");		
 		
-		SingleOption tmcomp = new SingleOption(parser, 5, "/tmcomp", FloatParameter.getParameter());
+		SingleOption tmcomp = new SingleOption(parser, 5d, "/tmcomp", FloatParameter.getParameter());
 		NoOption notmcomp = new NoOption(parser, false, "/notmcomp");		
 		
 		
