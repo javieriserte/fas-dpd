@@ -109,7 +109,7 @@ public class AlignmentTest extends TestCase {
 		alin1.addSequence(ds1);
 		alin1.addSequence(ds2);
 		alin1.addSequence(ds3);
-		DNASeq ds = alin1.pileUp(new GeneticCode("StandardCode.txt"));
+		DNASeq ds = alin1.pileUp(new GeneticCode("StandardCode"));
 		assertEquals(ds.getSequence(), "WHWDWD");
 		
 	}
