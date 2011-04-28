@@ -5,7 +5,6 @@ import degeneration.BaseDeg;
 public class DegeneratedPrimerIterator {
 	private String initialSeq;
 	private int skipFrom;
-	// TODO skipFrom is not used. Implement or remove.
 	private int max;
 	private int counter=0;
 	
@@ -19,6 +18,12 @@ public class DegeneratedPrimerIterator {
 		this.initialSeq = initialSeq;
 		this.skipFrom = skipFrom;
 	}
+
+	public DegeneratedPrimerIterator(String initialSeq) {
+		super();
+		this.initialSeq = initialSeq;
+		this.skipFrom = 0;
+	}
 	
 	// PUBLIC INSTANCE METHODS
 	
@@ -26,11 +31,14 @@ public class DegeneratedPrimerIterator {
 		
 		this.counter=0;
 		this.max = BaseDeg.getDegValueFromString(this.initialSeq);
+		if (this.skipFrom==0) this.skipFrom =  this.max;
+		
 		int pos= this.initialSeq.length();
 		
 		this.chars = new char[pos][];
 		this.deg = new int[pos];
 		this.current = new int[pos];
+
 		
 		for(int i=0;i<pos;i++) {
 			this.chars[i] = BaseDeg.getCharArrayFromChar(this.initialSeq.charAt(i)); 
@@ -51,6 +59,7 @@ public class DegeneratedPrimerIterator {
 		// Increase & Update current
 		this.current[0]++;
 		this.counter++;
+
 		
 		if(this.hasNext()) {
 			for (int i=0;i < this.current.length;i++) {
@@ -65,7 +74,7 @@ public class DegeneratedPrimerIterator {
 	}
 	
 	public boolean hasNext() {
-		return (this.max>this.counter);
+		return (this.skipFrom>this.counter);
 	}
 	
 	
