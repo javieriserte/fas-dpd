@@ -1,9 +1,5 @@
 package fasdpd;
 
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Vector;
-
 import java.util.List;
 import java.util.Vector;
 
@@ -25,6 +21,7 @@ import filters.primerpair.FilterGCCompatibility;
 import filters.primerpair.FilterHeteroDimer;
 import filters.primerpair.FilterHeteroDimerFixed3;
 import filters.primerpair.FilterMeltingTempCompatibility;
+import filters.primerpair.FilterOverlapping;
 import filters.singlePrimer.Filter5vs3Stability;
 import filters.singlePrimer.FilterBaseRuns;
 import filters.singlePrimer.FilterCGContent;
@@ -39,9 +36,6 @@ import filters.validator.ValidateForFilterPrimerPair;
 import filters.validator.ValidateForFilterSinglePrimer;
 import filters.validator.Validate_AND;
 import filters.validator.Validator;
-
-//import fasdpd.tokens.*;
-
 
 
 /*
@@ -84,7 +78,6 @@ public class SearchParameter {
 	private String outfile;
 	private String gcfile;
 	private String profile="";
-	private int len; // TODO <- OBSOLETE. MUST DELETE 
 	private int lenMin;
 	private int lenMax;
 	private Validator filter= new ValidateAlways();
@@ -101,16 +94,20 @@ public class SearchParameter {
 	private boolean searchPair=false;
 	private boolean useSantaLuciaToEstimateTm = true; // TODO MAY BE USELESS. 
 
-
+    ////////////////
 	// CONSTRUCTOR
+	////////////////
+	
 	/**
 	 * 
 	 */
 	public SearchParameter() {
 		super();
 	}
-
-	// Public METHODS
+	
+    /////////////////////
+	// PUBLIC INTERFACE
+	/////////////////////
 	/**
 	 * 
 	 */
@@ -121,8 +118,6 @@ public class SearchParameter {
 		//////////////////
 		// DEFINE OPTIONS
 		//////////////////
-		
-		SingleOption len = new SingleOption(parser, 20 , "/len", IntegerParameter.getParameter());
 		
 		SingleOption lenMin = new SingleOption(parser, 20, "/lenMin", IntegerParameter.getParameter());
 		SingleOption lenMax = new SingleOption(parser, 25, "/lenMax", IntegerParameter.getParameter());
@@ -160,7 +155,7 @@ public class SearchParameter {
 		NoOption notm = new NoOption(parser, false, "/notm");
 		
 		SingleOption end5v3 = new SingleOption(parser, new End5v3ParameterType.Result(1.5, 273 + 37, 0.05, 5), "/end5v3", End5v3ParameterType.getParameter()); 
-		NoOption noend5v3 = new NoOption(parser, false, "/nobaserunend5v3");
+		NoOption noend5v3 = new NoOption(parser, false, "/noend5v3");
 		
 		SingleOption baserun = new SingleOption(parser, 4,"/baserun", IntegerParameter.getParameter());
 		NoOption nobaserun = new NoOption(parser, false, "/nobaserun");
@@ -209,7 +204,6 @@ public class SearchParameter {
 		// CHECK COMMAND LINE SYNTAX
 		/////////////////////////////
 		
-		// TODO Add conditions to syntax check in command line
 		if (! (infile.isPresent()&&outfile.isPresent()&&gcfile.isPresent())) {
 			// infile, outfile and gcfile are required!
 			// if one of them is not present then the command line is not well formed.
@@ -229,11 +223,76 @@ public class SearchParameter {
 		if((Integer)lenMin.getValue() > (Integer)lenMax.getValue() ) {
 			// Primer Min can not be greater than Primer Max.
 			throw new InvalidCommandLineException("Max length is lesser than Min length");
-		}  		
-
-
+		}
 		
+		if (tm.isPresent() && notm.isPresent() ) { 
+ 			// This options can't be in the command line at the same time 
+ 			throw new InvalidCommandLineException("/tm and /notm options can not appear in the command line simoultaneously");
+		}
+		if (end5v3.isPresent() && noend5v3.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/end5v3 and /noend5v3 options can not appear in the command line simoultaneously");
+		}
+		if (baserun.isPresent() && nobaserun.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/baserun and /nobaserun options can not appear in the command line simoultaneously");
+		}
+		if (homodimer.isPresent() && nohomodimer.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/homodimer and /nohomodimer options can not appear in the command line simoultaneously");
+		}
+		if (homodimerfixedEnd.isPresent() && nohomodimerfixedEnd.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/homodimerfixedend and /nohomodimerfixedend options can not appear in the command line simoultaneously");
+		}
+		if (gccontent.isPresent() && nogccontent.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/gccontent and /nogccontent options can not appear in the command line simoultaneously");
+		}
+		if (score.isPresent() && noscore.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/score and /noscore options can not appear in the command line simoultaneously");
+		}
+		if (ampsize.isPresent() && noampsize.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/ampsize and /noampsize options can not appear in the command line simoultaneously");
+		}
+		if (gccomp.isPresent() && nogccomp.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/gccomp and /nogccomp options can not appear in the command line simoultaneously");
+		}
+		if (heterodimer.isPresent() && noheterodimer.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/heterodimer and /noheterodimer options can not appear in the command line simoultaneously");
+		}
+		if (heterodimerfixedEnd.isPresent() && noheterodimerfixedEnd.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/heterodimerfixed and /noheterodimerfixedend options can not appear in the command line simoultaneously");
+		}
+		if (tmcomp.isPresent() && notmcomp.isPresent() ) { 
+ 			// This options can't be in the command line at the same time
+ 			throw new InvalidCommandLineException("/tmcomp and /notmcomp options can not appear in the command line simoultaneously");
+		}
 		
+		if (!pair.isPresent()) {
+			boolean isAnyPrimerPairParameter = false;
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || noampsize.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || ampsize.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || nogccomp.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || gccomp.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || noheterodimer.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || heterodimer.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || noheterodimerfixedEnd.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || heterodimerfixedEnd.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || notmcomp.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || tmcomp.isPresent();
+			
+			if (isAnyPrimerPairParameter) {
+	 			// there is some options for primer pair search, but /pair optiones is not present. 
+	 			throw new InvalidCommandLineException("/pair option is not present in the command line, but there is one or more parameters for primer pair search.");
+			}
+			
+		}
 		
 		/////////////////////////////
 		// SET VALUES
@@ -243,12 +302,12 @@ public class SearchParameter {
 		if (infile.isPresent()) this.setInfile((String)infile.getValue());
 		if (outfile.isPresent()) this.setOutfile((String)outfile.getValue());
 		if (gcfile.isPresent()) this.setGCfile((String)gcfile.getValue());
-			// pass the options of infile, outfile and gcfile
- 
+		
+			
+		// pass the options of infile, outfile and gcfile
 		this.setProfile((String)profile.getValue());
 			// if profile is not present, the default value null is passed.
 		
-		this.setLen((Integer)len.getValue());
 		this.setQuantity((Integer)quantity.getValue());
 		this.setStartPoint((Integer) start.getValue());
 		this.setEndPoint((Integer) end.getValue());
@@ -259,8 +318,7 @@ public class SearchParameter {
 		
 		this.setDNA(isDna.getValue());
 		if (isProtein.isPresent()) this.setDNA(isProtein.getValue());
-		// TODO Check the last line. May be a bug.!!!!!!
-
+		
 		this.setUseSantaLuciaToEstimateTm( tmSL.getValue());
 		if (tmsimple.isPresent()) this.setUseSantaLuciaToEstimateTm(false);
 		TmEstimator tme;
@@ -318,6 +376,8 @@ public class SearchParameter {
 			List<ValidateForFilterPrimerPair>    vffpp = new Vector<ValidateForFilterPrimerPair>();
 			Validator vfp = new ValidateAlways(); 		
 			
+			vffpp.add(new ValidateForFilterPrimerPair(new FilterOverlapping()));
+			
 			if (! noampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) ampsize.getValue())));
 	
 			if (! nogccomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterGCCompatibility((Float) gccomp.getValue())));
@@ -333,17 +393,16 @@ public class SearchParameter {
 			this.setFilterpair(vfp);
 
 		}
-
 		
 		this.setSearchPair( (Boolean) pair.getValue() );
 			// Overrides directstrand option.
 		
-		
-		
-		
 	}
 	
+	///////////////////////
 	// GETTERS && SETTERS
+	///////////////////////
+
 	public String getInfile() {
 		return infile;
 	}
@@ -361,12 +420,6 @@ public class SearchParameter {
 	}
 	public void setGCfile(String gcfile) {
 		this.gcfile = gcfile;
-	}
-	public int getLen() {
-		return len;
-	}
-	public void setLen(int len) {
-		this.len = len;
 	}
 	public Validator getFilter() {
 		return filter;
