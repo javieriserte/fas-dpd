@@ -59,7 +59,7 @@ public class SearchParameterTest extends TestCase {
 //		assertEquals(s.getEndPoint(), -1);
 //		assertEquals(s.getStartPoint(), 0);
 		
-		cl ="/Len: 20 /Q:30 /FDEG /INFILE: \"c:\\javier\\archivo.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
+		cl ="/Q:30 /FDEG /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
 		
 		try { s = new SearchParameter();
 			s.retrieveFromCommandLine(cl);
@@ -73,7 +73,7 @@ public class SearchParameterTest extends TestCase {
 		assertEquals(s.getQuantity(), 30);
 		assertEquals(s.getOutfile(), "\"c:\\javier\\archivo2.txt\"");
 		assertEquals(s.getEndPoint(), -1);
-		assertEquals(s.getStartPoint(), 0);
+		assertEquals(s.getStartPoint(), 1);
 		
 	}
 
