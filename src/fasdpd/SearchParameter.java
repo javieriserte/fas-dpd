@@ -169,7 +169,7 @@ public class SearchParameter {
 		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
 		NoOption nogccontent = new NoOption(parser, false, "/nogccontent");	
 		
-		SingleOption score = new SingleOption(parser, 0.8f, "/score", FloatParameter.getParameter());
+		SingleOption score = new SingleOption(parser, 0.8d, "/score", FloatParameter.getParameter());
 		NoOption noscore = new NoOption(parser, false, "/noscore");	
 
 		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
