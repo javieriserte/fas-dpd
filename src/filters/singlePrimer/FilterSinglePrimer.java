@@ -7,4 +7,5 @@ public abstract class FilterSinglePrimer implements Filter {
 	
 	public abstract boolean filter(Primer p);
 	
+	
 }

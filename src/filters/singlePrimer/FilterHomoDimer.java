@@ -19,4 +19,13 @@ public class FilterHomoDimer extends FilterSinglePrimer{
 		
 	}
 
+	@Override
+	public String toString() {
+		return "FilterHomoDimer [largerthan=" + largerthan
+				+ ", matchingStrategy=" + matchingStrategy + "]";
+	}
+	
+	
+	
+
 }

@@ -49,6 +49,12 @@ public class FilterDegeneratedEnd extends FilterSinglePrimer {
 		
 		return BaseDeg.getDegValueFromChar(p.getSequence().charAt(p.getLength()-1))==1;
 	}
+
+	@Override
+	public String toString() {
+		return "FilterDegeneratedEnd []";
+	}
+	
 	
 	
 }

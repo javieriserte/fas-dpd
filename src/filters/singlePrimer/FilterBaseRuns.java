@@ -33,4 +33,12 @@ public class FilterBaseRuns extends FilterSinglePrimer {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "FilterBaseRuns [maxRunLengthAccepted=" + maxRunLengthAccepted
+				+ "]";
+	}
+
+	
+	
 }

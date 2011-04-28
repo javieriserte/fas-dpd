@@ -26,4 +26,11 @@ public class FilterGCCompatibility extends FilterPrimerPair {
 		return  v <= 100*maxDifferencePercentageAccepted; 
 	}
 
+	@Override public String toString() {
+		return "FilterGCCompatibility [maxDifferencePercentageAccepted="
+				+ maxDifferencePercentageAccepted + "]";
+	}
+	
+	
+
 }

@@ -22,4 +22,12 @@ public class FilterMeltingPointTemperature extends FilterSinglePrimer {
 		return temp>=this.min && temp<=this.max;
 	}
 
+	@Override
+	public String toString() {
+		return "FilterMeltingPointTemperature [min=" + min + ", max=" + max
+				+ ", tmEstimator=" + tmEstimator + "]";
+	}
+	
+	
+
 }

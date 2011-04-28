@@ -57,6 +57,11 @@ public class Validate_OR extends ValidatorBoolean {
 	public boolean validate(Validable p) {
 		return (this.op1.validate(p) || this.op2.validate(p));
 	}
+	@Override
+	public String toString() {
+		return "Validate_OR [op1=" + op1 + ", op2=" + op2 + "]";
+	}
 
+	
 
 }

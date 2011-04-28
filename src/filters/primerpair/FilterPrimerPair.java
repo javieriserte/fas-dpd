@@ -7,5 +7,4 @@ public abstract class FilterPrimerPair implements Filter {
 
 	public abstract boolean filter(Primer p1, Primer p2);
 	
-	
 }

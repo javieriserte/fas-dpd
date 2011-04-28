@@ -18,4 +18,11 @@ public class ValidateForFilterSinglePrimer extends ValidatorSimple {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "ValidateForFilterSinglePrimer [filter=" + filter + "]";
+	}
+	
+	
+
 }

@@ -44,4 +44,11 @@ public class ValidateAlways extends ValidatorSimple {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "ValidateAlways []";
+	}
+
+	
+	
 }

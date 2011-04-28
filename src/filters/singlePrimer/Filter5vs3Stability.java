@@ -93,4 +93,14 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	
 	}
 
+	@Override
+	public String toString() {
+		return "Filter5vs3Stability [deltaGLimit=" + deltaGLimit + ", deltaG3="
+				+ deltaG3 + ", deltaG5=" + deltaG5 + ", kelvinTemp="
+				+ kelvinTemp + ", monovalentMolar=" + monovalentMolar
+				+ ", len=" + len + "]";
+	}
+
+	
+	
 }

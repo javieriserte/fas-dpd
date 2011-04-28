@@ -55,4 +55,12 @@ public class Validate_NOT extends ValidatorBoolean {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Validate_NOT [op1=" + op1 + "]";
+	}
+	
+	
+
+
 }

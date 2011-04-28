@@ -59,5 +59,12 @@ public class Validate_AND extends ValidatorBoolean {
 		return (this.op1.validate(p) && this.op2.validate(p));
 	}
 
+	@Override
+	public String toString() {
+		return "Validate_AND [op1=" + op1 + ", op2=" + op2 + "]";
+	}
+	
+	
+
 
 }

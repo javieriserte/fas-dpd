@@ -46,6 +46,11 @@ public class FilterRepeatedEnd extends FilterSinglePrimer {
 		return !((p.getSequence().charAt(p.getSequence().length()-1)) == 
 			    (p.getSequence().charAt(p.getSequence().length()-2)));
 	}
+
+	@Override
+	public String toString() {
+		return "FilterRepeatedEnd []";
+	}
 	
 	
 }

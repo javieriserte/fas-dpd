@@ -24,4 +24,11 @@ public class FilterMeltingTempCompatibility extends FilterPrimerPair {
 		return Math.abs(t1-t2)<=this.maxTempDiff; 
 		
 	}
+
+	@Override public String toString() {
+		return "FilterMeltingTempCompatibility [maxTempDiff=" + maxTempDiff
+				+ ", tmEstimator=" + tmEstimator + "]";
+	}
+	
+	
 }

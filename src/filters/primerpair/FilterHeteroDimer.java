@@ -33,4 +33,11 @@ public class FilterHeteroDimer extends FilterPrimerPair{
 		
 	}
 
+	@Override public String toString() {
+		return "FilterHeteroDimer [maxMatchingSegmentSize="
+				+ maxMatchingSegmentSize + ", ms=" + ms + "]";
+	}
+	
+	
+
 }

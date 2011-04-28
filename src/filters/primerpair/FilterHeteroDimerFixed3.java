@@ -26,4 +26,11 @@ public class FilterHeteroDimerFixed3 extends FilterPrimerPair {
 			  	this.ms); 
 	}
 
+	@Override public String toString() {
+		return "FilterHeteroDimerFixed3 [maxMatchingSegmentSize="
+				+ maxMatchingSegmentSize + ", ms=" + ms + "]";
+	}
+	
+	
+
 }

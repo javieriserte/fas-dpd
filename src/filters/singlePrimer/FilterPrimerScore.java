@@ -18,4 +18,11 @@ public class FilterPrimerScore extends FilterSinglePrimer {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "FilterPrimerScore [minScore=" + minScore + "]";
+	}
+	
+	
+
 }

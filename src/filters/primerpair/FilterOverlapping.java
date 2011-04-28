@@ -20,4 +20,9 @@ public class FilterOverlapping extends FilterPrimerPair {
 		return (minp2>maxp1)||(minp1>maxp2);		
 	}
 
+	@Override public String toString() {
+		return "FilterOverlapping []";
+	}
+
+	
 }

@@ -39,5 +39,13 @@ public class FilterCGContent extends FilterSinglePrimer {
 		float GC = GCContent.calculateGCContent(p.getSequence());
 		return GC >= this.min&&GC<=this.max;
 	}
+
+	@Override
+	public String toString() {
+		return "FilterCGContent [max=" + max + ", min=" + min + "]";
+	}
+	
+	
+	
 	
 }

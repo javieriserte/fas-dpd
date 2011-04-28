@@ -33,4 +33,10 @@ public class FilterAmpliconSize extends FilterPrimerPair{
 		
 		return correctOrientation && (Math.abs(s1 - s2) + 1 <= this.maxSizeAccepted);
 	}
+
+	@Override public String toString() {
+		return "FilterAmpliconSize [maxSizeAccepted=" + maxSizeAccepted + "]";
+	}
+	
+	
 }

@@ -20,4 +20,11 @@ public class ValidateForFilterPrimerPair extends ValidatorSimple {
 		return this.filter.filter(p0.getP1(), p0.getP2());
 	}
 
+	@Override
+	public String toString() {
+		return "ValidateForFilterPrimerPair [filter=" + filter + "]";
+	}
+	
+	
+
 }
