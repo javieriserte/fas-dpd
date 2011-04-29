@@ -55,8 +55,8 @@ public class FasDPDUI extends JFrame {
 		
 	    try {
 		    // Set System L&F
-//	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	    	UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//	    	UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
 	            //;
 	        	
 
