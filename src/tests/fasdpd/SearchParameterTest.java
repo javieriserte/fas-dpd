@@ -68,7 +68,7 @@ public class SearchParameterTest extends TestCase {
 		assertEquals(25,s.getLenMax());
 		assertNull(s.getProfile());
 
-		assertTrue(s.getFilter().toString().contains("FilterDegeneratedEnd"));// TODO implement toString in Filters and Validators.
+		assertTrue(s.getFilter().toString().contains("FilterDegeneratedEnd"));
 		assertTrue(s.getFilter().toString().contains("FilterPrimerScore"));
 		assertTrue(s.getFilter().toString().contains("FilterMeltingPointTemperature"));
 		assertTrue(s.getFilter().toString().contains("Filter5vs3Stability"));
