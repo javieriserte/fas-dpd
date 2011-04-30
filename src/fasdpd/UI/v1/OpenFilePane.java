@@ -15,6 +15,10 @@ import javax.swing.JFrame;
 
 public class OpenFilePane extends javax.swing.JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6739781310056008614L;
 	private JButton jBopen;
 	private ButtonGroup dnaorprotein;
 	private JRadioButton dna;
