@@ -74,11 +74,13 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			
 			jScrollPane1.setColumnHeaderView(new JTextArea("Hola a todoss"));
 			jTextArea1 = new JTextPane();
-			String a = "<html>" +
-	                "<tt><font color=red>A</font><font color=red>A</font><font color=red>A</font></tt><br>" +
-	                "<tt><font bgcolor=#ccffcc color=red>A</font><font color=red>A</font><font color=red>A</font></tt><br>" +	                
-	                "<tt><font color=blue>blue</font></tt><br>" +
-	                "<tt><font color=green>green</font></tt><br>";
+			String a = "<html><tt>" +
+	                "<font color=red>A</font><font color=red>A</font><font color=red>A</font><br>" +
+	                "<font bgcolor=#ccffcc color=red>A</font><font color=red>A</font><font color=red>A</font><br>" +	                
+	                "<font color=blue>blue</font><br>" +
+	                "<font color=green>green</font><br>"+
+	                "</tt></html>";
+			
 			
 //			HTMLEditorKit htmlKit = new HTMLEditorKit();
 //		    HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
