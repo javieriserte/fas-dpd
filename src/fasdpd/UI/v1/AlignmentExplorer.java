@@ -67,57 +67,27 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			jScrollPane1 = new JScrollPane();
 			this.add(jScrollPane1, BorderLayout.CENTER);
 
+			// TODO hacer que alignment exporte el alineamiento como html.
+			// TODO Agregar otro text area para los nombre de las secuencias.
+			// TODO ver como se puede hacer que la barra para los nombres de las secuencias pueda cambiar de largo.
+			// TODO asociar el AlignmentExplorer a un Alignment.
+			
 			jScrollPane1.setColumnHeaderView(new JTextArea("Hola a todoss"));
 			jTextArea1 = new JTextPane();
-			String a = "<html>\n" +
-	                "Color and font test:\n" +
-	                "<ul>\n" +
-	                "<li><font color=red>red</font>\n" +
-	                "<li><font color=blue>blue</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	               /* "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font color=green>green</font>\n" +
-	                "<li><font size=-2>small</font>\n" +
-	                "<li><font size=+2>large</font>\n" +*/
-	                "<li><i>italic</i>\n" +
-	                "<li><b>bold</b>\n" +
-	                "</ul>\n";
+			String a = "<html>" +
+	                "<tt><font color=red>A</font><font color=red>A</font><font color=red>A</font></tt><br>" +
+	                "<tt><font bgcolor=#ccffcc color=red>A</font><font color=red>A</font><font color=red>A</font></tt><br>" +	                
+	                "<tt><font color=blue>blue</font></tt><br>" +
+	                "<tt><font color=green>green</font></tt><br>";
 			
-			HTMLEditorKit htmlKit = new HTMLEditorKit();
-		    HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
-		    javax.swing.text.Element e = htmlDoc.getElement(htmlDoc.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY);
-		    htmlDoc.insertAfterEnd(e,a);
+//			HTMLEditorKit htmlKit = new HTMLEditorKit();
+//		    HTMLDocument htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
+//		    javax.swing.text.Element e = htmlDoc.getElement(htmlDoc.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY);
+//		    htmlDoc.insertAfterEnd(e,a);
 		    jTextArea1.setContentType("text/html");
 		    jTextArea1.setText(a);
+		    jTextArea1.setEditable(false);
+		    
 //			jTextArea1.setStyledDocument(htmlDoc);
 			jScrollPane1.setViewportView(jTextArea1);
 		}
