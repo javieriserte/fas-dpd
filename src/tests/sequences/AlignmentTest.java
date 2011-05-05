@@ -29,10 +29,12 @@
  */
 package tests.sequences;
 
+import java.awt.Color;
 import java.util.List;
 
 import sequences.Sequence;
 import sequences.alignment.Alignment;
+import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
 import sequences.dna.DNASeq;
 
 import degeneration.GeneticCode;
@@ -112,6 +114,17 @@ public class AlignmentTest extends TestCase {
 		DNASeq ds = alin1.pileUp(new GeneticCode("StandardCode"));
 		assertEquals(ds.getSequence(), "WHWDWD");
 		
+	}
+	
+	public void testExportHTML_highlated() {
+		alin1.addSequence(ds1);
+		alin1.addSequence(ds2);
+		alin1.addSequence(ds3);
+		
+		String r =(new AlignmentHTMLProducer()).produceHTML(alin1, null, null, new Color(255, 0, 255));
+		
+		System.out.println(r);
+//		System.out.println("HOLA");
 	}
 
 }
