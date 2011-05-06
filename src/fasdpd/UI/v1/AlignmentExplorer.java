@@ -1,6 +1,7 @@
 package fasdpd.UI.v1;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -44,8 +46,10 @@ import sequences.dna.DNASeq;
 */
 public class AlignmentExplorer extends javax.swing.JPanel {
 	private JScrollPane mainScrollPane;
-	private JTextPane mainView;
-	private JTextPane header;
+	private JLabel mainView;
+//	private JTextPane mainView;
+//	private JTextPane header;
+	private JLabel header;
 	private JTextPane descriptions;
 	private Alignment alignment;
 
@@ -101,21 +105,26 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			// TODO ver como se puede hacer que la barra para los nombres de las secuencias pueda cambiar de largo.
 			// TODO asociar el AlignmentExplorer a un Alignment.
 			
+			Font myFont = new Font("Monospaced", Font.BOLD, 14);
 			
-			mainView = new JTextPane();
+			mainView = new JLabel();
 			
-			header = new JTextPane();
-			header.setContentType("text/html");
+			
+			header = new JLabel();
+//			header.setContentType("text/html");
 			header.setText(this.createTextRuler(this.alignment.getSeq().get(0).getLength()));
-			header.setEditable(false);
-			header.setDisabledTextColor(new Color(0));
-			header.setEnabled(false);
+//			header.setEditable(false);
+//			header.setDisabledTextColor(new Color(0));
+//			header.setEnabled(false);
+			header.setFont(myFont);
 			header.setFocusable(false);
 			header.setInputVerifier(null);
 			header.addMouseListener(null);
 			header.addInputMethodListener(null);
 			header.addMouseMotionListener(null);
-			header.setDragEnabled(false);
+			header.setOpaque(true);
+			header.setBackground(new Color(255,255,255));			
+//			header.setDragEnabled(false);
 			
 
 			descriptions = new JTextPane();
@@ -124,10 +133,16 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 //			descriptions.setSize(200, descriptions.getSize().height);
 //			descriptions.setPreferredSize(new Dimension(40,descriptions.getSize().height));
 
-		    mainView.setContentType("text/html");
+//		    mainView.setContentType("text/html");
 		    mainView.setText(this.getHTMLforSequences(null, null));
-		    mainView.setEditable(false);
-
+//		    mainView.setEditable(false);
+		    
+		    mainView.setFont(myFont);
+		    mainView.setVerticalAlignment(SwingConstants.TOP);
+		    
+		    mainView.setOpaque(true);
+		    mainView.setBackground(new Color(255,255,255));
+		    
 		    mainScrollPane.setColumnHeaderView(header);
 			mainScrollPane.setRowHeaderView(descriptions);
 			mainScrollPane.setViewportView(mainView);
