@@ -2,8 +2,13 @@ package fasdpd.UI.v1;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import java.awt.Dimension;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -107,7 +112,25 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			
 			Font myFont = new Font("Monospaced", Font.BOLD, 14);
 			
-			mainView = new JLabel();
+			mainView = new JLabel() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void paint(Graphics g) {
+  				  Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f);
+				  Shape square = new Rectangle2D.Double(100, 100,100, 100);
+				  super.paint(g);
+				    Graphics2D ga = (Graphics2D)g;
+				    ga.draw(circle);
+				    ga.setPaint(Color.green);
+				    ga.fill(circle);
+				    ga.setPaint(Color.red);
+				    ga.draw(square);
+					ga.drawString("HOLA", 10, 10);
+				};
+			};
 			
 			
 			header = new JLabel();
@@ -126,6 +149,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			header.setBackground(new Color(255,255,255));			
 //			header.setDragEnabled(false);
 			
+			Graphics g = mainView.getGraphics();
+			System.out.println(g);
 
 			descriptions = new JTextPane();
 			descriptions.setContentType("text/html");
