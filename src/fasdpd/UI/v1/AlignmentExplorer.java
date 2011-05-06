@@ -3,30 +3,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
 
 import java.awt.Dimension;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JLabel;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.HTMLDocument.HTMLReader;
-import javax.swing.text.html.parser.Element;
 
 import degeneration.GeneticCode;
 
@@ -157,13 +145,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			descriptions.setBackground(new Color(255,255,255));
 			descriptions.setVerticalAlignment(SwingConstants.TOP);
 			
-			concense = new JLabel() ;
-			concense.setFont(myFont);
-			concense.setOpaque(true);
-			concense.setBackground(new Color(255,255,255));
-			concense.setVerticalAlignment(SwingConstants.TOP);
 			
-			String s = (alignment.pileUp(this.geneticCode)).getSequence();
 			
 //		    mainView.setContentType("text/html");
 		    mainView.setText(this.getHTMLforSequences(null, null));
@@ -204,6 +186,10 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 	
 	private String createTextRuler(int size) {
+		String s = null;
+		if (this.geneticCode!=null) {
+			s = (alignment.pileUp(this.geneticCode)).getSequence();
+		}
 		StringBuilder line1 = new StringBuilder();
 		StringBuilder line2 = new StringBuilder();
 		String base = "''''|";
@@ -220,6 +206,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		
 		
 		line1.delete(size,line1.length());
-		return "<HTML><TT><PRE>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
+		if (this.geneticCode!=null) return "<HTML><TT><PRE>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
+		return "<HTML><TT><PRE>" + s + "<BR>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
 	}
+	
+	
 }
