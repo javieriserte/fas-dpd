@@ -46,7 +46,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 //	private JTextPane header;
 	private JLabel header;
 	private JLabel descriptions;
-	private JLabel concense;
 	private Alignment alignment;
 	private GeneticCode geneticCode;
 
@@ -73,9 +72,13 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		} else {
 			return;
 		}
-		frame.getContentPane().add(new AlignmentExplorer(alin1,geneticCode));
+		AlignmentExplorer ae = new AlignmentExplorer(alin1,geneticCode);
+		frame.getContentPane().add(ae);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
+		ae.highlight(5, 10);
+//		frame.pack();
+	
 		frame.setVisible(true);
 	}
 	
@@ -160,6 +163,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		    mainScrollPane.setColumnHeaderView(header);
 			mainScrollPane.setRowHeaderView(descriptions);
 			mainScrollPane.setViewportView(mainView);
+//			mainView.setPreferredSize(new java.awt.Dimension(497, 397));
 //			mainScrollPane.setCorner(key, corner)
 			
 		}
@@ -210,5 +214,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		return "<HTML><TT><PRE>" + s + "<BR>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
 	}
 	
-	
+	public void highlight (Integer from, Integer to) {
+		this.mainView.setText(this.getHTMLforSequences(from,to));
+	}
 }
