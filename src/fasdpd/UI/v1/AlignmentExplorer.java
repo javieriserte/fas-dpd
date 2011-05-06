@@ -28,6 +28,8 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLDocument.HTMLReader;
 import javax.swing.text.html.parser.Element;
 
+import degeneration.GeneticCode;
+
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 
@@ -55,8 +57,10 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 //	private JTextPane mainView;
 //	private JTextPane header;
 	private JLabel header;
-	private JTextPane descriptions;
+	private JLabel descriptions;
+	private JLabel concense;
 	private Alignment alignment;
+	private GeneticCode geneticCode;
 
 	/**
 	* Auto-generated main method to display this 
@@ -66,9 +70,12 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		JFrame frame = new JFrame();
 		List<Pair<String,String>> l = null;
 		FastaMultipleReader mfr = new FastaMultipleReader();
+		GeneticCode geneticCode =null;
 		Alignment alin1 = new Alignment();
 		try {
-			l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+			
+			geneticCode = new GeneticCode("C:\\javier\\Proyectos\\FAS-DPD\\Workspace\\FAS-DPD\\StandardCode");
+			l = mfr.readFile("C:\\javier\\Proyectos\\FAS-DPD\\Workspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 //
 		if (l!=null) {
@@ -78,23 +85,19 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		} else {
 			return;
 		}
-		frame.getContentPane().add(new AlignmentExplorer(alin1));
+		frame.getContentPane().add(new AlignmentExplorer(alin1,geneticCode));
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 	}
 	
-	public AlignmentExplorer(Alignment alin1) {
+	public AlignmentExplorer(Alignment alin1, GeneticCode geneticCode) {
 		super();
 		this.alignment = alin1;
-		try {
-			initGUI();
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		this.geneticCode = geneticCode;
+		try { initGUI();
+		} catch (BadLocationException e) { e.printStackTrace(); }
+		  catch (IOException e) { e.printStackTrace();
 		}
 	}
 	
@@ -105,30 +108,25 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			mainScrollPane = new JScrollPane();
 			this.add(mainScrollPane, BorderLayout.CENTER);
 
-			// TODO hacer que alignment exporte el alineamiento como html.
-			// TODO Agregar otro text area para los nombre de las secuencias.
 			// TODO ver como se puede hacer que la barra para los nombres de las secuencias pueda cambiar de largo.
-			// TODO asociar el AlignmentExplorer a un Alignment.
 			
 			Font myFont = new Font("Monospaced", Font.BOLD, 14);
 			
 			mainView = new JLabel() {
-				/**
-				 * 
-				 */
+
 				private static final long serialVersionUID = 1L;
 
 				public void paint(Graphics g) {
-  				  Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f);
-				  Shape square = new Rectangle2D.Double(100, 100,100, 100);
-				  super.paint(g);
-				    Graphics2D ga = (Graphics2D)g;
-				    ga.draw(circle);
-				    ga.setPaint(Color.green);
-				    ga.fill(circle);
-				    ga.setPaint(Color.red);
-				    ga.draw(square);
-					ga.drawString("HOLA", 10, 10);
+//  				Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f);
+//					Shape square = new Rectangle2D.Double(100, 100,100, 100);
+					super.paint(g);
+//				    Graphics2D ga = (Graphics2D)g;
+//				    ga.draw(circle);
+//				    ga.setPaint(Color.green);
+//				    ga.fill(circle);
+//				    ga.setPaint(Color.red);
+//				    ga.draw(square);
+//					ga.drawString("HOLA", 10, 10);
 				};
 			};
 			
@@ -149,15 +147,24 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			header.setBackground(new Color(255,255,255));			
 //			header.setDragEnabled(false);
 			
-			Graphics g = mainView.getGraphics();
-			System.out.println(g);
-
-			descriptions = new JTextPane();
-			descriptions.setContentType("text/html");
+			descriptions = new JLabel();
+//			descriptions.setContentType("text/html");
 			descriptions.setText(getHTMLforDecriptions());
 //			descriptions.setSize(200, descriptions.getSize().height);
-//			descriptions.setPreferredSize(new Dimension(40,descriptions.getSize().height));
-
+			descriptions.setPreferredSize(new Dimension(150,descriptions.getSize().height));
+			descriptions.setFont(myFont);
+			descriptions.setOpaque(true);
+			descriptions.setBackground(new Color(255,255,255));
+			descriptions.setVerticalAlignment(SwingConstants.TOP);
+			
+			concense = new JLabel() ;
+			concense.setFont(myFont);
+			concense.setOpaque(true);
+			concense.setBackground(new Color(255,255,255));
+			concense.setVerticalAlignment(SwingConstants.TOP);
+			
+			String s = (alignment.pileUp(this.geneticCode)).getSequence();
+			
 //		    mainView.setContentType("text/html");
 		    mainView.setText(this.getHTMLforSequences(null, null));
 //		    mainView.setEditable(false);
@@ -171,7 +178,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		    mainScrollPane.setColumnHeaderView(header);
 			mainScrollPane.setRowHeaderView(descriptions);
 			mainScrollPane.setViewportView(mainView);
-			
+//			mainScrollPane.setCorner(key, corner)
 			
 		}
 		this.setPreferredSize(new Dimension (500,400));
@@ -188,7 +195,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		StringBuilder r = new StringBuilder();
 		r.append("<HTML><TT><PRE>");
 		for (Sequence s : this.alignment.getSeq()) {
-			r.append(s.getDescription().substring(0, Math.min(15, s.getDescription().length()))+"<BR>");
+//			r.append(s.getDescription().substring(0, Math.min(15, s.getDescription().length()))+"<BR>");
+			
+			r.append(s.getDescription()+"<BR>");
 		}
 		r.append("</PRE></TT></HTML>");
 		return r.toString();
