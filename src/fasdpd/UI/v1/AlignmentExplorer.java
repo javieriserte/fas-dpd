@@ -61,8 +61,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		Alignment alin1 = new Alignment();
 		try {
 			
-			geneticCode = new GeneticCode("C:\\javier\\Proyectos\\FAS-DPD\\Workspace\\FAS-DPD\\StandardCode");
-			l = mfr.readFile("C:\\javier\\Proyectos\\FAS-DPD\\Workspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+//			geneticCode = new GeneticCode("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\StandardCode");
+			geneticCode = new GeneticCode("StandardCode");			
+			l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
 //
 		if (l!=null) {
