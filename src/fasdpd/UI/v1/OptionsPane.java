@@ -1,6 +1,5 @@
 package fasdpd.UI.v1;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,14 +23,11 @@ import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 
 public class OptionsPane extends JPanel {
+	private static final long serialVersionUID = -5923205806932143474L;
 	AlignmentExplorer ae;
 	Alignment align;
 	GeneticCode geneticCode;
 	
-	/**
-	* Auto-generated main method to display this 
-	* JPanel inside a new JFrame.
-	*/
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		
@@ -63,10 +59,10 @@ public class OptionsPane extends JPanel {
 		this.geneticCode = gc;
 		this.align = align;
 		this.ae = new AlignmentExplorer(this.align,this.geneticCode );
-		initGUI();
+		this.createGUI();
 	}
 	
-	private void initGUI() {
+	private void createGUI() {
 		try {
 			
 			// SET LAYOUT FORMAT
