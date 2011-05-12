@@ -23,22 +23,10 @@ import degeneration.GeneticCode;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 
-
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class OptionsPane extends JPanel {
 	AlignmentExplorer ae;
-	GeneticCode geneticCode = new GeneticCode("StandardCode"); // TODO Ugly !! file hardcoded.!
+	Alignment align;
+	GeneticCode geneticCode;
 	
 	/**
 	* Auto-generated main method to display this 
@@ -47,7 +35,21 @@ public class OptionsPane extends JPanel {
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		
-		OptionsPane comp = new OptionsPane();
+		Alignment alin1 = new Alignment();
+				
+		FastaMultipleReader mfr = new FastaMultipleReader();
+
+		List<Pair<String, String>> l = null;
+		try { l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+
+		if (l!=null) { 
+			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
+		} else { return; }
+		
+			// 	TODO Ugly !! file hardcoded.!
+
+		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
 		comp.setOpaque(true);
 		frame.setContentPane(comp);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -56,8 +58,11 @@ public class OptionsPane extends JPanel {
 		
 	}
 	
-	public OptionsPane() {
+	public OptionsPane(Alignment align, GeneticCode gc) {
 		super();
+		this.geneticCode = gc;
+		this.align = align;
+		this.ae = new AlignmentExplorer(this.align,this.geneticCode );
 		initGUI();
 	}
 	
@@ -67,33 +72,18 @@ public class OptionsPane extends JPanel {
 			// SET LAYOUT FORMAT
 			GridBagLayout thisLayout = new GridBagLayout();
 			GridBagConstraints c = new GridBagConstraints();
-			
 			this.setPreferredSize(new java.awt.Dimension(640, 500));
 			thisLayout.rowWeights = new double[] {1, 0, 0, 0,0,0};
 			thisLayout.rowHeights = new int[] {250, 50, 50, 50 ,50 ,50};
 			thisLayout.columnWeights = new double[] {1, 0, 0};
 			thisLayout.columnWidths = new int[] {250, 100, 100};
 			this.setLayout(thisLayout);
+
 			
-			
-			// ALIGNMENT EXPLORER  
-			Alignment alin1 = new Alignment();
-						
-			FastaMultipleReader mfr = new FastaMultipleReader();
-			
-			List<Pair<String,String>> l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
-			
-			if (l!=null) {
-				for (Pair<String, String> pair : l) {
-					alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
-				}
-			} else {
-				return;
-			}
-			
-			// TextArea for view results // Other Pane
-			
+			// TextArea for view results // Other Pane			
 			ResultViewer rv = new ResultViewer();
+			rv.setOpaque(true);
+			
 			
 			// Spinner for strand selection
 			
@@ -167,88 +157,42 @@ public class OptionsPane extends JPanel {
 
 			JButton jbSearch = new JButton("do Search");
 
-			rv.setOpaque(true);
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 0;
-			c.gridy = 1;
-			c.gridheight = 5;
-			c.anchor = GridBagConstraints.CENTER;
+
+			// Adding components
+			c.fill = GridBagConstraints.BOTH; c.gridx = 0; c.gridy = 1; c.gridheight = 5; c.anchor = GridBagConstraints.CENTER;
 			this.add(rv,c);
 
-			c.gridheight = 1;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 4;
-			c.anchor = GridBagConstraints.CENTER;
+			c.gridheight = 1; c.fill = GridBagConstraints.BOTH; c.gridx = 2; c.gridy = 4;  c.anchor = GridBagConstraints.CENTER;
 			this.add(jbFilters,c);
 			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 5;
-			c.anchor = GridBagConstraints.CENTER;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 2; c.gridy = 5; c.anchor = GridBagConstraints.CENTER; 
 			this.add(jbSearch,c);
 			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 1;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 2; c.gridy = 1; c.anchor = GridBagConstraints.WEST; 
 			this.add(nyPanel,c);
 
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 2;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 2; c.gridy = 2; c.anchor = GridBagConstraints.WEST; 
 			this.add(nxPanel,c);
 
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 3;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 2; c.gridy = 3; c.anchor = GridBagConstraints.WEST;
 			this.add(apPanel,c);
-
 			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 4;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 1; c.gridy = 4; c.anchor = GridBagConstraints.WEST;
 			this.add(tmePanel,c);
 			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 1;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 1; c.gridy = 1; c.anchor = GridBagConstraints.WEST;
 			this.add(rangePanel,c);
 
-			c.gridwidth =1 ;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 3;
-			c.anchor = GridBagConstraints.WEST;
+			c.gridwidth =1 ; c.fill = GridBagConstraints.BOTH;  c.gridx = 1; c.gridy = 3; c.anchor = GridBagConstraints.WEST;
 			this.add(quantityPanel,c);
 
-			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 5;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 1; c.gridy = 5; c.anchor = GridBagConstraints.WEST;
 			this.add(strandPanel,c);
-
 			
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 2;
-			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH; c.gridx = 1;  c.gridy = 2; c.anchor = GridBagConstraints.WEST;
 			this.add(sizePanel,c);
-
 			
-			c.gridheight = 1;
-			c.gridwidth = 4;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 0;
-			c.gridy = 0;
-			c.anchor = GridBagConstraints.CENTER;
-			
-			AlignmentExplorer ae = new AlignmentExplorer(alin1, geneticCode); 
+			c.gridheight = 1; c.gridwidth = 4; c.fill = GridBagConstraints.BOTH; c.gridx = 0; c.gridy = 0; c.anchor = GridBagConstraints.CENTER;
 			this.add(ae,c);
 			
 
