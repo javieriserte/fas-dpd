@@ -8,4 +8,18 @@ public abstract class FilterCreator {
 	ParameterType[] parametersTypes= null;
 	String[] parametersValues= null;
 	protected abstract Filter create();
+	
+	public String[] getParametersComments() {
+		return parametersComments;
+	}
+	public ParameterType[] getParametersTypes() {
+		return parametersTypes;
+	}
+	public String[] getParametersValues() {
+		return parametersValues;
+	}
+	
+
+	
+	
 }
