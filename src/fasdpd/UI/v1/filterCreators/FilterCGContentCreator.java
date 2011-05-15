@@ -22,5 +22,6 @@ public 	 class FilterCGContentCreator extends FilterCreator{
 
 		return new FilterCGContent(p0,p1);
 	}
+	@Override public String toString() { return "Filter GC content outside ["+ this.parametersValues[0] + " - " + this.parametersValues[1]+"]";}
 	
 }

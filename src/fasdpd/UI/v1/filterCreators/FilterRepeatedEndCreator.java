@@ -9,4 +9,5 @@ public class FilterRepeatedEndCreator extends FilterCreator{
 	@Override protected Filter create(){ 
 		return new FilterRepeatedEnd();
 	}
+	@Override public String toString() { return "Filter repeated end";}	
 } 

@@ -20,4 +20,5 @@ public class FilterHeteroDimerCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterHeteroDimer(p0, new DegeneratedDNAMatchingStrategy());
 	}
+	@Override public String toString() { return "Filter Hetero Dimer larger than" + this.parametersValues[0];}	
 } 

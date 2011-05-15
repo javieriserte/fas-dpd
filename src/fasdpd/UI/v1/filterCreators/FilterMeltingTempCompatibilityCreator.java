@@ -20,4 +20,5 @@ public class FilterMeltingTempCompatibilityCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterMeltingTempCompatibility(p0, new SantaluciaTmEstimator()); // TODO use default TME
 	}
+	@Override public String toString() { return "Filter Tm difference larger than "+ this.parametersValues[0]+"ºC";}	
 } 

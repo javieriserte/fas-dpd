@@ -9,4 +9,5 @@ public class FilterOverlappingCreator extends FilterCreator{
 	@Override protected Filter create(){ 
 		return new FilterOverlapping();
 	}
+	@Override public String toString() { return "Filter overlapping primers";}	
 } 

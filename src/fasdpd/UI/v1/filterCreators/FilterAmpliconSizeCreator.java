@@ -19,4 +19,5 @@ public class FilterAmpliconSizeCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterAmpliconSize(p0);
 	}
+	@Override public String toString() { return "Filter Amplicon larger than "+ this.parametersValues[0]; }
 } 

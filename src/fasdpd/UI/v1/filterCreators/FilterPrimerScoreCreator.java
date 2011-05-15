@@ -19,4 +19,5 @@ public class FilterPrimerScoreCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterPrimerScore(p0);
 	}
+	@Override public String toString() { return "Filter score smaller than "+ this.parametersValues[0];}	
 } 

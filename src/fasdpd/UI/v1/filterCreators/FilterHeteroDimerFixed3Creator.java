@@ -20,4 +20,6 @@ public class FilterHeteroDimerFixed3Creator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterHeteroDimerFixed3(p0,new DegeneratedDNAMatchingStrategy());
 	}
+	@Override public String toString() { return "Filter Hetero Dimer with 3' fixed larger than" + this.parametersValues[0];}	
+	
 } 

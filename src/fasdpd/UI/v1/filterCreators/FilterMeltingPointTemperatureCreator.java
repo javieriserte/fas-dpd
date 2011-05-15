@@ -22,4 +22,5 @@ public class FilterMeltingPointTemperatureCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterMeltingPointTemperature(p0,p1, new SantaluciaTmEstimator()); // TODO use default TME
 	}
+	@Override public String toString() { return "Filter Tm outside [" + this.parametersValues[0] + " - " + this.parametersValues[1] + "]";}	
 } 
