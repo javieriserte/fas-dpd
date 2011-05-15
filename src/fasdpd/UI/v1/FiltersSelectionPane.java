@@ -52,9 +52,7 @@ public class FiltersSelectionPane extends JPanel {
 	private static final long serialVersionUID = 224125693439076213L;
 	private List<FilterCreator> lfc;
 	private JList jllfc;
-	private JList options;
-	private JTable optionsT; 
-	private JPanel optionsP;
+	private JPanel options;
 	
 	private JButton addButton;
 	private JButton remButton;
@@ -128,7 +126,8 @@ public class FiltersSelectionPane extends JPanel {
 		
 		filterModel = new DefaultComboBoxModel(lfc);
 
-		newFilters = new JComboBox(lfc.toArray());
+//		newFilters = new JComboBox(lfc.toArray());
+		newFilters = new JComboBox(filterModel);		
 		newFilters.setEditable(false);
 		newFilters.setOpaque(true);
 		
@@ -142,17 +141,10 @@ public class FiltersSelectionPane extends JPanel {
 		
 		jllfc = new JList();
 		
-		optionsT = new JTable();
-		options = new JList();
-		optionsP = new JPanel();
-//		optionsP.setPreferredSize(new Dimension(500,500));
-//		options.setCellRenderer(new jlOptionsRenderer());
-		options.enableInputMethods(true);
-		
-		optionsT.setRowHeight(40);
-		
+		options = new JPanel();
+
 		jspFilters.setViewportView(jllfc);
-		jspOptions.setViewportView(optionsP);
+		jspOptions.setViewportView(options);
 		
 		
 		c.fill = GridBagConstraints.BOTH;
@@ -210,5 +202,15 @@ public class FiltersSelectionPane extends JPanel {
 			FiltersSelectionPane.this.jspOptions.setViewportView(filtercreator.getCreationPanel());
 
 		}
+	}
+	
+	private class jbAddAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FiltersSelectionPane.this.jspOptions.getComponent(0);
+			
+		}
+		
 	}
 }
