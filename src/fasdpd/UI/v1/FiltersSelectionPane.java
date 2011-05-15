@@ -1,23 +1,14 @@
 package fasdpd.UI.v1;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.EventObject;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.CellEditor;
-import javax.swing.CellRendererPane;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -69,6 +60,8 @@ public class FiltersSelectionPane extends JPanel {
 	private JButton remButton;
 	private JButton setButton;
 	private JButton saveButton;
+	private JScrollPane jspOptions;
+	
 	
 	private JComboBox newFilters;
 	
@@ -111,7 +104,7 @@ public class FiltersSelectionPane extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		
 		JScrollPane jspFilters = new JScrollPane();
-		JScrollPane jspOptions = new JScrollPane();
+		this.jspOptions = new JScrollPane();
 		
 
 		
@@ -212,46 +205,10 @@ public class FiltersSelectionPane extends JPanel {
 	private class jcbFilterAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 
-			String[] parametersComments = ((FilterCreator) newFilters.getSelectedItem()).getParametersComments();
-			JPanel optionsPanel = new JPanel();
-			GridLayout gl = new GridLayout();
-			gl.setColumns(1);
-			optionsPanel.setLayout(gl);
-			if (parametersComments != null) {
+			FilterCreator filtercreator = ((FilterCreator) newFilters.getSelectedItem());
+			System.out.println(filtercreator);
+			FiltersSelectionPane.this.jspOptions.setViewportView(filtercreator.getCreationPanel());
 
-				int len = parametersComments.length;
-				gl.setRows(len);
-				for(int i=0;i<len;i++) {
-					optionsPanel.add(this.option(i));
-					System.out.println("A");
-				}
-			} else {
-				gl.setRows(1);
-				optionsPanel.add(new JLabel("No config Needed"));
-			}
-			optionsP.removeAll();
-			optionsP.add(optionsPanel); 
-//			optionsP.repaint();
-			optionsP.updateUI();
-			System.out.println("optionsP changed");
-			System.out.println(optionsP);
-			
 		}
-		
-		private JPanel option(int index) {
-			FilterCreator fc = (FilterCreator) newFilters.getSelectedItem();
-			String comment;
-			String value;
-			comment = fc.getParametersComments()[index];
-			value = fc.getParametersValues()[index];
-			JPanel jl = new JPanel();
-			
-			jl.add(new JLabel(comment));
-			jl.add(new JTextField(value));
-			return jl;
-		}
-		
 	}
-	
-
 }
