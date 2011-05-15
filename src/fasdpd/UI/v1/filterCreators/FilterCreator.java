@@ -1,5 +1,6 @@
 package fasdpd.UI.v1.filterCreators;
 
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,12 @@ public abstract class FilterCreator {
 	String[] parametersComments= null;
 	ParameterType[] parametersTypes= null;
 	String[] parametersValues= null;
+	
+	Component[] components = null;
+		// components will store a pointer to the componenets used by the gui to create the filter.
+
+	
+	
 	protected abstract Filter create();
 	
 	public String[] getParametersComments() {
@@ -31,12 +38,14 @@ public abstract class FilterCreator {
 	public JPanel getCreationPanel() {
 		JPanel creationPanel = new JPanel();
 
+
 		GridLayout gl = new GridLayout();
 		gl.setColumns(1);
 		creationPanel.setLayout(gl);
 		int len = 0;
 		if (parametersComments != null) {
 			len = parametersComments.length + 1;
+			this.components = new Component[len-1];			
 		}
 		
 		gl.setRows(Math.max(1, len-1));
@@ -53,8 +62,11 @@ public abstract class FilterCreator {
 		if (index>0) {
 			comment = this.getParametersComments()[index-1];
 			value = this.getParametersValues()[index-1];
+			JTextField t = new JTextField(value);
+			this.components[index-1] = t;
 			jl.add(new JLabel(comment));
-			jl.add(new JTextField(value));
+			jl.add(t);
+
 		} else {
 			jl.add(new JLabel("No config Needed"));
 		}
