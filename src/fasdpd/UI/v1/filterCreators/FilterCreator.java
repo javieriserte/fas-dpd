@@ -19,9 +19,6 @@ public abstract class FilterCreator {
 	String[] parametersValues= null;
 	
 	ComponentWrapper[] components = null;
-		// components will store a pointer to the componenets used by the gui to create the filter.
-
-	
 	
 	protected abstract Filter create();
 	
@@ -55,10 +52,26 @@ public abstract class FilterCreator {
 		return creationPanel;
 	}
 	
-	private FilterCreator duplicateWithGUIvalues() {
+	public FilterCreator duplicateWithGUIvalues() {
+		FilterCreator fc = null;
+		try {
+			fc = this.getClass().newInstance();
+			fc.components = null;
+			fc.parametersComments = this.parametersComments != null ? this.parametersComments.clone(): null;
+			fc.parametersTypes = this.parametersTypes != null ? this.parametersTypes.clone(): null ;
+			fc.parametersValues = this.parametersValues != null ? new String[fc.parametersComments.length]: null;
+			
+			if (fc.parametersValues!= null) {
+				for (int i=0;i<fc.parametersComments.length;i++) {
+					fc.parametersValues[i] = (String) this.components[i].getValue();
+				}
+			}
+			
+		} catch (InstantiationException e) { e.printStackTrace(); } 
+		  catch (IllegalAccessException e) { e.printStackTrace(); }
 		
 		
-		return null;
+		return fc;
 	}
 	
 	private JPanel option(int index) {
@@ -80,10 +93,5 @@ public abstract class FilterCreator {
 		}
 		return jl;
 	}
-	
-	// Crear un Wrapper para cada componente que quiero usar.
-	// Cada componente debe conocer el mensaje getValue que devuelve un Object.
-	
-	
 	
 }
