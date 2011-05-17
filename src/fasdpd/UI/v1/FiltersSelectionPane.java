@@ -1,32 +1,26 @@
 package fasdpd.UI.v1;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import fasdpd.UI.v1.filterCreators.Filter5vs3StabilityCreator;
 import fasdpd.UI.v1.filterCreators.FilterAmpliconSizeCreator;
@@ -45,27 +39,30 @@ import fasdpd.UI.v1.filterCreators.FilterOverlappingCreator;
 import fasdpd.UI.v1.filterCreators.FilterPrimerScoreCreator;
 import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
 
-public class FiltersSelectionPane extends JPanel {
+public class FiltersSelectionPane extends javax.swing.JDialog {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 224125693439076213L;
-	private List<FilterCreator> lfc;
-	private JList jllfc;
-	private JPanel options;
-	
+	private List<FilterCreator> listOfAllFilterCreators;
+
+	private JList jlFilterCreatorsAdded;
+	private List<FilterCreator> listOfAllFilterCreatorsAdded; 
+	private List<FilterCreator> result;
+
 	private JButton addButton;
 	private JButton remButton;
 	private JButton setButton;
 	private JButton saveButton;
-	private JScrollPane jspOptions;
+
 	
-	private FilterCreator current;
-	
-	
-	private JComboBox newFilters;
-	
+	private JComboBox filterCreatorsToChoose;
 	private DefaultComboBoxModel filterModel;
+	private FilterCreator currentSelectedFilterCreator;
+
+	private JScrollPane jspOptions;
+	private JPanel optionsForFilters;
+
 	
 	/**
 	 * @param args
@@ -73,25 +70,33 @@ public class FiltersSelectionPane extends JPanel {
 	public static void main(String[] args) {
 		
 		JFrame frame = new JFrame();
-		FiltersSelectionPane comp = new FiltersSelectionPane();
-		comp.setOpaque(true);
-		frame.getContentPane().add(comp);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
+		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2);
+		
+		System.out.println(result2);
+		//comp.setOpaque(true);
+//		frame.getContentPane().add(comp);
+//		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//		frame.pack();
+//		frame.setVisible(true);
 	}
 	
 	
-	public FiltersSelectionPane() {
-		super();
+	public FiltersSelectionPane(JFrame owner, List<FilterCreator> result) {
+		super(owner,true);
+		this.result = result;		
 		this.createGUI();
-
+		this.setSize(new Dimension(300, 450));
+		this.setSize(350, 450);
+		this.setTitle("adding Filters");
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	}
 
 
 	private void createGUI() {
 		
-		this.setOpaque(true);
+//		this.setOpaque(true);
 		
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.columnWeights = new double[] {1,1,1,1};
@@ -108,45 +113,55 @@ public class FiltersSelectionPane extends JPanel {
 		
 
 		
-		Vector<FilterCreator> lfc = new Vector<FilterCreator>();
+		listOfAllFilterCreators = new Vector<FilterCreator>();
 		
-		lfc.add( new Filter5vs3StabilityCreator());
-		lfc.add( new FilterAmpliconSizeCreator());
-		lfc.add( new FilterBaseRunsCreator());
-		lfc.add( new FilterCGContentCreator());
-		lfc.add( new FilterDegeneratedEndCreator());
-		lfc.add( new FilterGCCompatibilityCreator());
-		lfc.add( new FilterHeteroDimerCreator());
-		lfc.add( new FilterHeteroDimerFixed3Creator());
-		lfc.add( new FilterHomoDimerCreator());
-		lfc.add( new FilterHomoDimerFixed3Creator());
-		lfc.add( new FilterMeltingPointTemperatureCreator());
-		lfc.add( new FilterMeltingTempCompatibilityCreator());
-		lfc.add( new FilterOverlappingCreator());
-		lfc.add( new FilterPrimerScoreCreator());
-		lfc.add( new FilterRepeatedEndCreator());
+		listOfAllFilterCreators.add( new Filter5vs3StabilityCreator());
+		listOfAllFilterCreators.add( new FilterAmpliconSizeCreator());
+		listOfAllFilterCreators.add( new FilterBaseRunsCreator());
+		listOfAllFilterCreators.add( new FilterCGContentCreator());
+		listOfAllFilterCreators.add( new FilterDegeneratedEndCreator());
+		listOfAllFilterCreators.add( new FilterGCCompatibilityCreator());
+		listOfAllFilterCreators.add( new FilterHeteroDimerCreator());
+		listOfAllFilterCreators.add( new FilterHeteroDimerFixed3Creator());
+		listOfAllFilterCreators.add( new FilterHomoDimerCreator());
+		listOfAllFilterCreators.add( new FilterHomoDimerFixed3Creator());
+		listOfAllFilterCreators.add( new FilterMeltingPointTemperatureCreator());
+		listOfAllFilterCreators.add( new FilterMeltingTempCompatibilityCreator());
+		listOfAllFilterCreators.add( new FilterOverlappingCreator());
+		listOfAllFilterCreators.add( new FilterPrimerScoreCreator());
+		listOfAllFilterCreators.add( new FilterRepeatedEndCreator());
 		
-		filterModel = new DefaultComboBoxModel(lfc);
+		filterModel = new DefaultComboBoxModel((Vector<FilterCreator>)listOfAllFilterCreators);
 
 //		newFilters = new JComboBox(lfc.toArray());
-		newFilters = new JComboBox(filterModel);		
-		newFilters.setEditable(false);
-		newFilters.setOpaque(true);
+		filterCreatorsToChoose = new JComboBox(filterModel);		
+		filterCreatorsToChoose.setEditable(false);
+		filterCreatorsToChoose.setOpaque(true);
 		
-		newFilters.addActionListener(new jcbFilterAction());
+				
+		filterCreatorsToChoose.addActionListener(new jcbFilterAction());
 		
 		
 		addButton = new JButton("Add");
+		addButton.addActionListener(new jbAddAction());
 		remButton = new JButton("Rem");
+		remButton.addActionListener(new jbRemAction() );
 		setButton = new JButton("Set");
+		setButton.addActionListener(new jbSetAction());
 		saveButton = new JButton("Save");
+		saveButton.addActionListener(new jbSaveAction());
 		
-		jllfc = new JList();
 		
-		options = new JPanel();
+		listOfAllFilterCreatorsAdded = new Vector<FilterCreator>();
+		jlFilterCreatorsAdded = new JList();
+		jlFilterCreatorsAdded.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
+		jlFilterCreatorsAdded.addListSelectionListener(new jlFilterCreatorsAddedSelectionChanged());
+		
+		jlFilterCreatorsAdded.setModel(new DefaultComboBoxModel((Vector<FilterCreator>)this.listOfAllFilterCreatorsAdded));
+		jspFilters.setViewportView(jlFilterCreatorsAdded);
 
-		jspFilters.setViewportView(jllfc);
-		jspOptions.setViewportView(options);
+		optionsForFilters = new JPanel();
+		jspOptions.setViewportView(optionsForFilters);
 		
 		
 		c.fill = GridBagConstraints.BOTH;
@@ -165,7 +180,7 @@ public class FiltersSelectionPane extends JPanel {
 		c.gridwidth=4;
 		c.gridx=0;
 		c.gridy=0;
-		this.add(newFilters,c);
+		this.add(filterCreatorsToChoose,c);
 
 		
 		c.fill = GridBagConstraints.BOTH;
@@ -198,21 +213,52 @@ public class FiltersSelectionPane extends JPanel {
 	
 	private class jcbFilterAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
-
-			FiltersSelectionPane.this.current = ((FilterCreator) newFilters.getSelectedItem());
-			System.out.println(FiltersSelectionPane.this.current);
-			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.current.getCreationPanel());
-
+			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) filterCreatorsToChoose.getSelectedItem());
+			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
+			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.currentSelectedFilterCreator.getCreationPanel());
 		}
 	}
 	
 	private class jbAddAction implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			FiltersSelectionPane.this.jspOptions.getComponent(0);
-			
+		@Override public void actionPerformed(ActionEvent e) {
+			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.add(
+			FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
+			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();	
 		}
-		
 	}
+	
+	private class jbRemAction implements ActionListener {
+		@Override public void actionPerformed(ActionEvent e) {
+			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
+			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.remove(index);
+			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+		}
+	}
+	
+	private class jbSetAction implements ActionListener {
+		@Override public void actionPerformed(ActionEvent e) {
+			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
+			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.set(index,FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
+			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+		}
+	}
+	
+	private class jbSaveAction implements ActionListener {
+		@Override public void actionPerformed(ActionEvent e) {
+			FiltersSelectionPane.this.result.addAll(FiltersSelectionPane.this.listOfAllFilterCreatorsAdded);
+			
+			FiltersSelectionPane.this.getOwner().dispose();
+		}
+	}
+	
+	
+	private class jlFilterCreatorsAddedSelectionChanged implements ListSelectionListener {
+		@Override public void valueChanged(ListSelectionEvent e) {
+			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) jlFilterCreatorsAdded.getSelectedValue());
+			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
+			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.currentSelectedFilterCreator.getCreationPanel());
+		}
+	}
+	
+	
 }
