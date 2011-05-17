@@ -60,6 +60,8 @@ public class FiltersSelectionPane extends JPanel {
 	private JButton saveButton;
 	private JScrollPane jspOptions;
 	
+	private FilterCreator current;
+	
 	
 	private JComboBox newFilters;
 	
@@ -197,9 +199,9 @@ public class FiltersSelectionPane extends JPanel {
 	private class jcbFilterAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 
-			FilterCreator filtercreator = ((FilterCreator) newFilters.getSelectedItem());
-			System.out.println(filtercreator);
-			FiltersSelectionPane.this.jspOptions.setViewportView(filtercreator.getCreationPanel());
+			FiltersSelectionPane.this.current = ((FilterCreator) newFilters.getSelectedItem());
+			System.out.println(FiltersSelectionPane.this.current);
+			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.current.getCreationPanel());
 
 		}
 	}
