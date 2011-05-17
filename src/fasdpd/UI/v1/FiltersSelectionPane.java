@@ -70,15 +70,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	public static void main(String[] args) {
 		
 		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);		
 		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
 		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2);
-		
 		System.out.println(result2);
-		//comp.setOpaque(true);
-//		frame.getContentPane().add(comp);
-//		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//		frame.pack();
-//		frame.setVisible(true);
+
 	}
 	
 	
@@ -144,10 +140,16 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		
 		addButton = new JButton("Add");
 		addButton.addActionListener(new jbAddAction());
+		addButton.setEnabled(false);
+		
 		remButton = new JButton("Rem");
 		remButton.addActionListener(new jbRemAction() );
+		remButton.setEnabled(false);
+		
 		setButton = new JButton("Set");
 		setButton.addActionListener(new jbSetAction());
+		setButton.setEnabled(false);
+		
 		saveButton = new JButton("Save");
 		saveButton.addActionListener(new jbSaveAction());
 		
@@ -216,6 +218,10 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) filterCreatorsToChoose.getSelectedItem());
 			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
 			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.currentSelectedFilterCreator.getCreationPanel());
+			FiltersSelectionPane.this.addButton.setEnabled(true);
+			FiltersSelectionPane.this.setButton.setEnabled(false);
+			FiltersSelectionPane.this.remButton.setEnabled(false);
+
 		}
 	}
 	
@@ -223,7 +229,14 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		@Override public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.add(
 			FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
-			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();	
+
+			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
+			boolean canSelect = (index>=0 && index<listOfAllFilterCreatorsAdded.size());			
+			FiltersSelectionPane.this.setButton.setEnabled(canSelect);
+			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
+			
+			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+//			FiltersSelectionPane.this.addButton.setEnabled(false);
 		}
 	}
 	
@@ -231,15 +244,24 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		@Override public void actionPerformed(ActionEvent e) {
 			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
 			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.remove(index);
-			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+			boolean canSelect = (index>=0 && index<listOfAllFilterCreatorsAdded.size());			
+			FiltersSelectionPane.this.setButton.setEnabled(canSelect);
+			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
+			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();			
 		}
 	}
 	
 	private class jbSetAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
+			
 			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
-			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.set(index,FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
-			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+			if (index>=0) {
+				FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.set(index,FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
+				boolean canSelect = (FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex()>=0);
+				FiltersSelectionPane.this.setButton.setEnabled(canSelect);
+				FiltersSelectionPane.this.remButton.setEnabled(canSelect);
+				FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();
+			}
 		}
 	}
 	
@@ -257,6 +279,9 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) jlFilterCreatorsAdded.getSelectedValue());
 			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
 			FiltersSelectionPane.this.jspOptions.setViewportView(FiltersSelectionPane.this.currentSelectedFilterCreator.getCreationPanel());
+			FiltersSelectionPane.this.setButton.setEnabled(true);
+			FiltersSelectionPane.this.remButton.setEnabled(true);
+			FiltersSelectionPane.this.addButton.setEnabled(false);
 		}
 	}
 	
