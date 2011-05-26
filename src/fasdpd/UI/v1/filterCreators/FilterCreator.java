@@ -20,7 +20,7 @@ public abstract class FilterCreator {
 	
 	ComponentWrapper[] components = null;
 	
-	protected abstract Filter create();
+	public abstract Filter create();
 	
 	public String[] getParametersComments() {
 		return parametersComments;

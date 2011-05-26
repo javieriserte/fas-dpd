@@ -6,6 +6,7 @@ import sequences.dna.Primer;
 public abstract class FilterSinglePrimer implements Filter {
 	
 	public abstract boolean filter(Primer p);
-	
-	
+	public boolean isSinglePrimerFilter() {
+		return true;
+	}
 }

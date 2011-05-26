@@ -87,12 +87,15 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		this.setTitle("adding Filters");
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+
 	}
 
 
 	private void createGUI() {
 		
 //		this.setOpaque(true);
+		
+		this.setPreferredSize(new Dimension(300, 450));
 		
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.columnWeights = new double[] {1,1,1,1};
@@ -106,8 +109,6 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		
 		JScrollPane jspFilters = new JScrollPane();
 		this.jspOptions = new JScrollPane();
-		
-
 		
 		listOfAllFilterCreators = new Vector<FilterCreator>();
 		
@@ -155,6 +156,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		
 		
 		listOfAllFilterCreatorsAdded = new Vector<FilterCreator>();
+		listOfAllFilterCreatorsAdded.addAll(this.result);
 		jlFilterCreatorsAdded = new JList();
 		jlFilterCreatorsAdded.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
 		jlFilterCreatorsAdded.addListSelectionListener(new jlFilterCreatorsAddedSelectionChanged());
@@ -209,6 +211,8 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		c.gridy=3;
 		this.add(saveButton,c);
 		
+		this.pack();
+		
 	}
 	
 
@@ -245,7 +249,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
 			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.remove(index);
 			boolean canSelect = (index>=0 && index<listOfAllFilterCreatorsAdded.size());			
-			FiltersSelectionPane.this.setButton.setEnabled(canSelect);
+			FiltersSelectionPane.this.setButton.setEnabled(false);
 			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
 			FiltersSelectionPane.this.jlFilterCreatorsAdded.updateUI();			
 		}
@@ -267,9 +271,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	
 	private class jbSaveAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
+			FiltersSelectionPane.this.result.clear();
 			FiltersSelectionPane.this.result.addAll(FiltersSelectionPane.this.listOfAllFilterCreatorsAdded);
 			
-			FiltersSelectionPane.this.getOwner().dispose();
+			//FiltersSelectionPane.this.getOwner().dispose();
+			FiltersSelectionPane.this.dispose();
 		}
 	}
 	

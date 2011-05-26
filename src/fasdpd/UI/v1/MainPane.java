@@ -4,17 +4,23 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class MainPane extends JPanel {
-	private JButton jButton1;
-	private JButton jButton2;
-
-	public MainPane() {
+	private JButton jbSetIndividual;
+	private JButton jbSetPairs;
+	private MainFASDPD mainFrame;
+	// TODO implement singleton
+	
+	public MainPane(MainFASDPD mainFASDPD) {
 		super();
+		// TODO Separate GUI creation of Constructor
+		this.mainFrame = mainFASDPD;
 		
 		GridBagLayout thisLayout = new GridBagLayout();
 		thisLayout.columnWeights = new double[] {1, 0,0,0,1}; 
@@ -24,34 +30,52 @@ public class MainPane extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(thisLayout);
 		
-		
-
-		jButton1 = new JButton();
-		jButton1.setText("<HTML><CENTER>Design Individual Primers</CENTER></html>");
-		jButton1.setMargin(new Insets(2, 2,2,2));
-		jButton1.setPreferredSize(new Dimension(100, 60));
-		jButton1.setHorizontalAlignment(SwingConstants.CENTER );
+		jbSetIndividual = new JButton();
+		jbSetIndividual.setText("<HTML><CENTER>Design Individual Primers</CENTER></html>");
+		jbSetIndividual.setMargin(new Insets(2, 2,2,2));
+		jbSetIndividual.setPreferredSize(new Dimension(100, 60));
+		jbSetIndividual.setHorizontalAlignment(SwingConstants.CENTER );
+		jbSetIndividual.addActionListener(new jbSetIndAction());
 	
 	
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		c.gridx = 1;
 		c.gridy = 1;
-		this.add(jButton1,c);
+		this.add(jbSetIndividual,c);
 
 		
-		jButton2 = new JButton();
-		jButton2.setText("<HTML><CENTER>Design PCR primer pairs</CENTER></html>");
-		jButton2.setMargin(new Insets(2, 2,2,2));
-		jButton2.setHorizontalAlignment(SwingConstants.TRAILING );
-		jButton2.setPreferredSize(new Dimension(100, 60));
+		jbSetPairs = new JButton();
+		jbSetPairs.setText("<HTML><CENTER>Design PCR primer pairs</CENTER></html>");
+		jbSetPairs.setMargin(new Insets(2, 2,2,2));
+		jbSetPairs.setHorizontalAlignment(SwingConstants.TRAILING );
+		jbSetPairs.setPreferredSize(new Dimension(100, 60));
+		jbSetPairs.addActionListener(new jbSetPairAction());
+		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 3;
 		c.gridy = 1;
-		this.add(jButton2,c);
+		this.add(jbSetPairs,c);
+	}
+	
+	// LISTENERS & EXTRA CLASSES
+
+	private class jbSetIndAction implements ActionListener {
+
+		@Override public void actionPerformed(ActionEvent e) {
+			System.out.println("Individual Set");
+			MainPane.this.mainFrame.getSearchParameter().setSearchPair(false);
+			MainPane.this.mainFrame.loadOpenFilePane();
+		}
 	}
 
-	
-	// TODO implement singleton
+	private class jbSetPairAction implements ActionListener {
+
+		@Override public void actionPerformed(ActionEvent e) {
+			System.out.println("Pair Set");
+			MainPane.this.mainFrame.getSearchParameter().setSearchPair(false);
+			MainPane.this.mainFrame.loadOpenFilePane();
+		}
+	}
 	
 	
 	

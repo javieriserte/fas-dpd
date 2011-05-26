@@ -74,7 +74,7 @@ public class FASDPD {
 			
 			return;
 		}
-		myProgram.DoSearch(sp);
+		myProgram.doSearchAndExportResults(sp);
 			// start the search of primers
 	}
 
@@ -90,7 +90,7 @@ public class FASDPD {
 	//
 	////////////////////////////
 	
-	public void DoSearch(SearchParameter mySp) {
+	public void doSearchAndExportResults(SearchParameter mySp) {
 		Alignment al = new Alignment();
 		FastaMultipleReader fmr = new FastaMultipleReader();
 		List<Pair<String, String>> ps =null;
@@ -143,13 +143,71 @@ public class FASDPD {
 			
 			List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(), resultreverse.ExtractSortedList(), mySp.getFilterpair());
 			
-			// TODO modify Analyzer class in order to perform searches of primer pairs.
-			// TODO maybe a filter for primer score is needed in this step. otherwise, an scoring strategy for primers pair is needed.
-			// For pair search, the list of primers must be separated in two lists: Forward and reverse.
-			// The cartesian product of the two sets is done. (this step may be expensive if the primer list is large.)
-			// Each resulting pair is filtered.
-			// 
+			exportPairs(mySp.getOutfile(),pairs);
+			  // send primers pairs list to file
+
 		}
+	}
+	
+	public ResultOfSearch doSearch(SearchParameter mySp) {
+
+		ResultOfSearch results;
+		
+		Alignment al = new Alignment();
+		FastaMultipleReader fmr = new FastaMultipleReader();
+		List<Pair<String, String>> ps =null;
+		try {
+			ps = fmr.readFile(mySp.getInfile());	
+		} catch (FileNotFoundException e) {
+			System.out.println("\r\nFASDPD exit with errors\r\nFile: " + mySp.getInfile() + " not found.\r\n");
+			System.out.println(FASDPD.getHelp());
+			System.exit(0);
+			// TODO do not show error, instead propagate an exception
+			
+		}
+		
+		
+		for (Pair<String, String> pair : ps) {
+			if (mySp.isDNA()) {
+				// Working with DNA sequences
+				al.addSequence(new DNASeq(pair.getSecond(),pair.getFirst()));
+			} else {
+				// Working with protein sequences
+				al.addSequence(new ProtSeq(pair.getSecond(),pair.getFirst()));
+			}
+		}
+		
+		GeneticCode myGC = new GeneticCode(mySp.getGCfile());
+			// Creates a genetic Code
+		DNASeq consense = al.pileUp(myGC);
+			// Generates the degenerated consensus 
+		Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(),  myGC);
+			// creates a new analyzer with standard parameters
+
+		if (!mySp.isSearchPair()) {
+		
+			PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), mySp.isDirectStrand(),mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+				// Do the search !!
+	
+			
+			List<Primer> sorted = result.ExtractSortedList();
+			
+			results = new ResultOfSearch();
+			results.primers = sorted;
+
+	
+		} else {
+			
+			PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+			
+			List<PrimerPair> result = myAn.searchPrimerPairs(resultforward.ExtractSortedList(), resultreverse.ExtractSortedList(), mySp.getFilterpair());
+			results = new ResultOfSearch();
+			results.primerPairs = result;
+			
+		}
+		return null;
+		
 	}
 	
 	/**
@@ -292,6 +350,11 @@ public class FASDPD {
 	public static String getHelp() {
 		return "Usage:\r\n	java -cp \\bin;\\lib\\* fasdpd.FASDPD 'OPTIONS'\r\n\r\n	Options:\r\n		Required:\r\n			Infile: '/infile' : Path to a Fasta file with the starting alignment.\r\n			Outfile: '/outfile' : Path to a file where resulting primers will be stored.\r\n			GCfile: '/gcfile' : Path to a file containg the genetic code that will be used.\r\n		Optional:\r\n			Length: '/len' : The length of resulting primers.\r\n			Quantity: '/q' : The number of primers to search.\r\n			Staring Point: '/startingpoint' : The position of the alignment where start the search.\r\n			Ending Point: '/endpoint' : The position of the alignment where finish the search.\r\n			Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences.\r\n			Is Protein: '/isprotein' : Treat the sequences in input alignment as protein sequences.\r\n			Filter Repeated End: '/frep' : Discard primers with the last two bases repeated.\r\n			Filter Degenerated End: '/fdeg' : Discar Primers with the last base degenerated.\r\n			Complementary Strand: '/ComplementaryStrand' : Search the primers in the complementary strand.\r\n			Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.\r\n";
 	
+	}
+	
+	public class ResultOfSearch {
+		public List<Primer> primers = null;
+		public List<PrimerPair> primerPairs=null;
 	}
 	
 }

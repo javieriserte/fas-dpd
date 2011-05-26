@@ -1,23 +1,25 @@
 package fasdpd.UI.v1;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.io.FileNotFoundException;
+import java.util.List;
+
 import javax.swing.*;
 
+import sequences.alignment.Alignment;
+import sequences.dna.DNASeq;
+import degeneration.GeneticCode;
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+import fasdpd.FASDPD;
+import fasdpd.SearchParameter;
+import fastaIO.FastaMultipleReader;
+import fastaIO.Pair;
+
 public class MainFASDPD extends javax.swing.JFrame {
-
+	private FASDPD control;
+		// is the program itself.
+	private SearchParameter searchParameter;
+		// the every option for ruuning FASDPD
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -26,127 +28,109 @@ public class MainFASDPD extends javax.swing.JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				MainFASDPD inst = new MainFASDPD();
+					// creates the main instance
+				
+				inst.setControl(new FASDPD());
+				inst.setSearchParameter(new SearchParameter());
+				
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 				inst.setTitle("FAS - DPD main window");
 				inst.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				inst.pack();
+					// set swing properties of MainFASDPD
 			}
 		});
 	}
 	
 	public MainFASDPD() {
 		super();
-		initGUI();
+		createGUI();
 	}
 	
-	private void initGUI() {
+	private void createGUI() {
 		try {
-			
-		    try {
-			    // Set System L&F
-		        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		    	UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
-		    } catch(Exception e) {
-		    
-		    }
 
-		    this.setContentPane(new MainPane());
-			Insets cpinsets = getContentPane().getInsets();
-			setSize(400, 300);
-			Insets frameinsets = this.getInsets();
-			this.
-			setMinimumSize(new Dimension(310 + cpinsets.left   + frameinsets.left  + 
-					                           cpinsets.right  + frameinsets.right  
-					                    ,160 + cpinsets.top    + frameinsets.top   +
-					                           cpinsets.bottom + frameinsets.bottom));
-			
-			/*
-			{
-				jMenuBar1 = new JMenuBar();
-//				setJMenuBar(jMenuBar1);
-				{
-					jMenu3 = new JMenu();
-					jMenuBar1.add(jMenu3);
-					jMenu3.setText("File");
-					{
-						newFileMenuItem = new JMenuItem();
-						jMenu3.add(newFileMenuItem);
-						newFileMenuItem.setText("New");
-					}
-					{
-						openFileMenuItem = new JMenuItem();
-						jMenu3.add(openFileMenuItem);
-						openFileMenuItem.setText("Open");
-					}
-					{
-						saveMenuItem = new JMenuItem();
-						jMenu3.add(saveMenuItem);
-						saveMenuItem.setText("Save");
-					}
-					{
-						saveAsMenuItem = new JMenuItem();
-						jMenu3.add(saveAsMenuItem);
-						saveAsMenuItem.setText("Save As ...");
-					}
-					{
-						closeFileMenuItem = new JMenuItem();
-						jMenu3.add(closeFileMenuItem);
-						closeFileMenuItem.setText("Close");
-					}
-					{
-						jSeparator2 = new JSeparator();
-						jMenu3.add(jSeparator2);
-					}
-					{
-						exitMenuItem = new JMenuItem();
-						jMenu3.add(exitMenuItem);
-						exitMenuItem.setText("Exit");
-					}
-				}
-				{
-					jMenu4 = new JMenu();
-					jMenuBar1.add(jMenu4);
-					jMenu4.setText("Edit");
-					{
-						cutMenuItem = new JMenuItem();
-						jMenu4.add(cutMenuItem);
-						cutMenuItem.setText("Cut");
-					}
-					{
-						copyMenuItem = new JMenuItem();
-						jMenu4.add(copyMenuItem);
-						copyMenuItem.setText("Copy");
-					}
-					{
-						pasteMenuItem = new JMenuItem();
-						jMenu4.add(pasteMenuItem);
-						pasteMenuItem.setText("Paste");
-					}
-					{
-						jSeparator1 = new JSeparator();
-						jMenu4.add(jSeparator1);
-					}
-					{
-						deleteMenuItem = new JMenuItem();
-						jMenu4.add(deleteMenuItem);
-						deleteMenuItem.setText("Delete");
-					}
-				}
-				{
-					jMenu5 = new JMenu();
-					jMenuBar1.add(jMenu5);
-					jMenu5.setText("Help");
-					{
-						helpMenuItem = new JMenuItem();
-						jMenu5.add(helpMenuItem);
-						helpMenuItem.setText("Help");
-					}
-				}
-			}*/
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	        	// Set System L&F
+			this.loadMainPane();
+				// Brings the main pane to screen
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	private void loadMainPane() {
+	    this.setContentPane(new MainPane(this));
+		Insets cpinsets = getContentPane().getInsets();
+		setSize(400, 300);
+		Insets frameinsets = this.getInsets();
+		this.
+		setMinimumSize(new Dimension(310 + cpinsets.left   + frameinsets.left  + 
+				                           cpinsets.right  + frameinsets.right  
+				                    ,160 + cpinsets.top    + frameinsets.top   +
+				                           cpinsets.bottom + frameinsets.bottom));
+	}
 
+	
+	
+	
+	// GETTERS AND SETTERS
+	public void setSearchParameter(SearchParameter searchParameter) {
+		this.searchParameter = searchParameter;
+	}
+
+	public SearchParameter getSearchParameter() {
+		return searchParameter;
+	}
+
+	public void setControl(FASDPD control) {
+		this.control = control;
+	}
+
+	public FASDPD getControl() {
+		return control;
+	}
+
+	// PUBLIC INTERFACE
+	protected void loadOpenFilePane() {
+		
+		JPanel ofp = new OpenFilePane(this);
+		this.setContentPane(ofp);
+		ofp.updateUI();
+		this.pack();
+		
+	}
+
+	protected void loadOptionsPane() {
+
+		Alignment alin1 = new Alignment();
+		
+		FastaMultipleReader mfr = new FastaMultipleReader();
+
+		
+		
+		List<Pair<String, String>> l = null;
+		try { l = mfr.readFile(this.searchParameter.getInfile());
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+
+		if (l!=null) { 
+			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
+		} else { return; }
+		
+		GeneticCode gc = new GeneticCode("StandardCode");
+		this.searchParameter.setGCfile("StandardCode");
+		OptionsPane op = new OptionsPane(alin1, gc, MainFASDPD.this);
+			// 	TODO Ugly !! file hardcoded.!
+		op.setOpaque(true);
+		
+		this.setContentPane(op);
+		op.updateUI();
+		this.pack();
+
+		
+	}
+
+	
 }
