@@ -12,7 +12,8 @@ public class FilterGCCompatibilityCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new DoubleParameter()};
 		parametersValues = new String[] {"10"};
 	}
-	@Override protected Filter create(){ 
+	@Override
+	public Filter create(){ 
 		Double p0=null;
 
 		try {

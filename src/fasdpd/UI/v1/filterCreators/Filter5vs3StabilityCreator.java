@@ -17,7 +17,8 @@ public class Filter5vs3StabilityCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new DoubleParameter(),new DoubleParameter(), new IntegerParameter()};
 		parametersValues = new String[] {"1.5", "310","5"};
 	}
-	@Override protected Filter create(){ 
+	@Override
+	public Filter create(){ 
 		Double p0=null;
 		Double p1=null;
 		Integer p2=null;

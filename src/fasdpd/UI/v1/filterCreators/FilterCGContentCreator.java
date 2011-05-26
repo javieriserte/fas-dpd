@@ -12,7 +12,8 @@ public 	 class FilterCGContentCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new FloatParameter(),new FloatParameter() };
 		parametersValues = new String[] {"40","60"};
 	}
-	@Override protected Filter create(){ 
+	@Override
+	public Filter create(){ 
 		Float p0=null;
 		Float p1=null;
 		try {
