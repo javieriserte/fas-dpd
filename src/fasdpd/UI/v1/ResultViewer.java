@@ -4,10 +4,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import sequences.dna.Primer;
 
 public class ResultViewer extends JPanel {
 
@@ -32,10 +35,7 @@ public class ResultViewer extends JPanel {
 		this.setLayout(thisLayout);
 		this.setOpaque(true);
 		
-		resultTable = new ResultTable();
-		
-
-		
+		resultTable = new ResultTable(null,null);
 		
 		resultTable.setOpaque(true);
 
@@ -75,5 +75,8 @@ public class ResultViewer extends JPanel {
 	}
 	
 	
-	
+	public void setdata(List<Primer> primers) {
+		resultTable.setData(primers);
+		
+	}
 }
