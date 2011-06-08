@@ -13,8 +13,7 @@ public class FilterMeltingPointTemperatureCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new DoubleParameter(),new DoubleParameter() };
 		parametersValues = new String[] {"50","60"};
 	}
-	@Override
-	public Filter create(){ 
+	@Override public Filter create() {
 		Double p0=null;
 		Double p1=null;
 		try {

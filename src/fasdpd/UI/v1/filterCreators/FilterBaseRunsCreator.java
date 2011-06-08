@@ -12,8 +12,7 @@ public class FilterBaseRunsCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new IntegerParameter()};
 		parametersValues = new String[] {"4"};
 	}
-	@Override
-	public Filter create(){ 
+	@Override public Filter create() {
 		Integer p0=null;
 		try {
 			p0 = (Integer) parametersTypes[0].parseParameter(parametersValues[0]);
