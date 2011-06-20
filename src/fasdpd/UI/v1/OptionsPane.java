@@ -22,26 +22,14 @@ import javax.swing.JFrame;
 import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
-import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import degeneration.GeneticCode;
-import fasdpd.End5v3ParameterType;
 import fasdpd.FASDPD;
 import fasdpd.SearchParameter;
-import fasdpd.End5v3ParameterType.Result;
 import fasdpd.UI.v1.filterCreators.FilterCreator;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 import filters.Filter;
 import filters.primerpair.FilterPrimerPair;
-import filters.singlePrimer.Filter5vs3Stability;
-import filters.singlePrimer.FilterBaseRuns;
-import filters.singlePrimer.FilterCGContent;
-import filters.singlePrimer.FilterDegeneratedEnd;
-import filters.singlePrimer.FilterHomoDimer;
-import filters.singlePrimer.FilterHomoDimerFixed3;
-import filters.singlePrimer.FilterMeltingPointTemperature;
-import filters.singlePrimer.FilterPrimerScore;
-import filters.singlePrimer.FilterRepeatedEnd;
 import filters.singlePrimer.FilterSinglePrimer;
 import filters.validator.ValidateAlways;
 import filters.validator.ValidateForFilterPrimerPair;
@@ -50,56 +38,35 @@ import filters.validator.Validate_AND;
 import filters.validator.Validator;
 
 public class OptionsPane extends JPanel {
-	private static final long serialVersionUID = -5923205806932143474L;
-	AlignmentExplorer ae;
-	Alignment align;
-	GeneticCode geneticCode;
-	JButton jbDoSearch;
-	JButton jbOpenFilters;
-	MainFASDPD mainframe;
-	Vector<FilterCreator> listOfFilterCreators;
+	private static final long 	serialVersionUID = -5923205806932143474L;
+	// INSTANCE VARIABLES
+	Alignment 					align;
+	GeneticCode 				geneticCode;
+	Vector<FilterCreator> 		listOfFilterCreators;
+	MainFASDPD	 				mainframe;
 	
-	JTextField quantity;
-	ResultViewer resultViewer;
-	JTextField minimumSize ;
-	JTextField maximumSize ;
-	JTextField rangeFrom ;
-	JTextField rangeTo ;
-	SpinnerModel tmemodel;
-	JSpinner strand;
-	JTextField nyt;
-	JTextField nxt;
-	JTextField apt;
+	// COMPONENTS
+	AlignmentExplorer 			ae;
+	JButton 					jbDoSearch;
+	JButton 					jbOpenFilters;
+	JTextField 					quantity;
+	ResultViewer 				resultViewer;
+	JTextField 					minimumSize ;
+	JTextField 					maximumSize ;
+	JTextField 					rangeFrom ;
+	JTextField 					rangeTo ;
+	SpinnerModel 				tmemodel;
+	JSpinner 					strand;
+	JTextField 					nyt;
+	JTextField 					nxt;
+	JTextField 					apt;
 
 	
 	
 	
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		
-		Alignment alin1 = new Alignment();
-				
-		FastaMultipleReader mfr = new FastaMultipleReader();
-
-		List<Pair<String, String>> l = null;
-		try { l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
-		} catch (FileNotFoundException e) { e.printStackTrace(); }
-
-		if (l!=null) { 
-			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
-		} else { return; }
-		
-		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
-			// 	TODO Ugly !! file hardcoded.!
-		comp.setOpaque(true);
-		frame.setContentPane(comp);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		
-	}
+	// PUBLIC INTERFACE
 	
-	public OptionsPane(Alignment align, GeneticCode gc) {
+	public 			OptionsPane			(Alignment align, GeneticCode gc) {
 		super();
 		this.mainframe = null;
 		this.geneticCode = gc;
@@ -109,7 +76,7 @@ public class OptionsPane extends JPanel {
 		this.createGUI();
 	}
 	
-	public OptionsPane(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
+	public 			OptionsPane			(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
 		super();
 		this.mainframe = mainframe;
 		this.geneticCode = gc;
@@ -119,7 +86,9 @@ public class OptionsPane extends JPanel {
 		this.createGUI();
 	}
 	
-	private void createGUI() {
+	// PRIVATE METHODS
+	
+	private void 	createGUI() {
 		try {
 			
 			// SET LAYOUT FORMAT
@@ -134,7 +103,7 @@ public class OptionsPane extends JPanel {
 
 			
 			// TextArea for view results // Other Pane			
-			ResultViewer resultViewer = new ResultViewer();
+			ResultViewer resultViewer = new ResultViewer(this.mainframe, align.lenght());
 			resultViewer.setOpaque(true);
 			
 			
@@ -265,7 +234,9 @@ public class OptionsPane extends JPanel {
 		}
 	}
 
-	private class jbOpenFiltersAction implements ActionListener {
+	// AUXILIARY CLASSES
+	
+	private class 		jbOpenFiltersAction 	implements 		ActionListener {
 
 		@Override public void actionPerformed(ActionEvent e) {
 			
@@ -280,7 +251,7 @@ public class OptionsPane extends JPanel {
 		
 	}
 	
-	private class jbDoSearchAction implements ActionListener {
+	private class 		jbDoSearchAction 		implements 		ActionListener {
 
 		@Override public void actionPerformed(ActionEvent e) {
 
@@ -383,4 +354,30 @@ public class OptionsPane extends JPanel {
 		
 	}
 
+	// EXECUTABLE MAIN. DO NOT USE IT.
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		
+		Alignment alin1 = new Alignment();
+				
+		FastaMultipleReader mfr = new FastaMultipleReader();
+
+		List<Pair<String, String>> l = null;
+		try { l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+
+		if (l!=null) { 
+			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
+		} else { return; }
+		
+		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
+			// 	TODO Ugly !! file hardcoded.!
+		comp.setOpaque(true);
+		frame.setContentPane(comp);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		
+	}
+	
 }
