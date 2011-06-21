@@ -206,7 +206,7 @@ public class FASDPD {
 			results.primerPairs = result;
 			
 		}
-		return null;
+		return results;
 		
 	}
 	

@@ -14,6 +14,8 @@ public class ResultTable extends JPanel {
 	// INSTANCE VARIABLES
 	
 	private AbstractTableModel model;
+	private JTable table;
+	private JScrollPane scrollPane; 
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,11 +30,11 @@ public class ResultTable extends JPanel {
         else 
         if (primers==null && pairs== null) { this.model = new SinglePrimerTableModel(null) ; }
         
-        JTable table = new JTable(this.model);
+        table = new JTable(this.model);
 
         table.setFillsViewportHeight(true);
         
-        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane = new JScrollPane(table);
         
         this.add(scrollPane);
         
@@ -66,7 +68,8 @@ public class ResultTable extends JPanel {
 		
 		this.model = new SinglePrimerTableModel(data);
 		
-		this.updateUI();
+		this.table.setModel(this.model);
+		this.table.updateUI();
 		
 	}	
 	
@@ -91,8 +94,8 @@ public class ResultTable extends JPanel {
 		}
 		
 		this.model = new SinglePrimerTableModel(data);
-
-		this.updateUI();
+		this.table.setModel(this.model);
+		this.table.updateUI();
 	}
 	
 

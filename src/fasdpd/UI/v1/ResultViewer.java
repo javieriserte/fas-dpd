@@ -48,12 +48,14 @@ public class ResultViewer extends JPanel {
 		resultTable.setData(primers);
 		this.primerData = primers;
 		this.isShowingSinglePrimerData = true;
+		this.resultTable.updateUI();
 	}
 	
 	public void 	setPairdata			(List<PrimerPair> primers) {
 		resultTable.setPairData(primers);
 		this.primerData = primers;		
 		this.isShowingSinglePrimerData = false;
+		this.resultTable.updateUI();
 	}
 
 	// PRIVATE METHODS
