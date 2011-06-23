@@ -74,7 +74,7 @@ public class DegeneratedPrimerIterator {
 	}
 	
 	public boolean hasNext() {
-		return (this.skipFrom>this.counter);
+		return (this.skipFrom>this.counter) && (this.max>this.counter);
 	}
 	
 	
