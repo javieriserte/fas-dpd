@@ -16,14 +16,14 @@ import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 
 public class MainFASDPD extends javax.swing.JFrame {
+
+	// INSTANCE VARIABLES
 	private FASDPD control;
 		// is the program itself.
 	private SearchParameter searchParameter;
 		// the every option for ruuning FASDPD
 
-	/**
-	* Auto-generated main method to display this JFrame
-	*/
+	// EXECUATABLE MAIN
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -43,12 +43,15 @@ public class MainFASDPD extends javax.swing.JFrame {
 		});
 	}
 	
+	
+	// CONSTRUCTOR
 	public MainFASDPD() {
 		super();
 		createGUI();
 	}
 	
-	private void createGUI() {
+	// PRIVATE METHODS
+	private void 			createGUI					() {
 		try {
 
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -61,7 +64,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 	
-	private void loadMainPane() {
+	private void 			loadMainPane				() {
 	    this.setContentPane(new MainPane(this));
 		Insets cpinsets = getContentPane().getInsets();
 		setSize(400, 300);
@@ -73,28 +76,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 				                           cpinsets.bottom + frameinsets.bottom));
 	}
 
-	
-	
-	
-	// GETTERS AND SETTERS
-	public void setSearchParameter(SearchParameter searchParameter) {
-		this.searchParameter = searchParameter;
-	}
-
-	public SearchParameter getSearchParameter() {
-		return searchParameter;
-	}
-
-	public void setControl(FASDPD control) {
-		this.control = control;
-	}
-
-	public FASDPD getControl() {
-		return control;
-	}
-
-	// PUBLIC INTERFACE
-	protected void loadOpenFilePane() {
+	protected void 			loadOpenFilePane			() {
 		
 		JPanel ofp = new OpenFilePane(this);
 		this.setContentPane(ofp);
@@ -103,14 +85,12 @@ public class MainFASDPD extends javax.swing.JFrame {
 		
 	}
 
-	protected void loadOptionsPane() {
+	protected void 			loadOptionsPane				() {
 
 		Alignment alin1 = new Alignment();
 		
 		FastaMultipleReader mfr = new FastaMultipleReader();
 
-		
-		
 		List<Pair<String, String>> l = null;
 		try { l = mfr.readFile(this.searchParameter.getInfile());
 		} catch (FileNotFoundException e) { e.printStackTrace(); }
@@ -133,4 +113,20 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	
+	// GETTERS AND SETTERS
+	public void 			setSearchParameter		(SearchParameter searchParameter) {
+		this.searchParameter = searchParameter;
+	}
+
+	public SearchParameter 	getSearchParameter		() {
+		return searchParameter;
+	}
+
+	public void 			setControl				(FASDPD control) {
+		this.control = control;
+	}
+
+	public FASDPD 			getControl				() {
+		return control;
+	}
 }

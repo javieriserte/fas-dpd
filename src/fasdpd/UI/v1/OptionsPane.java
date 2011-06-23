@@ -22,26 +22,14 @@ import javax.swing.JFrame;
 import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
-import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import degeneration.GeneticCode;
-import fasdpd.End5v3ParameterType;
 import fasdpd.FASDPD;
 import fasdpd.SearchParameter;
-import fasdpd.End5v3ParameterType.Result;
 import fasdpd.UI.v1.filterCreators.FilterCreator;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 import filters.Filter;
 import filters.primerpair.FilterPrimerPair;
-import filters.singlePrimer.Filter5vs3Stability;
-import filters.singlePrimer.FilterBaseRuns;
-import filters.singlePrimer.FilterCGContent;
-import filters.singlePrimer.FilterDegeneratedEnd;
-import filters.singlePrimer.FilterHomoDimer;
-import filters.singlePrimer.FilterHomoDimerFixed3;
-import filters.singlePrimer.FilterMeltingPointTemperature;
-import filters.singlePrimer.FilterPrimerScore;
-import filters.singlePrimer.FilterRepeatedEnd;
 import filters.singlePrimer.FilterSinglePrimer;
 import filters.validator.ValidateAlways;
 import filters.validator.ValidateForFilterPrimerPair;
@@ -50,76 +38,61 @@ import filters.validator.Validate_AND;
 import filters.validator.Validator;
 
 public class OptionsPane extends JPanel {
-	private static final long serialVersionUID = -5923205806932143474L;
-	AlignmentExplorer ae;
-	Alignment align;
-	GeneticCode geneticCode;
-	JButton jbDoSearch;
-	JButton jbOpenFilters;
-	MainFASDPD mainframe;
-	Vector<FilterCreator> listOfFilterCreators;
 	
-	JTextField quantity;
-	ResultViewer resultViewer;
-	JTextField minimumSize ;
-	JTextField maximumSize ;
-	JTextField rangeFrom ;
-	JTextField rangeTo ;
-	SpinnerModel tmemodel;
-	JSpinner strand;
-	JTextField nyt;
-	JTextField nxt;
-	JTextField apt;
-
+	/////////////////////
+	// INSTANCE VARIABLES
+	private static final long 			serialVersionUID = -5923205806932143474L;
+	private Alignment 					align;
+	private GeneticCode 				geneticCode;
+	private Vector<FilterCreator> 		listOfFilterCreators;
+	private MainFASDPD	 				mainframe;
+	
+	/////////////
+	// COMPONENTS
+	private AlignmentExplorer 			alignmentExplorer;
+	private JButton 					jbDoSearch;
+	private JButton 					jbOpenFilters;
+	private JTextField 					quantity;
+	private ResultViewer 				resultViewer;
+	private JTextField 					minimumSize ;
+	private JTextField 					maximumSize ;
+	private JTextField 					rangeFrom ;
+	private JTextField 					rangeTo ;
+	private SpinnerModel 				tmemodel;
+	private JSpinner 					strand;
+	private JTextField 					nyt;
+	private JTextField 					nxt;
+	private JTextField 					apt;
 	
 	
+	///////////////
+	// CONSTRUCTORS
 	
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		
-		Alignment alin1 = new Alignment();
-				
-		FastaMultipleReader mfr = new FastaMultipleReader();
-
-		List<Pair<String, String>> l = null;
-		try { l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
-		} catch (FileNotFoundException e) { e.printStackTrace(); }
-
-		if (l!=null) { 
-			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
-		} else { return; }
-		
-		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
-			// 	TODO Ugly !! file hardcoded.!
-		comp.setOpaque(true);
-		frame.setContentPane(comp);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		
-	}
-	
-	public OptionsPane(Alignment align, GeneticCode gc) {
+	public 			OptionsPane			(Alignment align, GeneticCode gc) {
 		super();
 		this.mainframe = null;
 		this.geneticCode = gc;
 		this.align = align;
-		this.ae = new AlignmentExplorer(this.align,this.geneticCode );
+		this.alignmentExplorer = new AlignmentExplorer(this.align,this.geneticCode );
 		this.listOfFilterCreators = new Vector<FilterCreator>();
 		this.createGUI();
 	}
 	
-	public OptionsPane(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
+	public 			OptionsPane			(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
 		super();
 		this.mainframe = mainframe;
 		this.geneticCode = gc;
 		this.align = align;
-		this.ae = new AlignmentExplorer(this.align,this.geneticCode );
+		this.alignmentExplorer = new AlignmentExplorer(this.align,this.geneticCode );
 		this.listOfFilterCreators = new Vector<FilterCreator>();
 		this.createGUI();
 	}
+
 	
-	private void createGUI() {
+	//////////////////
+	// PRIVATE METHODS
+	
+	private void 	createGUI			() {
 		try {
 			
 			// SET LAYOUT FORMAT
@@ -134,14 +107,15 @@ public class OptionsPane extends JPanel {
 
 			
 			// TextArea for view results // Other Pane			
-			ResultViewer resultViewer = new ResultViewer();
+			resultViewer = new ResultViewer(this.mainframe, align.lenght());
 			resultViewer.setOpaque(true);
 			
 			
 			// Spinner for strand selection
 			
 			SpinnerListModel strandsmodel = new SpinnerListModel(new String[] {"forward","reverse","both"});
-			JSpinner strand = new JSpinner(strandsmodel);
+			strand = new JSpinner(strandsmodel);
+//			JSpinner strand = new JSpinner(strandsmodel);
 			JPanel strandPanel = new JPanel();
 			strandPanel.add(new JLabel("Strand:"));
 			strandPanel.add(strand);
@@ -149,7 +123,8 @@ public class OptionsPane extends JPanel {
 			
 			// Text Field and label for Quantity selection
 			JPanel quantityPanel = new JPanel();
-			JTextField quantity = new JTextField("10");
+//			JTextField quantity = new JTextField("10");
+			quantity = new JTextField("10");
 			quantity.setColumns(2);			
 			
 			quantityPanel.add(new JLabel("Quantity:"));
@@ -157,9 +132,11 @@ public class OptionsPane extends JPanel {
 			quantityPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 			
 			// 2 Text Area and 2 label for Size selection
-			JTextField minimumSize = new JTextField("20");
+//			JTextField minimumSize = new JTextField("20");
+			minimumSize = new JTextField("20");
 			minimumSize.setColumns(2);			
-			JTextField maximumSize = new JTextField("25");
+//			JTextField maximumSize = new JTextField("25");
+			maximumSize = new JTextField("25");
 			maximumSize.setColumns(2);			
 			JPanel sizePanel = new JPanel();
 			sizePanel.add(new JLabel("Size:"));
@@ -169,9 +146,12 @@ public class OptionsPane extends JPanel {
 			sizePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 			
 			// 2 Text Area and 2 label for range selection			
-			JTextField rangeFrom = new JTextField("0");
-			rangeFrom.setColumns(2);			
-			JTextField rangeTo = new JTextField("-1");
+			rangeFrom = new JTextField("1");
+			rangeFrom.setToolTipText("The sequence start in position 1, not 0");
+//			JTextField rangeFrom = new JTextField("0");			
+			rangeFrom.setColumns(2);
+			rangeTo = new JTextField("-1");
+//			JTextField rangeTo = new JTextField("-1");			
 			rangeTo.setColumns(2);			
 			JPanel rangePanel = new JPanel();
 			rangePanel.add(new JLabel("Range:"));
@@ -182,15 +162,17 @@ public class OptionsPane extends JPanel {
 
 			// Spinner for TME selection
 			
-			SpinnerModel tmemodel = new SpinnerListModel(new String[] {"Santalucia 1998", "Simple Tm"});
-			JSpinner tmeSpinner = new JSpinner(tmemodel);
+			tmemodel = new SpinnerListModel(new String[] {"Santalucia 1998", "Simple Tm"});
+//			SpinnerModel tmemodel = new SpinnerListModel(new String[] {"Santalucia 1998", "Simple Tm"});			
+			JSpinner tmeSpinner = new JSpinner(tmemodel);			
 			JPanel tmePanel = new JPanel();
 			tmePanel.add(new JLabel("Tm:"));
 			tmePanel.add(tmeSpinner);
 			tmePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 			// Text Field and label for ny
-			JTextField nyt = new JTextField("1");
+			nyt = new JTextField("1");
+//			JTextField nyt = new JTextField("1");			
 			nyt.setColumns(2);
 			JPanel nyPanel = new JPanel();
 			nyPanel.add(new JLabel("Ny:"));
@@ -199,7 +181,8 @@ public class OptionsPane extends JPanel {
 			
 			
 			// Text Field and label for nx
-			JTextField nxt = new JTextField("1");
+			nxt = new JTextField("1");
+//			JTextField nxt = new JTextField("1");			
 			nxt.setColumns(2);			
 			JPanel nxPanel = new JPanel();
 			nxPanel.add(new JLabel("Nx:"));
@@ -207,7 +190,8 @@ public class OptionsPane extends JPanel {
 			nxPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 			
 			// Text Field and label for aP
-			JTextField apt = new JTextField("0");
+			apt = new JTextField("0");
+//			JTextField apt = new JTextField("0");			
 			apt.setColumns(2);
 			JPanel apPanel = new JPanel();
 			apPanel.add(new JLabel("Ap:"));
@@ -221,6 +205,7 @@ public class OptionsPane extends JPanel {
 
 			// Button for search
 			jbDoSearch = new JButton("do Search");
+			jbDoSearch.addActionListener(new jbDoSearchAction());
 
 
 			// Adding components
@@ -258,14 +243,17 @@ public class OptionsPane extends JPanel {
 			this.add(sizePanel,c);
 			
 			c.gridheight = 1; c.gridwidth = 4; c.fill = GridBagConstraints.BOTH; c.gridx = 0; c.gridy = 0; c.anchor = GridBagConstraints.CENTER;
-			this.add(ae,c);
+			this.add(alignmentExplorer,c);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private class jbOpenFiltersAction implements ActionListener {
+	////////////////////
+	// AUXILIARY CLASSES
+	
+	private class 		jbOpenFiltersAction 	implements 		ActionListener {
 
 		@Override public void actionPerformed(ActionEvent e) {
 			
@@ -273,14 +261,15 @@ public class OptionsPane extends JPanel {
 				listOfFilterCreators = new Vector<FilterCreator>();
 			}
 			
-			FiltersSelectionPane comp = new FiltersSelectionPane(mainframe, listOfFilterCreators);
+			new FiltersSelectionPane(mainframe, listOfFilterCreators);
+//			FiltersSelectionPane comp = new FiltersSelectionPane(mainframe, listOfFilterCreators);			
 			System.out.println(listOfFilterCreators);
 			
 		}
 		
 	}
 	
-	private class jbDoSearchAction implements ActionListener {
+	private class 		jbDoSearchAction 		implements 		ActionListener {
 
 		@Override public void actionPerformed(ActionEvent e) {
 
@@ -298,17 +287,16 @@ public class OptionsPane extends JPanel {
 				loopStrand.add(true);
 				loopStrand.add(false);
 			}
+
 			
 			// check every value
-//			ny, nx, ap, rango, tme, strand, sizes, quantity
-
+			// ny, nx, ap, rango, tme, strand, sizes, quantity
 			
 			SearchParameter sp = mainframe.getSearchParameter();
 			
-			
 			sp.setQuantity(Integer.valueOf(quantity.getText()));
 			sp.setLenMin(Integer.valueOf(minimumSize.getText()));	
-			sp.setLenMin(Integer.valueOf(maximumSize.getText()));
+			sp.setLenMax(Integer.valueOf(maximumSize.getText()));
 			sp.setStartPoint(Integer.valueOf(rangeFrom.getText()));
 			sp.setEndPoint(Integer.valueOf(rangeTo.getText()));
 			
@@ -355,12 +343,18 @@ public class OptionsPane extends JPanel {
 			
 			// make fasdpd work
 
-			FASDPD.ResultOfSearch results;
+			FASDPD.ResultOfSearch results = null;
 			
 			if (sp.isSearchPair()) {
 				// if pair search is selected, override strands option
 				results = mainframe.getControl().doSearch(sp);
+				// post results to table
+				OptionsPane.this.resultViewer.setPairdata(results.primerPairs);
+				
+				
 			} else {
+				
+				
 				// if not, loop for strands
 				List<Primer> partialResult = new Vector<Primer>();
 				
@@ -372,15 +366,36 @@ public class OptionsPane extends JPanel {
 					}
 					results.primers = partialResult;
 				}
-				
+				// post results to table				
+				OptionsPane.this.resultViewer.setdata(results.primers);
 			}
-			
-			// post results to table
-			
-			;
-			
 		}
-		
 	}
 
+	// EXECUTABLE MAIN. DO NOT USE IT.
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		
+		Alignment alin1 = new Alignment();
+				
+		FastaMultipleReader mfr = new FastaMultipleReader();
+
+		List<Pair<String, String>> l = null;
+		try { l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+
+		if (l!=null) { 
+			for (Pair<String, String> pair : l) alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
+		} else { return; }
+		
+		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
+			// 	TODO Ugly !! file hardcoded.!
+		comp.setOpaque(true);
+		frame.setContentPane(comp);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		
+	}
+	
 }

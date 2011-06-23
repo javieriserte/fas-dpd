@@ -40,34 +40,33 @@ import fasdpd.UI.v1.filterCreators.FilterPrimerScoreCreator;
 import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
 
 public class FiltersSelectionPane extends javax.swing.JDialog {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 224125693439076213L;
-	private List<FilterCreator> listOfAllFilterCreators;
 
-	private JList jlFilterCreatorsAdded;
-	private List<FilterCreator> listOfAllFilterCreatorsAdded; 
-	private List<FilterCreator> result;
+	/////////////////////
+	// INSTANCE VARIABLES
 
-	private JButton addButton;
-	private JButton remButton;
-	private JButton setButton;
-	private JButton saveButton;
+	private static final long 		serialVersionUID 				= 224125693439076213L;
+	private List<FilterCreator> 	listOfAllFilterCreators      	;
+	private JList 					jlFilterCreatorsAdded        	;
+	private List<FilterCreator> 	listOfAllFilterCreatorsAdded 	; 
+	private List<FilterCreator> 	result                       	;
 
+	/////////////
+	// COMPONENTS
 	
-	private JComboBox filterCreatorsToChoose;
-	private DefaultComboBoxModel filterModel;
-	private FilterCreator currentSelectedFilterCreator;
+	private JButton 				addButton						;
+	private JButton 				remButton						;
+	private JButton 				setButton						;
+	private JButton 				saveButton						;
+	private JComboBox 				filterCreatorsToChoose			;
+	private DefaultComboBoxModel 	filterModel						;
+	private FilterCreator 			currentSelectedFilterCreator	;
+	private JScrollPane 			jspOptions						;
+	private JPanel 					optionsForFilters				;
 
-	private JScrollPane jspOptions;
-	private JPanel optionsForFilters;
-
+	//////////////////////////////////
+	// EXECUTABLE MAIN. DO NOT USE IT.
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public static void 				main						(String[] args) {
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);		
@@ -77,8 +76,10 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 
 	}
 	
+	//////////////
+	// CONSTRUCTOR
 	
-	public FiltersSelectionPane(JFrame owner, List<FilterCreator> result) {
+	public 							FiltersSelectionPane		(JFrame owner, List<FilterCreator> result) {
 		super(owner,true);
 		this.result = result;		
 		this.createGUI();
@@ -87,11 +88,10 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		this.setTitle("adding Filters");
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-
 	}
 
 
-	private void createGUI() {
+	private void 					createGUI					() {
 		
 //		this.setOpaque(true);
 		
@@ -215,9 +215,10 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		
 	}
 	
-
+	////////////////////
+	// AUXILIARY CLASSES
 	
-	private class jcbFilterAction implements ActionListener {
+	private class 		jcbFilterAction 	implements 		ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) filterCreatorsToChoose.getSelectedItem());
 			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
@@ -229,7 +230,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
-	private class jbAddAction implements ActionListener {
+	private class 		jbAddAction 		implements 		ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.add(
 			FiltersSelectionPane.this.currentSelectedFilterCreator.duplicateWithGUIvalues());
@@ -244,7 +245,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
-	private class jbRemAction implements ActionListener {
+	private class 		jbRemAction 		implements 		ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
 			FiltersSelectionPane.this.listOfAllFilterCreatorsAdded.remove(index);
@@ -255,7 +256,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
-	private class jbSetAction implements ActionListener {
+	private class 		jbSetAction 		implements 		ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 			
 			int index = FiltersSelectionPane.this.jlFilterCreatorsAdded.getSelectedIndex();
@@ -269,7 +270,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
-	private class jbSaveAction implements ActionListener {
+	private class 		jbSaveAction 		implements 		ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.result.clear();
 			FiltersSelectionPane.this.result.addAll(FiltersSelectionPane.this.listOfAllFilterCreatorsAdded);
@@ -279,8 +280,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
-	
-	private class jlFilterCreatorsAddedSelectionChanged implements ListSelectionListener {
+	private class 		jlFilterCreatorsAddedSelectionChanged 		implements 		ListSelectionListener {
 		@Override public void valueChanged(ListSelectionEvent e) {
 			FiltersSelectionPane.this.currentSelectedFilterCreator = ((FilterCreator) jlFilterCreatorsAdded.getSelectedValue());
 			System.out.println(FiltersSelectionPane.this.currentSelectedFilterCreator);

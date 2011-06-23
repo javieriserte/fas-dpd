@@ -4,27 +4,66 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import sequences.dna.Primer;
 
+import fasdpd.PrimerPair;
+
+import sequences.dna.Primer;
+
 public class ResultViewer extends JPanel {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5492613920686356173L;
-	private JButton jbSaveList;
-	private JButton jbSavePlot;
-	private JScrollPane scPane;
-	final private ResultTable resultTable;
+	// INSTANCE VAIRABLES
+	
+	private static final long 	serialVersionUID = -5492613920686356173L;
+	private JButton 			jbSaveList;
+	private JButton 			jbSavePlot;
+	private JScrollPane			scPane;
+	private ResultTable 		resultTable;
+	private MainFASDPD 			mainframe;
+	private boolean 			isShowingSinglePrimerData;
+	private Object				primerData;
+	private int					lenOfAlignment;
 
-	public ResultViewer() {
+	// CONSTRUCTOR
+	public 			ResultViewer		(MainFASDPD mainframe, int lenOfAlignment) {
 		super();
+		this.mainframe = mainframe;
+		this.lenOfAlignment = lenOfAlignment;
+		this.createGUI();
+	}
+	
+	// PUBLIC INTERFACE
+	public void 	setdata				(List<Primer> primers) {
+		resultTable.setData(primers);
+		this.primerData = primers;
+		this.isShowingSinglePrimerData = true;
+		this.resultTable.updateUI();
+	}
+	
+	public void 	setPairdata			(List<PrimerPair> primers) {
+		resultTable.setPairData(primers);
+		this.primerData = primers;		
+		this.isShowingSinglePrimerData = false;
+		this.resultTable.updateUI();
+	}
+
+	// PRIVATE METHODS
+	
+	private void 	createGUI			() {
 		
 		GridBagLayout thisLayout = new GridBagLayout();
 		thisLayout.columnWeights = new double[] {1,1}; 
@@ -55,6 +94,7 @@ public class ResultViewer extends JPanel {
 		jbSaveList.setText("Save List");
 		jbSaveList.setMargin(new Insets(2, 2,2,2));
 		jbSaveList.setPreferredSize(new Dimension(100, 50));
+		jbSaveList.addActionListener(new SaveListActionListener());
 
 	
 		c.fill = GridBagConstraints.HORIZONTAL ;
@@ -67,6 +107,7 @@ public class ResultViewer extends JPanel {
 		jbSavePlot.setText("Save Plot");
 		jbSavePlot.setMargin(new Insets(2, 2,2,2));
 		jbSavePlot.setPreferredSize(new Dimension(100, 50));
+		jbSavePlot.addActionListener(new SavePlotActionListener());
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
@@ -74,9 +115,65 @@ public class ResultViewer extends JPanel {
 		this.add(jbSavePlot,c);
 	}
 	
+	// AUXILIARY CLASSES
 	
-	public void setdata(List<Primer> primers) {
-		resultTable.setData(primers);
+	private class 	SaveListActionListener 		implements 	ActionListener {
 		
+		@SuppressWarnings("unchecked")
+		@Override public void 		actionPerformed		(ActionEvent e) {
+
+			// Create a saveFile dialog
+			JFileChooser iFile = new JFileChooser();
+
+			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			iFile.setMultiSelectionEnabled(false);
+			iFile.setDialogTitle("Select a File to Sale Primers Data");
+			iFile.setDialogType(JFileChooser.SAVE_DIALOG);
+			iFile.setCurrentDirectory(new java.io.File( "." ));
+			iFile.showOpenDialog(ResultViewer.this);
+
+			try {
+				if (ResultViewer.this.isShowingSinglePrimerData) {
+					ResultViewer.this.mainframe.getControl().exportPrimers(iFile.getSelectedFile().getCanonicalPath() , (List<Primer>) primerData );
+				} else {
+					ResultViewer.this.mainframe.getControl().exportPairs(iFile.getSelectedFile().getCanonicalPath(), (List<PrimerPair>) primerData );
+				}
+			} catch (IOException e1) { e1.printStackTrace(); }			
+		}
+		
+	}
+	
+	private class 	SavePlotActionListener 		implements 	ActionListener {
+
+		@SuppressWarnings("unchecked")
+		@Override public void 		actionPerformed		(ActionEvent e) {
+
+			// Create a saveFile dialog
+			JFileChooser iFile = new JFileChooser();
+
+			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			iFile.setMultiSelectionEnabled(false);
+			iFile.setDialogTitle("Select a File to Sale Primers Data");
+			iFile.setDialogType(JFileChooser.SAVE_DIALOG);
+			iFile.setCurrentDirectory(new java.io.File( "." ));
+			iFile.showOpenDialog(ResultViewer.this);
+
+			List<Primer> exported = null;
+			if (ResultViewer.this.isShowingSinglePrimerData) {
+				
+				exported = (List<Primer>) primerData;
+				
+			} else {
+				exported = new Vector<Primer>();
+				for (PrimerPair pair : ((List<PrimerPair>) primerData)) {
+					exported.add(pair.getForward());
+					exported.add(pair.getReverse());
+				}
+			}
+			
+			try {
+				ResultViewer.this.mainframe.getControl().exportDistributionProfile(iFile.getSelectedFile().getCanonicalPath(),exported, lenOfAlignment);
+				} catch (IOException e1) { e1.printStackTrace(); }			
+		}
 	}
 }

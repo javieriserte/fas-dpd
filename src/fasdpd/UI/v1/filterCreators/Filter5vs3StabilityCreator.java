@@ -7,6 +7,8 @@ import cmdGA.parameterType.ParameterType;
 import filters.Filter;
 import filters.singlePrimer.Filter5vs3Stability;
 import filters.singlePrimer.FilterCGContent;
+
+
 /**
  * @author Javi
  *
@@ -17,8 +19,8 @@ public class Filter5vs3StabilityCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new DoubleParameter(),new DoubleParameter(), new IntegerParameter()};
 		parametersValues = new String[] {"1.5", "310","5"};
 	}
-	@Override
-	public Filter create(){ 
+	
+	@Override public Filter create() {
 		Double p0=null;
 		Double p1=null;
 		Integer p2=null;
@@ -30,6 +32,6 @@ public class Filter5vs3StabilityCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new Filter5vs3Stability(p0,p1,0,p2);
 	}
-	@Override public String toString() { return "Filter Stability of 5' vs 3'"; }
 	
+	@Override public String toString() { return "Filter Stability of 5' vs 3'"; }
 } 
