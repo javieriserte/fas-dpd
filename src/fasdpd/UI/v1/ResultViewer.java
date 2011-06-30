@@ -75,16 +75,17 @@ public class ResultViewer extends JPanel {
 		
 		resultTable.setOpaque(true);
 
-		scPane = new JScrollPane();
-		scPane.setViewportView(resultTable);
-		scPane.setOpaque(true);
+//		scPane = new JScrollPane();
+//		scPane.setViewportView(resultTable);
+//		scPane.setOpaque(true);
 		
 		
 		c.fill = GridBagConstraints.BOTH ;
 		c.gridwidth =2;
 		c.gridx = 0;
 		c.gridy = 0;
-		this.add(scPane,c);
+//		this.add(scPane,c);
+		this.add(resultTable,c);
 		c.gridwidth =1;
 		
 		jbSaveList = new JButton();
