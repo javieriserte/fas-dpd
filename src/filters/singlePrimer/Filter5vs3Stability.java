@@ -51,12 +51,16 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	 * 
 	 */
 	@Override public boolean filter(Primer p) {
-		this.deltaG5 = this.calculateStability(p.getSequence().subSequence(0, this.len-1));
-		this.deltaG3 = this.calculateStability(p.getSequence().subSequence(
-				p.getSequence().length()-this.len, 
-				p.getSequence().length()-1)
-				);
-		System.out.println(this.deltaG5 + " + " + this.deltaGLimit + " < " + this.deltaG3);
+		
+		CharSequence ssInit = p.getSequence().subSequence(0, this.len);
+		
+		CharSequence ssEnd =  p.getSequence().subSequence(
+				              p.getSequence().length()-this.len, 
+				              p.getSequence().length());
+		
+		this.deltaG5 = this.calculateStability(ssInit);
+		this.deltaG3 = this.calculateStability(ssEnd);
+//		System.out.println(p.getSequence() +": " + ssInit + " vs. " +ssEnd +" - " +this.deltaG5 + " + " + this.deltaGLimit + " < " + this.deltaG3);
 		return (this.deltaG5 < this.deltaG3 + this.deltaGLimit);
 	}
 
