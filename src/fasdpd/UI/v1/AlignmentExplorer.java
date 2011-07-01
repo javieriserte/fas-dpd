@@ -1,15 +1,27 @@
 package fasdpd.UI.v1;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.ScrollPane;
 
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
@@ -27,103 +39,46 @@ import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
 import sequences.dna.DNASeq;
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class AlignmentExplorer extends javax.swing.JPanel {
-	private JScrollPane mainScrollPane;
-	private JLabel mainView;
-//	private JTextPane mainView;
-//	private JTextPane header;
-	private JLabel header;
-	private JLabel descriptions;
-	private Alignment alignment;
-	private GeneticCode geneticCode;
 
-	/**
-	* Auto-generated main method to display this 
-	* JPanel inside a new JFrame.
-	*/
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		List<Pair<String,String>> l = null;
-		FastaMultipleReader mfr = new FastaMultipleReader();
-		GeneticCode geneticCode =null;
-		Alignment alin1 = new Alignment();
-		try {
-			
-//			geneticCode = new GeneticCode("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\StandardCode");
-			geneticCode = new GeneticCode("StandardCode");			
-			l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
-		} catch (FileNotFoundException e) { e.printStackTrace(); }
-//
-		if (l!=null) {
-			for (Pair<String, String> pair : l) {
-				alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
-			}
-		} else {
-			return;
-		}
-		AlignmentExplorer ae = new AlignmentExplorer(alin1,geneticCode);
-		frame.getContentPane().add(ae);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		ae.highlight(5, 10);
-//		frame.pack();
+	/////////////////////
+	// Instance Variables
 	
-		frame.setVisible(true);
-	}
+	private static final long 		serialVersionUID = 7978892495301236840L;
+	private Alignment 				alignment;
+	private GeneticCode 			geneticCode;
+
+	/////////////
+	// Components
+	private JScrollPane 			mainScrollPane;
+	private JLabel 					mainView;
+	private JLabel 					header;
+	private JLabel 					descriptions;
+
+
 	
-	public AlignmentExplorer(Alignment alin1, GeneticCode geneticCode) {
+	public 					AlignmentExplorer				(Alignment alin1, GeneticCode geneticCode) {
 		super();
 		this.alignment = alin1;
 		this.geneticCode = geneticCode;
-		try { initGUI();
+		try { createGUI();
 		} catch (BadLocationException e) { e.printStackTrace(); }
 		  catch (IOException e) { e.printStackTrace();
 		}
 	}
 	
-	private void initGUI() throws BadLocationException, IOException {
+	private void 			createGUI						() throws BadLocationException, IOException {
 		BorderLayout thisLayout = new BorderLayout();
 		this.setLayout(thisLayout);
 		{
 			mainScrollPane = new JScrollPane();
 			this.add(mainScrollPane, BorderLayout.CENTER);
 
-			// TODO ver como se puede hacer que la barra para los nombres de las secuencias pueda cambiar de largo.
-			
 			Font myFont = new Font("Monospaced", Font.BOLD, 14);
 			
-			mainView = new JLabel() {
-
-				private static final long serialVersionUID = 1L;
-
-				public void paint(Graphics g) {
-//  				Shape circle = new Ellipse2D.Float(100.0f, 100.0f, 100.0f, 100.0f);
-//					Shape square = new Rectangle2D.Double(100, 100,100, 100);
-					super.paint(g);
-//				    Graphics2D ga = (Graphics2D)g;
-//				    ga.draw(circle);
-//				    ga.setPaint(Color.green);
-//				    ga.fill(circle);
-//				    ga.setPaint(Color.red);
-//				    ga.draw(square);
-//					ga.drawString("HOLA", 10, 10);
-				};
-			};
-			
-			
+			mainView = new JLabel();
 			header = new JLabel();
+			
 //			header.setContentType("text/html");
 			header.setText(this.createTextRuler(this.alignment.getSeq().get(0).getLength()));
 //			header.setEditable(false);
@@ -162,11 +117,68 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		    mainView.setBackground(new Color(255,255,255));
 		    
 		    mainScrollPane.setColumnHeaderView(header);
-			mainScrollPane.setRowHeaderView(descriptions);
-			mainScrollPane.setViewportView(mainView);
-//			mainView.setPreferredSize(new java.awt.Dimension(497, 397));
-//			mainScrollPane.setCorner(key, corner)
+//
+
+
+		    JPanel rowHeaderPanel = new JPanel();
+		    
+		    
+		    descriptions.setOpaque(true);
+		    descriptions.setVisible(true);
+		    
+		    rowHeaderPanel.setOpaque(true);
+		    rowHeaderPanel.setVisible(true);
+		    rowHeaderPanel.setBackground(Color.white);
+		    
+		    GridBagLayout rhpL = new GridBagLayout();
+		    rowHeaderPanel.setLayout(rhpL);
+
+		    rhpL.columnWeights 	= new double[] 	{   1,  0 }; 
+		    rhpL.columnWidths 	= new int[] 	{ 140, 15 }; // total width of panel is 310
+		    rhpL.rowWeights 	= new double[] 	{   1 };
+		    rhpL.rowHeights 	= new int[] 	{ 100 }; // total width of panel is 200
+		    
+		    GridBagConstraints c = new GridBagConstraints();
+
+		    c.gridy = 0;
+		    c.gridx = 0;
+		    c.fill = GridBagConstraints.BOTH;
+		    c.anchor = GridBagConstraints.NORTHWEST;
+		
+		    rowHeaderPanel.add(descriptions,c);
+		    
+		    c.gridy = 0;
+		    c.gridx = 1;
+		    c.fill = GridBagConstraints.VERTICAL;
+		    c.anchor = GridBagConstraints.CENTER;
+		    
+		    
+		    		    
+		    
+		    JButton split = new JButton();
+		    split.setPreferredSize(new Dimension(5, 100));
+		    split.setAlignmentX(CENTER_ALIGNMENT);
+		    
+		    SplitBarMouseListener sbml = new SplitBarMouseListener();
+		    
+		    split.addMouseMotionListener((MouseMotionListener) sbml );
+		    split.addMouseListener((MouseListener) sbml );
+		    
+		    rowHeaderPanel.add(split,c);
+		    mainScrollPane.setRowHeaderView(rowHeaderPanel);
+
+		    mainScrollPane.setViewportView(mainView);
 			
+		    JLabel lowerleftcorner = new JLabel();
+		    lowerleftcorner.setOpaque(true);
+		    lowerleftcorner.setBackground(Color.white);
+		    
+			JLabel upperleftcorner = new JLabel();
+			upperleftcorner.setBackground(Color.white);
+			upperleftcorner.setOpaque(true);
+			
+			mainScrollPane.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, lowerleftcorner);
+			mainScrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, upperleftcorner);
 		}
 		this.setPreferredSize(new Dimension (500,400));
 		
@@ -218,4 +230,67 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	public void highlight (Integer from, Integer to) {
 		this.mainView.setText(this.getHTMLforSequences(from,to));
 	}
+	
+	////////////////////////////////////
+	// Auxiliary Classes
+	
+	
+	private class SplitBarMouseListener implements MouseMotionListener, MouseListener {
+		private Integer x_i = null;
+		
+		
+		@Override public void mouseDragged	(MouseEvent e) {
+			int dx=0;
+			if (x_i!=null) { dx = e.getX() - x_i;} 
+			          else { x_i = e.getX(); }
+
+			AlignmentExplorer.this.descriptions.setPreferredSize(new Dimension(descriptions.getSize().width + dx,descriptions.getSize().height));
+			descriptions.updateUI();
+			
+		}
+		
+		@Override public void mouseReleased	(MouseEvent e) {
+			x_i = null;
+		}
+		
+		@Override public void mouseMoved  	(MouseEvent e) {}
+		@Override public void mouseClicked	(MouseEvent e) {}
+		@Override public void mousePressed	(MouseEvent e) {}
+		@Override public void mouseEntered	(MouseEvent e) {}
+		@Override public void mouseExited	(MouseEvent e) {}
+	}
+	
+	
+	//////////////////////////////////
+	// Executable Main. DO NOT USE IT.
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		List<Pair<String,String>> l = null;
+		FastaMultipleReader mfr = new FastaMultipleReader();
+		GeneticCode geneticCode =null;
+		Alignment alin1 = new Alignment();
+		try {
+			
+//			geneticCode = new GeneticCode("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\StandardCode");
+			geneticCode = new GeneticCode("StandardCode");			
+			l = mfr.readFile("C:\\Javier\\Informatica\\Proyectos\\FASDPD\\JavaWorkspace\\FAS-DPD\\example\\Cyto_c_ox.fas");
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+//
+		if (l!=null) {
+			for (Pair<String, String> pair : l) {
+				alin1.addSequence(new DNASeq( pair.getSecond(),pair.getFirst()));
+			}
+		} else {
+			return;
+		}
+		AlignmentExplorer ae = new AlignmentExplorer(alin1,geneticCode);
+		frame.getContentPane().add(ae);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.pack();
+		ae.highlight(5, 10);
+//		frame.pack();
+	
+		frame.setVisible(true);
+	}
+
 }
