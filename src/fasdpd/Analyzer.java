@@ -102,9 +102,9 @@ public class Analyzer {
 		
 		for (int x=StartPoint-1; x<EndPoint-primerLength+1; x++) {
 			Primer p = mySeq.designPrimer(x+1, x+primerLength, directStrand);
-						
+				
+			p.setScore(this.calculatePrimerScore(p));
 			if (Filter.validate( new PrimerValidable(p))) {
-				p.setScore(this.calculatePrimerScore(p));
 				lp.addValue(p);
 			}
 			
