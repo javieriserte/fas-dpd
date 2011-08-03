@@ -29,6 +29,7 @@ import fasdpd.UI.v1.filterCreators.FilterCreator;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 import filters.Filter;
+import filters.primerpair.FilterOverlapping;
 import filters.primerpair.FilterPrimerPair;
 import filters.singlePrimer.FilterSinglePrimer;
 import filters.validator.ValidateAlways;
@@ -261,9 +262,7 @@ public class OptionsPane extends JPanel {
 				listOfFilterCreators = new Vector<FilterCreator>();
 			}
 			
-			new FiltersSelectionPane(mainframe, listOfFilterCreators);
-//			FiltersSelectionPane comp = new FiltersSelectionPane(mainframe, listOfFilterCreators);			
-			System.out.println(listOfFilterCreators);
+			new FiltersSelectionPane(mainframe, listOfFilterCreators,mainframe.getSearchParameter().isSearchPair());
 			
 		}
 		
@@ -335,6 +334,7 @@ public class OptionsPane extends JPanel {
 			for (ValidateForFilterPrimerPair vr : vffpp) {
 				filterPrimerPairs = new Validate_AND(filterPrimerPairs , vr);
 			}
+			filterPrimerPairs = new Validate_AND(filterPrimerPairs , new ValidateForFilterPrimerPair( new FilterOverlapping()));
 
 			sp.setFilter(filterSinglePrimers);
 			sp.setFilterpair(filterPrimerPairs);

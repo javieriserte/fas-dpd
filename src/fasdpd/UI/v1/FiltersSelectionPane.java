@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
@@ -49,6 +50,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private JList 					jlFilterCreatorsAdded        	;
 	private List<FilterCreator> 	listOfAllFilterCreatorsAdded 	; 
 	private List<FilterCreator> 	result                       	;
+	private SingleOrPair			filtersToShow					;
 
 	/////////////
 	// COMPONENTS
@@ -63,23 +65,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private JScrollPane 			jspOptions						;
 	private JPanel 					optionsForFilters				;
 
-	//////////////////////////////////
-	// EXECUTABLE MAIN. DO NOT USE IT.
-	
-	public static void 				main						(String[] args) {
-		
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);		
-		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
-		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2);
-		System.out.println(result2);
 
-	}
-	
 	//////////////
 	// CONSTRUCTOR
 	
-	public 							FiltersSelectionPane		(JFrame owner, List<FilterCreator> result) {
+	public 							FiltersSelectionPane		(JFrame owner, List<FilterCreator> result, boolean includePair) {
 		super(owner,true);
 		this.result = result;		
 		this.createGUI();
@@ -88,6 +78,9 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		this.setTitle("adding Filters");
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		if ( includePair) filtersToShow = SingleOrPair.both ; else
+			              filtersToShow = SingleOrPair.single;
+		
 	}
 
 
@@ -113,21 +106,23 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		listOfAllFilterCreators = new Vector<FilterCreator>();
 		
 		listOfAllFilterCreators.add( new Filter5vs3StabilityCreator());
-		listOfAllFilterCreators.add( new FilterAmpliconSizeCreator());
 		listOfAllFilterCreators.add( new FilterBaseRunsCreator());
 		listOfAllFilterCreators.add( new FilterCGContentCreator());
 		listOfAllFilterCreators.add( new FilterDegeneratedEndCreator());
-		listOfAllFilterCreators.add( new FilterGCCompatibilityCreator());
-		listOfAllFilterCreators.add( new FilterHeteroDimerCreator());
-		listOfAllFilterCreators.add( new FilterHeteroDimerFixed3Creator());
 		listOfAllFilterCreators.add( new FilterHomoDimerCreator());
 		listOfAllFilterCreators.add( new FilterHomoDimerFixed3Creator());
 		listOfAllFilterCreators.add( new FilterMeltingPointTemperatureCreator());
-		listOfAllFilterCreators.add( new FilterMeltingTempCompatibilityCreator());
-		listOfAllFilterCreators.add( new FilterOverlappingCreator());
 		listOfAllFilterCreators.add( new FilterPrimerScoreCreator());
 		listOfAllFilterCreators.add( new FilterRepeatedEndCreator());
-		
+
+		if (filtersToShow==SingleOrPair.both) {
+			listOfAllFilterCreators.add( new FilterAmpliconSizeCreator());
+			listOfAllFilterCreators.add( new FilterGCCompatibilityCreator());
+			listOfAllFilterCreators.add( new FilterHeteroDimerCreator());
+			listOfAllFilterCreators.add( new FilterHeteroDimerFixed3Creator());
+			listOfAllFilterCreators.add( new FilterMeltingTempCompatibilityCreator());
+			listOfAllFilterCreators.add( new FilterOverlappingCreator()); // TODO: This must be always present!!!
+		}
 		filterModel = new DefaultComboBoxModel((Vector<FilterCreator>)listOfAllFilterCreators);
 
 //		newFilters = new JComboBox(lfc.toArray());
@@ -274,8 +269,6 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		@Override public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.result.clear();
 			FiltersSelectionPane.this.result.addAll(FiltersSelectionPane.this.listOfAllFilterCreatorsAdded);
-			
-			//FiltersSelectionPane.this.getOwner().dispose();
 			FiltersSelectionPane.this.dispose();
 		}
 	}
@@ -291,5 +284,20 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 	
+	public enum 		SingleOrPair {
+		single, both;
+	}
 	
+	//////////////////////////////////
+	// EXECUTABLE MAIN. DO NOT USE IT.
+	
+	public static void 				main						(String[] args) {
+		
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);		
+		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
+		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2,true);
+		System.out.println(result2);
+
+	}
 }
