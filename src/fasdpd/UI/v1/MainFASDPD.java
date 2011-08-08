@@ -22,7 +22,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private FASDPD control;
 		// is the program itself.
 	private SearchParameter searchParameter;
-		// the every option for ruuning FASDPD
+		// the every option for running FASDPD
 
 	// EXECUATABLE MAIN
 	public static void main(String[] args) {
@@ -103,7 +103,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		GeneticCode gc = new GeneticCode("StandardCode");
 		this.searchParameter.setGCfile("StandardCode");
 		OptionsPane op = new OptionsPane(alin1, gc, MainFASDPD.this);
-			// 	TODO Ugly !! file hardcoded.!
+			// 	TODO Ugly !! file hard-coded.!
 		op.setOpaque(true);
 		
 		this.setContentPane(op);
