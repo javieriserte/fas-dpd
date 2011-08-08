@@ -17,6 +17,7 @@ import fastaIO.Pair;
 
 public class MainFASDPD extends javax.swing.JFrame {
 
+	private static final long serialVersionUID = -3916944172322638197L;
 	// INSTANCE VARIABLES
 	private FASDPD control;
 		// is the program itself.
