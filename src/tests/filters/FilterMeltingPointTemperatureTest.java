@@ -21,9 +21,9 @@ public class FilterMeltingPointTemperatureTest extends TestCase {
 		
 	TmEstimator dummie = new TmEstimator() {
 		float v;
-		@Override public float min()  { return v; }
-		@Override public float mean() {	return v; }
-		@Override public float max()  { return v; }
+		@Override public double  min()  { return v; }
+		@Override public double  mean() {	return v; }
+		@Override public double  max()  { return v; }
 		@Override public void calculateTM(Primer primer) { int l = primer.getLength();  v = l *5; }
 	};
 	

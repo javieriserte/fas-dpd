@@ -12,9 +12,9 @@ import sequences.dna.Primer;
  */
 public class SimpleTmEstimator implements TmEstimator {
 
-	private float min=0;
-	private float max=0;
-	private float mean=0;
+	private double  min=0;
+	private double  max=0;
+	private double  mean=0;
 	
 	// PUBLIC INSTANCE METHODS
 
@@ -32,7 +32,7 @@ public class SimpleTmEstimator implements TmEstimator {
 			int n=0;
 			dpi.start();
 			String s = dpi.next();
-			float tm = this.calculate(s);
+			double  tm = this.calculate(s);
 			this.max = tm;
 			this.min = tm;
 			total +=tm;
@@ -51,15 +51,15 @@ public class SimpleTmEstimator implements TmEstimator {
 		
 	}
 
-	@Override public float mean() {
+	@Override public double  mean() {
 		return this.mean;
 	}
 
-	@Override public float max() {
+	@Override public double  max() {
 		return this.max;
 	}
 
-	@Override public float min() {
+	@Override public double  min() {
 		return this.min;
 	}
 	

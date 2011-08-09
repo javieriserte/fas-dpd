@@ -5,9 +5,9 @@ import sequences.dna.Primer;
 public interface TmEstimator {
 
 	public void calculateTM(Primer primer);
-	public float mean();
-	public float max();
-	public float min();
+	public double  mean();
+	public double  max();
+	public double  min();
 	
 	/**
 	 * Interface for classes that estimate TM of oligonucleotides
