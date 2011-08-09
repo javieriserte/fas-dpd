@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.ScrollPane;
+import java.awt.Shape;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
@@ -101,71 +102,21 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		this.add(mainScrollPane, BorderLayout.CENTER);
 		Font font = new Font("Courier New", Font.PLAIN, 14);
 
+		this.setFont(font);
 		
 		mainView = new MainView(this.alignment);
 		mainView.setFont(font);
 		mainView.setOpaque(true);
 		mainView.setBackground(this.backgroundColor);
 		
-		header = new JLabel() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1221448808240337613L;
-
-			public void paint (Graphics g) {
-				super.paint(g);
-				
-				int textHeight    = g.getFontMetrics().getHeight();
-				
-				int size = AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
-				String s = null;
-				
-				if (AlignmentExplorer.this.geneticCode!=null) {
-					s = (alignment.pileUp(AlignmentExplorer.this.geneticCode)).getSequence();
-				}
-				
-				StringBuilder line1 = new StringBuilder();
-				StringBuilder line2 = new StringBuilder();
-				String base = "''''|";
-				int nb = ((size-1) /5)+1;
-				while (nb-- >0) {line1.append(base);}
-				
-				int d = ((size-1) /10)+1;
-				int i=1;
-				while (i++ <d) {
-					String n = String.valueOf((i-1)*10);
-					
-					line2.append(("          "+n).substring(n.length()));
-					}
-				
-				
-				line1.delete(size,line1.length());
-
-				g.drawString(line1.toString(), 5, textHeight);
-				g.drawString(line2.toString(), 5, 2*textHeight);
-				
-				ColoringStrategy color = new DnaColoringStrategy();
-				
-				
-				AlignmentExplorer.this.printColoredSequence(5,2*textHeight,(Graphics2D)g,s,color);
-				
-				
-				String s1 = alignment.getSeq().get(0).getSequence();
-				int w = g.getFontMetrics().stringWidth(s1);
-				
-				this.setPreferredSize(new Dimension(w+10,textHeight*3+8));
-				
-			}
-		};
+		header = new Header(this.alignment);
 		
 		
 		header.setFont(font);
 		header.setBackground(this.backgroundColor);
 		header.setOpaque(true);
-		header.setPreferredSize(new Dimension(0,70));
 		
-		descriptions = new Description(0, this.alignment);
+		descriptions = new Description(this.alignment);
 		descriptions.setFont(font);
 		descriptions.setBackground(this.backgroundColor);
 		descriptions.setOpaque(true);
@@ -177,7 +128,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		
 		this.add(mainScrollPane);
 		
-		this.setPreferredSize(new Dimension(200,300));
+		this.setPreferredSize(new Dimension(400,300));
 		
 	    JPanel rowHeaderPanel = new JPanel();
 	    
@@ -224,176 +175,25 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	    JLabel lowerleftcorner = new JLabel();
 	    lowerleftcorner.setOpaque(true);
 	    lowerleftcorner.setBackground(this.backgroundColor);
+	    lowerleftcorner.setVisible(true);
 	    
 		JLabel upperleftcorner = new JLabel();
 		upperleftcorner.setBackground(this.backgroundColor);
 		upperleftcorner.setOpaque(true);
+		upperleftcorner.setVisible(true);
 		
+		JLabel upperrightcorner = new JLabel();
+		upperrightcorner.setBackground(this.backgroundColor);
+		upperrightcorner.setOpaque(true);
+		upperrightcorner.setVisible(true);
+		
+		
+		mainScrollPane.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, upperrightcorner);
 		mainScrollPane.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, lowerleftcorner);
 		mainScrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, upperleftcorner);
 		
 		
 	}
-	
-
-
-//	private void 			createGUI						() throws BadLocationException, IOException {
-//		BorderLayout thisLayout = new BorderLayout();
-//		this.setLayout(thisLayout);
-//		{
-//			mainScrollPane = new JScrollPane();
-//			this.add(mainScrollPane, BorderLayout.CENTER);
-//
-//			Font myFont = new Font("Monospaced", Font.BOLD, 14);
-//			
-//			mainView = new JLabel();
-//			header = new JLabel();
-//			
-////			header.setContentType("text/html");
-//			header.setText(this.createTextRuler(this.alignment.getSeq().get(0).getLength()));
-////			header.setEditable(false);
-////			header.setDisabledTextColor(new Color(0));
-////			header.setEnabled(false);
-//			header.setFont(myFont);
-//			header.setFocusable(false);
-//			header.setInputVerifier(null);
-//			header.addMouseListener(null);
-//			header.addInputMethodListener(null);
-//			header.addMouseMotionListener(null);
-//			header.setOpaque(true);
-//			header.setBackground(new Color(255,255,255));			
-////			header.setDragEnabled(false);
-//			
-//			descriptions = new JLabel();
-////			descriptions.setContentType("text/html");
-//			descriptions.setText(getHTMLforDecriptions());
-////			descriptions.setSize(200, descriptions.getSize().height);
-//			descriptions.setPreferredSize(new Dimension(150,descriptions.getSize().height));
-//			descriptions.setFont(myFont);
-//			descriptions.setOpaque(true);
-//			descriptions.setBackground(new Color(255,255,255));
-//			descriptions.setVerticalAlignment(SwingConstants.TOP);
-//			
-////		    mainView.setContentType("text/html");
-//		    mainView.setText(this.getHTMLforSequences(null, null));
-////		    mainView.setEditable(false);
-//		    
-//		    mainView.setFont(myFont);
-//		    mainView.setVerticalAlignment(SwingConstants.TOP);
-//		    
-//		    mainView.setOpaque(true);
-//		    mainView.setBackground(new Color(255,255,255));
-//		    
-//		    mainScrollPane.setColumnHeaderView(header);
-////
-//
-//
-//		    JPanel rowHeaderPanel = new JPanel();
-//		    
-//		    
-//		    descriptions.setOpaque(true);
-//		    descriptions.setVisible(true);
-//		    
-//		    rowHeaderPanel.setOpaque(true);
-//		    rowHeaderPanel.setVisible(true);
-//		    rowHeaderPanel.setBackground(Color.white);
-//		    
-//		    GridBagLayout rhpL = new GridBagLayout();
-//		    rowHeaderPanel.setLayout(rhpL);
-//
-//		    rhpL.columnWeights 	= new double[] 	{   1,  0 }; 
-//		    rhpL.columnWidths 	= new int[] 	{ 140, 15 }; // total width of panel is 310
-//		    rhpL.rowWeights 	= new double[] 	{   1 };
-//		    rhpL.rowHeights 	= new int[] 	{ 100 }; // total width of panel is 200
-//		    
-//		    GridBagConstraints c = new GridBagConstraints();
-//
-//		    c.gridy = 0;
-//		    c.gridx = 0;
-//		    c.fill = GridBagConstraints.BOTH;
-//		    c.anchor = GridBagConstraints.NORTHWEST;
-//		
-//		    rowHeaderPanel.add(descriptions,c);
-//		    
-//		    c.gridy = 0;
-//		    c.gridx = 1;
-//		    c.fill = GridBagConstraints.VERTICAL;
-//		    c.anchor = GridBagConstraints.CENTER;
-//		    
-//		    
-//		    		    
-//		    
-//		    JButton split = new JButton();
-//		    split.setPreferredSize(new Dimension(5, 100));
-//		    split.setAlignmentX(CENTER_ALIGNMENT);
-//		    
-//		    SplitBarMouseListener sbml = new SplitBarMouseListener();
-//		    
-//		    split.addMouseMotionListener((MouseMotionListener) sbml );
-//		    split.addMouseListener((MouseListener) sbml );
-//		    
-//		    rowHeaderPanel.add(split,c);
-//		    mainScrollPane.setRowHeaderView(rowHeaderPanel);
-//
-//		    mainScrollPane.setViewportView(mainView);
-//			
-//		    JLabel lowerleftcorner = new JLabel();
-//		    lowerleftcorner.setOpaque(true);
-//		    lowerleftcorner.setBackground(Color.white);
-//		    
-//			JLabel upperleftcorner = new JLabel();
-//			upperleftcorner.setBackground(Color.white);
-//			upperleftcorner.setOpaque(true);
-//			
-//			mainScrollPane.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, lowerleftcorner);
-//			mainScrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, upperleftcorner);
-//		}
-//		this.setPreferredSize(new Dimension (500,400));
-//	}
-//	
-//	private String 			getHTMLforSequences				(Integer from, Integer to) {
-//		AlignmentHTMLProducer ahp = new AlignmentHTMLProducer();
-//		return ahp.produceHTML(alignment, from, to, new Color(200, 200, 100));
-//
-//	}
-//	
-//	private String 			getHTMLforDecriptions			(){
-//		StringBuilder r = new StringBuilder();
-//		r.append("<HTML><TT><PRE>");
-//		for (Sequence s : this.alignment.getSeq()) {
-////			r.append(s.getDescription().substring(0, Math.min(15, s.getDescription().length()))+"<BR>");
-//			
-//			r.append(s.getDescription()+"<BR>");
-//		}
-//		r.append("</PRE></TT></HTML>");
-//		return r.toString();
-//	}
-//	
-//	private String 			createTextRuler					(int size) {
-//		String s = null;
-//		if (this.geneticCode!=null) {
-//			s = (alignment.pileUp(this.geneticCode)).getSequence();
-//		}
-//		StringBuilder line1 = new StringBuilder();
-//		StringBuilder line2 = new StringBuilder();
-//		String base = "''''|";
-//		int nb = ((size-1) /5)+1;
-//		while (nb-- >0) {line1.append(base);}
-//		
-//		int d = ((size-1) /10)+1;
-//		int i=1;
-//		while (i++ <d) {
-//			String n = String.valueOf((i-1)*10);
-//			
-//			line2.append(("          "+n).substring(n.length()));
-//			}
-//		
-//		
-//		line1.delete(size,line1.length());
-//		if (this.geneticCode!=null) return "<HTML><TT><PRE>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
-//		return "<HTML><TT><PRE>" + s + "<BR>" + line1.toString() + "<BR>" + line2.toString() + "</PRE></TT></HTML>";
-//	}
-//	
 	
 	private void printColoredSequence(int x, int y, Graphics2D g, String sequence, ColoringStrategy color) {
 		int textHeight = g.getFontMetrics().getHeight();
@@ -435,97 +235,232 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 	
 	private class Description extends JLabel {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 3066870404629353044L;
 		private Alignment alignment = null;
-		private double textWidth;
+		private BufferedImage biDescriptions = null;
 		// Constructor
-		public Description (int rulerLenght, Alignment alignment) {
+		public Description (Alignment alignment) {
 			super();
 			this.alignment = alignment;
-//			modifyPreferredSize(null);
+
 		}
 
-//		protected void modifyPreferredSize(Graphics2D g) {
-//
-//			for (Sequence sequence : this.alignment.getSeq()) {
-//				String desc = sequence.getDescription();
-//				this.textWidth = Math.max(this.getTextBounds(desc,g).getWidth(),this.textWidth);
-//				
-//			}
-//			this.setPreferredSize(new Dimension((int) this.textWidth+10, 100));
-//		}
-		
 		// Public Interface 
 		public void paint( Graphics g ) {
 			// Redefinition of paint method.
 			super.paint(g);
-			int textHeight = g.getFontMetrics().getHeight();
+			
+			if (biDescriptions==null) createImage();
+			
+			g.drawImage((Image) this.biDescriptions, 0, 0, null);
+			
+		}
+
+		// Private Methods
+		private void createImage() {
+			
+			List<Sequence> sequences = this.alignment.getSeq();
+			int size = sequences.size();
+			String maxLengthDesc = "";
+			
+			maxLengthDesc = getMaxLengthSequence(sequences);
+			
+			biDescriptions = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+			
+			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
+			g.setFont(AlignmentExplorer.this.getFont());
+
+			int textWidth = g.getFontMetrics().stringWidth(maxLengthDesc);
+			int textHeight = g.getFontMetrics().getHeight() * size; 
+			
+//			System.out.println("textWidth : " + textWidth);
+//			System.out.println("textHeight: " + textHeight);
+//			
+			biDescriptions = new BufferedImage(textWidth + 10, textHeight + 10, BufferedImage.TYPE_INT_RGB);
+			g = (Graphics2D) biDescriptions.getGraphics();
+			
+			g.setColor(Color.white);
+			g.fillRect(0, 0, textWidth + 10, textHeight + 10);
+			
+			g.setColor(Color.black);
+			g.setFont(AlignmentExplorer.this.getFont());
+
+			int textLineHeight = g.getFontMetrics().getHeight();
 			int counter=0;
-//			this.modifyPreferredSize((Graphics2D) g);
 			for (Sequence sequence : this.alignment.getSeq()) {
 				String desc = sequence.getDescription();
 				counter++;
-				g.drawString(desc, 5, textHeight*(counter));
+				g.drawString(desc, 5, textLineHeight*(counter));
 			}
+			
+			this.setPreferredSize(new Dimension(textWidth + 10,  textHeight + 10));
+			
+			
+
 		}
-		
-		private Rectangle2D getTextBounds(String text, Graphics2D g) {
-			if (g!=null) 
-				return g.getFontMetrics().getStringBounds(text, g);
-			else {
-				FontRenderContext frc = new FontRenderContext(null, false, true);
-				TextLayout layout = new TextLayout(text, this.getFont(), frc);
-				return layout.getBounds();
+
+		protected String getMaxLengthSequence(List<Sequence> sequences) {
+			int max=0; 
+			Sequence s = null;
+			for (Sequence seq : sequences) {
+				if (seq.getDescription().length()> max) {
+					max = seq.getDescription().length();
+					s = seq;
+				}
 			}
+			return s.getDescription();
 		}
 	}
 	
+	
 
+	private class Header extends JLabel {
+
+		private static final long serialVersionUID = 1221448808240337613L;
+		private Alignment alignment;
+		private BufferedImage biHeader =null;
+		
+		public Header(Alignment alignment) {
+			super();
+			this.alignment = alignment;
+			createImage();
+		}
+
+		public void paint (Graphics g) {
+			super.paint(g);
+			
+			if (biHeader==null) {
+				createImage();
+			}
+			
+			g.drawImage((Image) biHeader, 0, 0, null);
+
+			
+//			this.setPreferredSize(new Dimension(w+10,textHeight*3+8));
+			
+		}
+		
+		private void createImage() {
+			
+			this.biHeader = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = (Graphics2D)this.biHeader.getGraphics();
+			
+			g.setFont(AlignmentExplorer.this.getFont());
+			
+			int textHeight    = g.getFontMetrics().getHeight();
+			 
+			int size = AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
+			String s = null;
+			
+			if (AlignmentExplorer.this.geneticCode!=null) {
+				s = (alignment.pileUp(AlignmentExplorer.this.geneticCode)).getSequence();
+			}
+			int textwidth = g.getFontMetrics().stringWidth(s);
+			
+			int imageHeight = 3* textHeight+8;
+			int imageWidth = textwidth + 10;
+			
+			StringBuilder line1 = new StringBuilder();
+			StringBuilder line2 = new StringBuilder();
+
+			this.biHeader = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
+			g = (Graphics2D)this.biHeader.getGraphics();
+			g.setFont(AlignmentExplorer.this.getFont());
+			
+			g.setColor(Color.white);
+			
+			String base = "''''|";
+			int nb = ((size-1) /5)+1;
+			while (nb-- >0) {line1.append(base);}
+			
+			int d = ((size-1) /10)+1;
+			int i=1;
+			while (i++ <d) {
+				String n = String.valueOf((i-1)*10);
+				
+				line2.append(("          "+n).substring(n.length()));
+				}
+			
+			
+			line1.delete(size,line1.length());
+
+			
+			
+			g.fillRect(0, 0, imageWidth, imageHeight);
+			g.setColor(Color.black);
+			g.drawString(line1.toString(), 5, textHeight);
+			g.drawString(line2.toString(), 5, 2*textHeight);
+			
+			ColoringStrategy color = new DnaColoringStrategy();
+
+			AlignmentExplorer.this.printColoredSequence(5,2*textHeight,(Graphics2D)g,s,color);
+			
+			this.setPreferredSize(new Dimension(imageWidth,imageHeight));
+			
+//			String s1 = alignment.getSeq().get(0).getSequence();
+//			int w = g.getFontMetrics().stringWidth(s1);
+		}
+		
+	};
+	
 	
 	private class MainView extends JLabel {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -3012075092592318198L;
 		private Alignment alignment = null;
-		private BufferedImage bi = null;
+		private BufferedImage biMainView = null;
 		// Constructor
 		public MainView (Alignment alignment) {
 			super();
 			this.alignment = alignment;
-			this.setPreferredSize(new Dimension(100,100));
+			this.createImage();			
 		}
 
 		// Public Interface 
 		public void paint( Graphics g ) {
 			// Redefinition of paint method.
 			super.paint(g);
-				
-			
-			if (bi==null) {
-			
-				
-				
 
-				
-			int textHeight = g.getFontMetrics().getHeight();
+			if (biMainView==null) {
+				createImage();
+			}
+			g.drawImage((Image) biMainView, 0, 0, null);
+			
+		}
+		
+		private String expandProteinSequence(String s) {
+			StringBuilder result = new StringBuilder();
+			
+			for (int i=0;i<s.length();i++) {
+				result.append('·');
+				result.append(s.charAt(i));
+				result.append('·');
+			}
+			return result.toString();
+		}
+		
+		private void createImage() {
+			List<Sequence> sequences = this.alignment.getSeq();
+			int size = sequences.size();
+			
+			biMainView = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+			
+			Graphics2D g = (Graphics2D) biMainView.getGraphics();
+			g.setFont(AlignmentExplorer.this.getFont());
+
+			int textWidth = g.getFontMetrics().stringWidth(sequences.get(0).getSequence());
+			int textHeight = g.getFontMetrics().getHeight(); 
+			int imageWidth = textWidth +10;
+			int imageHeight = textHeight * size;
 			int counter=0;
 			ColoringStrategy color = null;
 			boolean isProtein=false;
 			
-			String s = this.alignment.getSeq().get(0).getSequence();
-			int w = g.getFontMetrics().stringWidth(s);
+			biMainView = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
+			g = (Graphics2D) biMainView.getGraphics();
 			
-			bi = new BufferedImage(w+10, textHeight * this.alignment.getSeq().size(), BufferedImage.TYPE_INT_RGB);
-			
-			Graphics2D g1 = (Graphics2D) bi.getGraphics();
-			g1.setFont(g.getFont());
-			
-			g1.setColor(Color.white);
-			g1.fillRect(0, 0, w+10, textHeight * this.alignment.getSeq().size());
+			g.setFont(AlignmentExplorer.this.getFont());
+			g.setColor(Color.white);
+			g.fillRect(0, 0, imageWidth, imageHeight);
 			
 			if (this.alignment.getSeq().get(0).getClass() == DNASeq.class) {
 				color = new DnaColoringStrategy();
@@ -539,31 +474,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				String desc = sequence.getSequence();
 				counter++;
 				if (isProtein) desc = this.expandProteinSequence(desc);
-				AlignmentExplorer.this.printColoredSequence(5, textHeight* (counter-1), (Graphics2D)g1, desc, color);
-//				g.drawString(desc, 5, textHeight*(counter));
-				
-				
+				AlignmentExplorer.this.printColoredSequence(5, textHeight* (counter-1), (Graphics2D)g, desc, color);
 			}
-//			String s = this.alignment.getSeq().get(0).getSequence();
-//			int w = g.getFontMetrics().stringWidth(s);
-			
-			this.setPreferredSize(new Dimension(w+10,textHeight*this.alignment.getSeq().size()));
-			}
-			g.drawImage((Image) bi, 0, 0, null);
-			
-		}
-		
-		private String expandProteinSequence(String s) {
-			StringBuilder result = new StringBuilder();
-			
-			for (int i=0;i<s.length();i++) {
-				result.append('·');
-				result.append(s.charAt(i));
-				result.append('·');
-				
-			}
-			return result.toString();
-			
+			this.setPreferredSize(new Dimension(imageWidth,imageHeight));
 		}
 		
 	}
