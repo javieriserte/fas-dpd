@@ -26,8 +26,6 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		} else {
 			// Case Degenerated			
 
-			// TODO implement a dynamic programming strategy for degenerated primers
-
 			this.mean = this.calculateDeg(sequence); 
 			this.max = this.mean; 
 			this.min = this.mean;
@@ -78,64 +76,85 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		this.ds=0;
 		this.dsc=0;
 		
+		double[] dhds;
+		
 		for (int i=1; i<seq.length(); i++) {
 			// Adds the Delta_H & Delta_S values according to each pair of neighbor bases. 
 			
-			int degValue = BaseDeg.getDegValueFromString(seq.substring(i-1, i+1));
+			String dinucleotide = seq.substring(i-1, i+1);
+			int degValue = BaseDeg.getDegValueFromString(dinucleotide);
 
-			this.addToDH_DS_Deg(seq.substring(i-1, i+1),degValue);
+//			this.addToDH_DS_Deg(dinucleotide,degValue);
+			
+			dhds = getDH_DS_Deg(dinucleotide,degValue);
+			
+			this.dh += dhds[0];
+			this.ds += dhds[1];
 			
 		}
 		
-
-		this.addEndsToDH_DS_DEG(seq.charAt(0));
-		this.addEndsToDH_DS_DEG(seq.charAt(seq.length()-1));
+		dhds = this.getEndPenaltiesDH_DS_DEG(seq.charAt(0));
+		this.dh += dhds[0];
+		this.ds += dhds[1];
+		
+		dhds = this.getEndPenaltiesDH_DS_DEG(seq.charAt(seq.length()-1));
+		this.dh += dhds[0];
+		this.ds += dhds[1];
 			// Adds penalties for starting and ending positions
 		
-		
-		this.saltCorrectedDS(0.050,seq.length());
+//		this.saltCorrectedDS(0.050,seq.length());
+		this.dsc = saltCorrectedDS(0.050,seq.length(),this.ds);		
 		    // Makes Salt Corrections
 
-		return (double) (this.dh                                      /* delta_H in kcal/mol */ * 
+		return getMeltingTemp(this.dh, this.dsc);                 
+	}
+
+	protected double getMeltingTemp(double dh, double ds) {
+		return (double) (dh                                      /* delta_H in kcal/mol */ * 
 				        (double)1000                                      /* to convert kcal to cal */ /
-				       (this.dsc                                          /* delta_S in cal */ + 
-				       ((double)1.987                                                   /*cal/K·mol */ ) * 
-				       Math.log((double)(50/1000000000D))/* Denominator is CT. assumes [50nM] */ )
-				       /* For non-selfcomplementary molecules, CT in Eq. 3 is replaced by CT/4 if the
+				        (ds                                          /* delta_S in cal */ + 
+				        ((double)1.987                                                   /*cal/K·mol */ ) * 
+				        Math.log((double)(50/1000000000D))/* Denominator is CT. assumes [50nM] */ )
+				        /* For non-selfcomplementary molecules, CT in Eq. 3 is replaced by CT/4 if the
                           strands are in equal concentration or by (CA - CB/2) if the strands are at 
                           different concentrations, where CA and CB are the concentrations of the more 
                           concentrated and less concentrated strands, respectively */                   
-				       - (double) 273.15);                 /* Kelvin to Celcius */
+				       - (double) 273.15); /* Kelvin to Celcius */
 	}
 	
 	private double  calculate(String seq) {
-		this.dh=0;
-		this.ds=0;
-		this.dsc=0;
+		this.dh = 0 ;
+		this.ds = 0 ;
+		this.dsc= 0 ;
 		
 		for (int i=1; i<seq.length(); i++) {
 			// Adds the Delta_H & Delta_S values according to each pair of neighbor bases. 
-			this.addToDH_DS(seq.substring(i-1, i+1));
+			String dinucleotide = seq.substring(i-1, i+1);
+			double[] dhds = this.getDH_DS(dinucleotide);
+			
+			this.dh += dhds[0];
+			this.ds += dhds[1];
+			
+//			this.addToDH_DS(dinucleotide);
+			
 		}
 		
-
-		this.addEndsToDH_DS(seq.charAt(0), seq.charAt(seq.length()-1));
+		double[] dhds = this.getEndPenalty_DH_DS(seq.charAt(0));
+		this.dh += dhds[0];
+		this.ds += dhds[1];
+		
+		dhds = this.getEndPenalty_DH_DS(seq.charAt(seq.length()-1));
+		this.dh += dhds[0];
+		this.ds += dhds[1];
 			// Adds penalties for starting and ending positions
 		
 		
-		this.saltCorrectedDS(0.050,seq.length());
+//		this.saltCorrectedDS(0.050,seq.length());
+		
+		this.dsc = saltCorrectedDS(0.050,seq.length(),this.ds);
 		    // Makes Salt Corrections
 		
-		return (double ) (this.dh                                      /* delta_H in kcal/mol */ * 
-				       (double)1000                                      /* to convert kcal to cal */ /
-				       (this.dsc                                          /* delta_S in cal */ + 
-				       ((double)1.987                                                   /*cal/K·mol */ ) * 
-				       Math.log((double)(50/1000000000D))/* Denominator is CT. assumes [50nM] */ )
-				       /* For non-selfcomplementary molecules, CT in Eq. 3 is replaced by CT/4 if the
-                          strands are in equal concentration or by (CA - CB/2) if the strands are at 
-                          different concentrations, where CA and CB are the concentrations of the more 
-                          concentrated and less concentrated strands, respectively */                   
-				       - (double)273.15);                 /* Kelvin to Celcius */
+		return getMeltingTemp(this.dh,this.dsc);                 
 	}
 	
 	private void addToDH_DS(String bases) {
@@ -158,6 +177,31 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		if (bases.equals("AG")) {this.dh+=-7.8 ;this.ds+=-21.0;return;}
 		if (bases.equals("TC")) {this.dh+=-8.2 ;this.ds+=-22.2;return;}
 		if (bases.equals("CC")) {this.dh+=-8.0 ;this.ds+=-19.9;return;}
+	}
+	
+	private double[] getDH_DS(String bases) {
+		// assumes that the lenght of bases is 2 and that bases is uppercase
+		// DH values are in Kcal/mol, while DS values are in cal/mol
+		// Is not the most efficient way, but is easy-to-read.
+		double dh=0;
+		double ds=0;
+		if (bases.equals("AA")) { dh=-7.9 ; ds=-22.2; }
+		if (bases.equals("AT")) { dh=-7.2 ; ds=-20.4; }
+		if (bases.equals("TA")) { dh=-7.2 ; ds=-21.3; }
+		if (bases.equals("CA")) { dh=-8.5 ; ds=-22.7; }
+		if (bases.equals("GT")) { dh=-8.4 ; ds=-22.4; }
+		if (bases.equals("CT")) { dh=-7.8 ; ds=-21.0; }
+		if (bases.equals("GA")) { dh=-8.2 ; ds=-22.2; }
+		if (bases.equals("CG")) { dh=-10.6; ds=-27.2; }
+		if (bases.equals("GC")) { dh=-9.8 ; ds=-24.4; }
+		if (bases.equals("GG")) { dh=-8.0 ; ds=-19.9; }
+		if (bases.equals("TT")) { dh=-7.9 ; ds=-22.2; }
+		if (bases.equals("TG")) { dh=-8.5 ; ds=-22.7; }
+		if (bases.equals("AC")) { dh=-8.4 ; ds=-22.4; }
+		if (bases.equals("AG")) { dh=-7.8 ; ds=-21.0; }
+		if (bases.equals("TC")) { dh=-8.2 ; ds=-22.2; }
+		if (bases.equals("CC")) { dh=-8.0 ; ds=-19.9; }
+		return new double[] {dh,ds};
 	}
 	
 	private void addToDH_DS_Deg(String degbases, int degValue) {
@@ -190,6 +234,26 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		return;
 	}
 	
+	private double[] getDH_DS_Deg(String degDinucleotide, int degValue) {
+		// assumes that the lenght of bases is 2 and that bases is uppercase
+		// DH values are in Kcal/mol, while DS values are in cal/mol
+		// Is not the most efficient way, but is easy-to-read.
+		
+		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degDinucleotide);
+		dpi.start();
+		
+		double dh = 0;
+		double ds = 0;
+		
+		while (dpi.hasNext()) {
+			String bases = dpi.next();
+			double[] dhds = this.getDH_DS(bases);
+			dh += dhds[0];
+			ds += dhds[1];
+		}
+		return new double[] {dh,ds};
+	}
+	
 	private void addEndsToDH_DS	(char end5,char end3) {
 		// DH values are in Kcal/mol, while DS values are in cal/mol
 		// Assumes that end5 & end3 are uppercase
@@ -201,6 +265,18 @@ public class SantaluciaTmEstimator implements TmEstimator {
 				case 'C': case 'G': this.dh+=0.1;this.ds+=-2.8;break;
 			}
 		}
+	}
+	
+	private double[] getEndPenalty_DH_DS (char end) {
+		// DH values are in Kcal/mol, while DS values are in cal/mol
+		// Assumes that end5 & end3 are uppercase
+		double dh = 0;
+		double ds =0;
+		switch(end) {
+			case 'A': case 'T': dh+=2.3;ds+=4.1;break;
+			case 'C': case 'G': dh+=0.1;ds+=-2.8;break;
+		}
+		return new double[]{dh,ds};
 	}
 	
 	private void addEndsToDH_DS_DEG	(char end) {
@@ -225,10 +301,40 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			}
 		}
 	}
+	
+	private double[] getEndPenaltiesDH_DS_DEG	(char end) {
+		// DH values are in Kcal/mol, while DS values are in cal/mol
+		// Assumes that end5 & end3 are uppercase
+		
+		char[] ends = new char[BaseDeg.getDegValueFromChar(end)];
+		
+		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(String.valueOf(end));
+		dpi.start();
+
+		int counter=0;
+		while (dpi.hasNext()) {
+			ends[counter] = dpi.next().charAt(0);
+			counter++;
+		}
+
+		double dh = 0;
+		double ds = 0;
+		for (char c : ends) {
+			double[] dhds = getEndPenalty_DH_DS(c);
+			dh+= dhds[0];
+			ds+= dhds[1];
+		}
+		return new double[]{dh,ds};
+	}
 
 	private void saltCorrectedDS(double M_Na, int len) {
 		// M_Na is the molar concentration of Na+ (or other monovalente  ions)
 		this.dsc =  (double ) (this.ds + 0.368 * (len-1) * Math.log(M_Na));
+	}
+
+	private double saltCorrectedDS(double M_Na, int len, double ds) {
+		// M_Na is the molar concentration of Na+ (or other monovalente  ions)
+		return (double ) (ds + 0.368d * (len-1) * Math.log(M_Na));
 	}
 
 	
