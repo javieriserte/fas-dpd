@@ -18,42 +18,18 @@ public class SantaluciaTmEstimator implements TmEstimator {
 	public void calculateTM(Primer primer) {
 		String sequence = primer.getSequence();
 		
-		if(BaseDeg.getDegValueFromString(sequence)<=1) { 
+		int degValue = BaseDeg.getDegValueFromString(sequence);
+		if(degValue<=1) { 
 			// Case Non-Degenerated
 			this.mean = this.calculate(sequence);
 			this.max = this.mean; 
 			this.min = this.mean;
 		} else {
 			// Case Degenerated			
-
 			this.mean = this.calculateDeg(sequence); 
 			this.max = this.mean; 
 			this.min = this.mean;
-
-			/* Old method!
- 
- 			DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(sequence, 0 );
-			double total = 0;
-			int n=0;
-			dpi.start();
-			String s = dpi.next();
-			double tm = this.calculate(s);
-			this.max = tm;
-			this.min = tm;
-			total +=tm;
-			n++;
 			
-			while (dpi.hasNext()) {
-				tm = this.calculate(dpi.next());
-				this.max = Math.max(this.max, tm);
-				this.min = Math.min(this.min, tm);
-				total +=tm;
-				n++;
-			}
-			this.mean = (double) (total / n);
-
-			
-			*/
 		}
 	}
 
@@ -82,11 +58,10 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			// Adds the Delta_H & Delta_S values according to each pair of neighbor bases. 
 			
 			String dinucleotide = seq.substring(i-1, i+1);
-			int degValue = BaseDeg.getDegValueFromString(dinucleotide);
 
 //			this.addToDH_DS_Deg(dinucleotide,degValue);
 			
-			dhds = getDH_DS_Deg(dinucleotide,degValue);
+			dhds = getDH_DS_Deg(dinucleotide);
 			
 			this.dh += dhds[0];
 			this.ds += dhds[1];
@@ -157,27 +132,27 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		return getMeltingTemp(this.dh,this.dsc);                 
 	}
 	
-	private void addToDH_DS(String bases) {
-		// assumes that the lenght of bases is 2 and that bases is uppercase
-		// DH values are in Kcal/mol, while DS values are in cal/mol
-		// Is not the most efficient way, but is easy-to-read.
-		if (bases.equals("AA")) {this.dh+=-7.9 ;this.ds+=-22.2;return;}
-		if (bases.equals("AT")) {this.dh+=-7.2 ;this.ds+=-20.4;return;}
-		if (bases.equals("TA")) {this.dh+=-7.2 ;this.ds+=-21.3;return;}
-		if (bases.equals("CA")) {this.dh+=-8.5 ;this.ds+=-22.7;return;}
-		if (bases.equals("GT")) {this.dh+=-8.4 ;this.ds+=-22.4;return;}
-		if (bases.equals("CT")) {this.dh+=-7.8 ;this.ds+=-21.0;return;}
-		if (bases.equals("GA")) {this.dh+=-8.2 ;this.ds+=-22.2;return;}
-		if (bases.equals("CG")) {this.dh+=-10.6;this.ds+=-27.2;return;}
-		if (bases.equals("GC")) {this.dh+=-9.8 ;this.ds+=-24.4;return;}
-		if (bases.equals("GG")) {this.dh+=-8.0 ;this.ds+=-19.9;return;}
-		if (bases.equals("TT")) {this.dh+=-7.9 ;this.ds+=-22.2;return;}
-		if (bases.equals("TG")) {this.dh+=-8.5 ;this.ds+=-22.7;return;}
-		if (bases.equals("AC")) {this.dh+=-8.4 ;this.ds+=-22.4;return;}
-		if (bases.equals("AG")) {this.dh+=-7.8 ;this.ds+=-21.0;return;}
-		if (bases.equals("TC")) {this.dh+=-8.2 ;this.ds+=-22.2;return;}
-		if (bases.equals("CC")) {this.dh+=-8.0 ;this.ds+=-19.9;return;}
-	}
+//	private void addToDH_DS(String bases) {
+//		// assumes that the lenght of bases is 2 and that bases is uppercase
+//		// DH values are in Kcal/mol, while DS values are in cal/mol
+//		// Is not the most efficient way, but is easy-to-read.
+//		if (bases.equals("AA")) {this.dh+=-7.9 ;this.ds+=-22.2;return;}
+//		if (bases.equals("AT")) {this.dh+=-7.2 ;this.ds+=-20.4;return;}
+//		if (bases.equals("TA")) {this.dh+=-7.2 ;this.ds+=-21.3;return;}
+//		if (bases.equals("CA")) {this.dh+=-8.5 ;this.ds+=-22.7;return;}
+//		if (bases.equals("GT")) {this.dh+=-8.4 ;this.ds+=-22.4;return;}
+//		if (bases.equals("CT")) {this.dh+=-7.8 ;this.ds+=-21.0;return;}
+//		if (bases.equals("GA")) {this.dh+=-8.2 ;this.ds+=-22.2;return;}
+//		if (bases.equals("CG")) {this.dh+=-10.6;this.ds+=-27.2;return;}
+//		if (bases.equals("GC")) {this.dh+=-9.8 ;this.ds+=-24.4;return;}
+//		if (bases.equals("GG")) {this.dh+=-8.0 ;this.ds+=-19.9;return;}
+//		if (bases.equals("TT")) {this.dh+=-7.9 ;this.ds+=-22.2;return;}
+//		if (bases.equals("TG")) {this.dh+=-8.5 ;this.ds+=-22.7;return;}
+//		if (bases.equals("AC")) {this.dh+=-8.4 ;this.ds+=-22.4;return;}
+//		if (bases.equals("AG")) {this.dh+=-7.8 ;this.ds+=-21.0;return;}
+//		if (bases.equals("TC")) {this.dh+=-8.2 ;this.ds+=-22.2;return;}
+//		if (bases.equals("CC")) {this.dh+=-8.0 ;this.ds+=-19.9;return;}
+//	}
 	
 	private double[] getDH_DS(String bases) {
 		// assumes that the lenght of bases is 2 and that bases is uppercase
@@ -204,40 +179,42 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		return new double[] {dh,ds};
 	}
 	
-	private void addToDH_DS_Deg(String degbases, int degValue) {
-		// assumes that the lenght of bases is 2 and that bases is uppercase
-		// DH values are in Kcal/mol, while DS values are in cal/mol
-		// Is not the most efficient way, but is easy-to-read.
-		
-		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degbases);
-		dpi.start();
-		
-		while (dpi.hasNext()) {
-			String bases = dpi.next();
-			if (bases.equals("AA")) {this.dh+=-7.9/degValue;this.ds+=-22.2/degValue;}
-			if (bases.equals("AT")) {this.dh+=-7.2/degValue;this.ds+=-20.4/degValue;}
-			if (bases.equals("TA")) {this.dh+=-7.2/degValue;this.ds+=-21.3/degValue;}
-			if (bases.equals("CA")) {this.dh+=-8.5/degValue;this.ds+=-22.7/degValue;}
-			if (bases.equals("GT")) {this.dh+=-8.4/degValue;this.ds+=-22.4/degValue;}
-			if (bases.equals("CT")) {this.dh+=-7.8/degValue;this.ds+=-21.0/degValue;}
-			if (bases.equals("GA")) {this.dh+=-8.2/degValue;this.ds+=-22.2/degValue;}
-			if (bases.equals("CG")) {this.dh+=-10.6/degValue;this.ds+=-27.2/degValue;}
-			if (bases.equals("GC")) {this.dh+=-9.8/degValue;this.ds+=-24.4/degValue;}
-			if (bases.equals("GG")) {this.dh+=-8.0/degValue;this.ds+=-19.9/degValue;}
-			if (bases.equals("TT")) {this.dh+=-7.9/degValue;this.ds+=-22.2/degValue;}
-			if (bases.equals("TG")) {this.dh+=-8.5/degValue;this.ds+=-22.7/degValue;}
-			if (bases.equals("AC")) {this.dh+=-8.4/degValue;this.ds+=-22.4/degValue;}
-			if (bases.equals("AG")) {this.dh+=-7.8/degValue;this.ds+=-21.0/degValue;}
-			if (bases.equals("TC")) {this.dh+=-8.2/degValue;this.ds+=-22.2/degValue;}
-			if (bases.equals("CC")) {this.dh+=-8.0/degValue;this.ds+=-19.9/degValue;}
-		}
-		return;
-	}
+//	private void addToDH_DS_Deg(String degbases, int degValue) {
+//		// assumes that the lenght of bases is 2 and that bases is uppercase
+//		// DH values are in Kcal/mol, while DS values are in cal/mol
+//		// Is not the most efficient way, but is easy-to-read.
+//		
+//		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degbases);
+//		dpi.start();
+//		
+//		while (dpi.hasNext()) {
+//			String bases = dpi.next();
+//			if (bases.equals("AA")) {this.dh+=-7.9/degValue;this.ds+=-22.2/degValue;}
+//			if (bases.equals("AT")) {this.dh+=-7.2/degValue;this.ds+=-20.4/degValue;}
+//			if (bases.equals("TA")) {this.dh+=-7.2/degValue;this.ds+=-21.3/degValue;}
+//			if (bases.equals("CA")) {this.dh+=-8.5/degValue;this.ds+=-22.7/degValue;}
+//			if (bases.equals("GT")) {this.dh+=-8.4/degValue;this.ds+=-22.4/degValue;}
+//			if (bases.equals("CT")) {this.dh+=-7.8/degValue;this.ds+=-21.0/degValue;}
+//			if (bases.equals("GA")) {this.dh+=-8.2/degValue;this.ds+=-22.2/degValue;}
+//			if (bases.equals("CG")) {this.dh+=-10.6/degValue;this.ds+=-27.2/degValue;}
+//			if (bases.equals("GC")) {this.dh+=-9.8/degValue;this.ds+=-24.4/degValue;}
+//			if (bases.equals("GG")) {this.dh+=-8.0/degValue;this.ds+=-19.9/degValue;}
+//			if (bases.equals("TT")) {this.dh+=-7.9/degValue;this.ds+=-22.2/degValue;}
+//			if (bases.equals("TG")) {this.dh+=-8.5/degValue;this.ds+=-22.7/degValue;}
+//			if (bases.equals("AC")) {this.dh+=-8.4/degValue;this.ds+=-22.4/degValue;}
+//			if (bases.equals("AG")) {this.dh+=-7.8/degValue;this.ds+=-21.0/degValue;}
+//			if (bases.equals("TC")) {this.dh+=-8.2/degValue;this.ds+=-22.2/degValue;}
+//			if (bases.equals("CC")) {this.dh+=-8.0/degValue;this.ds+=-19.9/degValue;}
+//		}
+//		return;
+//	}
 	
-	private double[] getDH_DS_Deg(String degDinucleotide, int degValue) {
+	private double[] getDH_DS_Deg(String degDinucleotide) {
 		// assumes that the lenght of bases is 2 and that bases is uppercase
 		// DH values are in Kcal/mol, while DS values are in cal/mol
 		// Is not the most efficient way, but is easy-to-read.
+		
+		int degValue = BaseDeg.getDegValueFromString(degDinucleotide);
 		
 		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degDinucleotide);
 		dpi.start();
@@ -251,21 +228,21 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			dh += dhds[0];
 			ds += dhds[1];
 		}
-		return new double[] {dh,ds};
+		return new double[] {dh/degValue,ds/degValue};
 	}
 	
-	private void addEndsToDH_DS	(char end5,char end3) {
-		// DH values are in Kcal/mol, while DS values are in cal/mol
-		// Assumes that end5 & end3 are uppercase
-		char[] ends = new char[]{end5,end3};
-
-		for (char c : ends) {
-			switch(c) {
-				case 'A': case 'T': this.dh+=2.3;this.ds+=4.1;break;
-				case 'C': case 'G': this.dh+=0.1;this.ds+=-2.8;break;
-			}
-		}
-	}
+//	private void addEndsToDH_DS	(char end5,char end3) {
+//		// DH values are in Kcal/mol, while DS values are in cal/mol
+//		// Assumes that end5 & end3 are uppercase
+//		char[] ends = new char[]{end5,end3};
+//
+//		for (char c : ends) {
+//			switch(c) {
+//				case 'A': case 'T': this.dh+=2.3;this.ds+=4.1;break;
+//				case 'C': case 'G': this.dh+=0.1;this.ds+=-2.8;break;
+//			}
+//		}
+//	}
 	
 	private double[] getEndPenalty_DH_DS (char end) {
 		// DH values are in Kcal/mol, while DS values are in cal/mol
@@ -279,28 +256,28 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		return new double[]{dh,ds};
 	}
 	
-	private void addEndsToDH_DS_DEG	(char end) {
-		// DH values are in Kcal/mol, while DS values are in cal/mol
-		// Assumes that end5 & end3 are uppercase
-		
-		char[] ends = new char[BaseDeg.getDegValueFromChar(end)];
-		
-		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(String.valueOf(end));
-		dpi.start();
-
-		int counter=0;
-		while (dpi.hasNext()) {
-			ends[counter] = dpi.next().charAt(0);
-			counter++;
-		}
-
-		for (char c : ends) {
-			switch(c) {
-				case 'A': case 'T': this.dh+=2.3/counter;this.ds+=4.1/counter;break;
-				case 'C': case 'G': this.dh+=0.1/counter;this.ds+=-2.8/counter;break;
-			}
-		}
-	}
+//	private void addEndsToDH_DS_DEG	(char end) {
+//		// DH values are in Kcal/mol, while DS values are in cal/mol
+//		// Assumes that end5 & end3 are uppercase
+//		
+//		char[] ends = new char[BaseDeg.getDegValueFromChar(end)];
+//		
+//		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(String.valueOf(end));
+//		dpi.start();
+//
+//		int counter=0;
+//		while (dpi.hasNext()) {
+//			ends[counter] = dpi.next().charAt(0);
+//			counter++;
+//		}
+//
+//		for (char c : ends) {
+//			switch(c) {
+//				case 'A': case 'T': this.dh+=2.3/counter;this.ds+=4.1/counter;break;
+//				case 'C': case 'G': this.dh+=0.1/counter;this.ds+=-2.8/counter;break;
+//			}
+//		}
+//	}
 	
 	private double[] getEndPenaltiesDH_DS_DEG	(char end) {
 		// DH values are in Kcal/mol, while DS values are in cal/mol
@@ -324,18 +301,123 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			dh+= dhds[0];
 			ds+= dhds[1];
 		}
-		return new double[]{dh,ds};
+		return new double[]{dh/counter,ds/counter};
 	}
 
-	private void saltCorrectedDS(double M_Na, int len) {
-		// M_Na is the molar concentration of Na+ (or other monovalente  ions)
-		this.dsc =  (double ) (this.ds + 0.368 * (len-1) * Math.log(M_Na));
-	}
+//	private void saltCorrectedDS(double M_Na, int len) {
+//		// M_Na is the molar concentration of Na+ (or other monovalente  ions)
+//		this.dsc =  (double ) (this.ds + 0.368 * (len-1) * Math.log(M_Na));
+//	}
 
 	private double saltCorrectedDS(double M_Na, int len, double ds) {
 		// M_Na is the molar concentration of Na+ (or other monovalente  ions)
 		return (double ) (ds + 0.368d * (len-1) * Math.log(M_Na));
 	}
 
+	private double calculateMaxTM(String degSequence) {
+		double[][] dsValues = new double[degSequence.length()-1][16];
+
+		// Dead End!!!
+		// hacer tres matrices con valores..
+		// Una para los valores de dh,
+		// Otra para los valores de ds
+		// otra para los valores de tM.
+		// buscar el máximo por medio del tM.
+		// Hacer después del resto!
+		// pùede llevar bastante tiempo.
+		
+		for (double[] ds : dsValues) { for (int i = 0; i < ds.length; i++) ds[i] = 0; }
+			// initialize Matrixes
+		
+			// Complete matrix o values
+				// Fill first row
+			    // In first row is possible to add the penalty value 3'.
+			
+				String degDinucleotide = degSequence.substring(0, 1);
+
+				DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degDinucleotide);
+				dpi.start();
+				
+				while (dpi.hasNext()) {
+					String dinucleotide = dpi.next();
+					int index = this.getdnIndex(dinucleotide);
+					double[] dhds = this.getDH_DS(dinucleotide);
+					dsValues[0][index] = dhds[1] + this.getEndPenalty_DH_DS(dinucleotide.charAt(0))[1];
+				}
+				
+			for (int i=1;i<degSequence.length()-1;i++) {			
+				// from second row
+					
+				// for each possible dinucleotide.
+				degDinucleotide = degSequence.substring(i, i+1);
+				dpi = new DegeneratedPrimerIterator(degDinucleotide);
+				dpi.start();
+				
+				while (dpi.hasNext()) {
+					String dinucleotide = dpi.next();
+					int index = this.getdnIndex(dinucleotide);
+					double currentDs = this.getDH_DS(dinucleotide)[1];
+					double minValue = 0;
+
+			        // From the compatible previous dinucleotides, look the lower value
+					
+					for (int j=0; j<16;j++) {
+						int pI = j / 4;
+						int cI = index % 4;
+						
+						if (pI==cI) /* if equal, are compatible */ {
+							minValue = Math.min(dsValues[i-1][j], minValue);
+						}
+					}
+					dsValues[i][index] = minValue + currentDs;
+				}
+		}
+
+		double minValue = 0;
+		for (int j=0; j<16;j++) {
+			double penalty = this.getEndPenalty_DH_DS(degSequence.charAt(degSequence.length()-1))[1];
+				// add penalties values for 5'
+			minValue = Math.min(dsValues[degSequence.length()-2][j] + penalty, minValue);
+		}
+		return minValue;
+	}
+
+	private int getdnIndex(String dinucleotide) {
+		char[] dn = new char[] {dinucleotide.charAt(0), dinucleotide.charAt(1)};
+		int v =0;
+		for (int i = 0; i<2;i++) {
+			
+			int b = 0;
+			switch (Character.toUpperCase(dn[i])) {
+			case 'A': b = 0 ; break;
+			case 'C': b = 1 ; break;
+			case 'T': b = 2 ; break;
+			case 'G': b = 3 ; break;
+			}
+			v= v + b * 4^(i);
+			
+		}
+		return v ;
+	}
 	
+	public static void main(String[] arg) {
+		SantaluciaTmEstimator ste = new SantaluciaTmEstimator();
+		
+		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("NNNNNAAAAAAAAAAAAAAAAA");
+		dpi.start();
+
+		double max = 0;
+		while (dpi.hasNext()){
+			String s = dpi.next();
+			Primer p = new Primer(s, "a", 1, 5, true);
+			ste.calculateTM(p);
+			max = Math.max(ste.mean(),max);
+		}
+		
+		System.out.println(max);
+		
+		
+		
+		
+	}
 }
