@@ -48,6 +48,8 @@ public class SantaluciaTmEstimator implements TmEstimator {
 	// PRIVATE INSTANCE METHODS
 	
 	private double calculateDeg(String seq) {
+		
+		// This method is approximated
 		this.dh=0;
 		this.ds=0;
 		this.dsc=0;
@@ -59,15 +61,13 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			
 			String dinucleotide = seq.substring(i-1, i+1);
 
-//			this.addToDH_DS_Deg(dinucleotide,degValue);
-			
 			dhds = getDH_DS_Deg(dinucleotide);
 			
 			this.dh += dhds[0];
 			this.ds += dhds[1];
 			
 		}
-		
+
 		dhds = this.getEndPenaltiesDH_DS_DEG(seq.charAt(0));
 		this.dh += dhds[0];
 		this.ds += dhds[1];
@@ -77,10 +77,9 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		this.ds += dhds[1];
 			// Adds penalties for starting and ending positions
 		
-//		this.saltCorrectedDS(0.050,seq.length());
-		this.dsc = saltCorrectedDS(0.050,seq.length(),this.ds);		
+		this.dsc = saltCorrectedDS(0.050D,seq.length(),this.ds);		
 		    // Makes Salt Corrections
-
+		
 		return getMeltingTemp(this.dh, this.dsc);                 
 	}
 
@@ -124,9 +123,8 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			// Adds penalties for starting and ending positions
 		
 		
-//		this.saltCorrectedDS(0.050,seq.length());
+		this.dsc = saltCorrectedDS(0.050D,seq.length(),this.ds);
 		
-		this.dsc = saltCorrectedDS(0.050,seq.length(),this.ds);
 		    // Makes Salt Corrections
 		
 		return getMeltingTemp(this.dh,this.dsc);                 
@@ -250,7 +248,7 @@ public class SantaluciaTmEstimator implements TmEstimator {
 		double dh = 0;
 		double ds =0;
 		switch(end) {
-			case 'A': case 'T': dh+=2.3;ds+=4.1;break;
+			case 'A': case 'T': dh+=2.3;ds+= 4.1;break;
 			case 'C': case 'G': dh+=0.1;ds+=-2.8;break;
 		}
 		return new double[]{dh,ds};
@@ -403,18 +401,26 @@ public class SantaluciaTmEstimator implements TmEstimator {
 	public static void main(String[] arg) {
 		SantaluciaTmEstimator ste = new SantaluciaTmEstimator();
 		
-		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("NNNNNAAAAAAAAAAAAAAAAA");
+		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("NNNNNNNNNAAAAAAAAA");
 		dpi.start();
 
-		double max = 0;
+		double mean = 0;
+		double counter = 0;
 		while (dpi.hasNext()){
 			String s = dpi.next();
 			Primer p = new Primer(s, "a", 1, 5, true);
 			ste.calculateTM(p);
-			max = Math.max(ste.mean(),max);
+			mean += ste.mean();
+			counter++;
 		}
 		
-		System.out.println(max);
+		System.out.println(mean/counter);
+		System.out.println(counter);
+		
+		System.out.println(ste.calculateDeg("NNNNNNNNNAAAAAAAAA"));
+		
+		ste.calculateTM(new Primer("NNNNNNNAAAAAAAAAAA", "x", 1, 20, true));
+		System.out.println(ste.mean());
 		
 		
 		
