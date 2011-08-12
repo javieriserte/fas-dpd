@@ -27,7 +27,7 @@ public class SimpleTmEstimator implements TmEstimator {
 			this.min = this.mean;
 		} else {
 			double gc = 0;
-			double at =0;
+			double at = 0;
 			double min =0;
 			double max = 0;
 			for (int i=0;i<primer.getSequence().length();i++) {

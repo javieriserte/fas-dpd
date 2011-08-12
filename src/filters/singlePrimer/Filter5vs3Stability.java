@@ -1,5 +1,6 @@
 package filters.singlePrimer;
 
+import degeneration.BaseDeg;
 import sequences.dna.DegeneratedPrimerIterator;
 import sequences.dna.Primer;
 import sequences.util.santaLuciaEnergeticParameters.EnergeticValues;
@@ -77,23 +78,50 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 	 */
 	private double calculateStability(CharSequence subSequence) {
 
-		// TODO implement a dynamic programming strategy 
+		SantaLuciaEnergetics sle = new SantaLuciaEnergetics();
+		double dh = 0;
+		double ds = 0;
+		EnergeticValues ev = new EnergeticValues();
 		
-		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(subSequence.toString(), 1000);
+		for (int i=1;i<subSequence.length();i++) {
+			String degDinucleotide = subSequence.subSequence(i-1, i+1).toString();
+			
+			DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(degDinucleotide);
+			dpi.start();
+			
+			int degValue = BaseDeg.getDegValueFromString(degDinucleotide);
+			
 		
-		EnergeticValues r = new EnergeticValues();
-		dpi.start();
-		int counter =0;
-		while (dpi.hasNext()) {
-			counter++;
-			SantaLuciaEnergetics sle = new SantaLuciaEnergetics();
-			EnergeticValues ev = sle.getDuplexStability(dpi.next(), this.kelvinTemp);
-			ev = sle.SaltCorrection(this.monovalentMolar, 0, ev, this.len);
-			r.add(ev);
+
+			while(dpi.hasNext()) {
+				ev = sle.getDuplexStability(dpi.next(), this.kelvinTemp);
+				dh += ev.getDeltaH() / degValue;
+				ds += ev.getDeltaS() / degValue;
+			}
 			
 		}
-
-		return r.getDeltaG()/counter;
+		
+		ev.setDeltaH(dh);
+		ev.setDeltaS(ds);
+		ev.setDeltaGFromDeltaHAndDeltaS(this.kelvinTemp);
+		ev = sle.SaltCorrection(this.monovalentMolar, 0, ev, this.len);
+		
+		return ev.getDeltaG();
+//		DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(subSequence.toString(), 1000);
+//		
+//		EnergeticValues r = new EnergeticValues();
+//		dpi.start();
+//		int counter =0;
+//		while (dpi.hasNext()) {
+//			counter++;
+//			SantaLuciaEnergetics sle = new SantaLuciaEnergetics();
+//			EnergeticValues ev = sle.getDuplexStability(dpi.next(), this.kelvinTemp);
+//			ev = sle.SaltCorrection(this.monovalentMolar, 0, ev, this.len);
+//			r.add(ev);
+//			
+//		}
+//
+//		return r.getDeltaG()/counter;
 	
 	}
 
@@ -105,6 +133,5 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 				+ ", len=" + len + "]";
 	}
 
-	
-	
+		
 }
