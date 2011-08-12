@@ -26,26 +26,33 @@ public class SimpleTmEstimator implements TmEstimator {
 			this.max = this.mean; 
 			this.min = this.mean;
 		} else {
-			
-			DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(primer.getSequence(), 0 );
-			float total = 0;
-			int n=0;
-			dpi.start();
-			String s = dpi.next();
-			double  tm = this.calculate(s);
-			this.max = tm;
-			this.min = tm;
-			total +=tm;
-			n++;
-			
-			while (dpi.hasNext()) {
-				tm = this.calculate(dpi.next());
-				this.max = Math.max(this.max, tm);
-				this.min = Math.min(this.min, tm);
-				total +=tm;
-				n++;
+			double gc = 0;
+			double at =0;
+			double min =0;
+			double max = 0;
+			for (int i=0;i<primer.getSequence().length();i++) {
+				char c = primer.getSequence().charAt(i);
+				DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator(String.valueOf(c));
+				dpi.start();
+				StringBuilder posibilities = new StringBuilder();
+				
+				while (dpi.hasNext()) {
+					posibilities.append(dpi.next());
+				}
+				
+				int countCG = this.countCG(posibilities.toString());
+				int length = posibilities.length();
+				gc +=  (double) countCG / (double) length;
+				at += 1 - gc;
+				
+				if (countCG>0) max+=4 ;else max+=2;
+				if (length - countCG >0) min+=2; else min+=4;
+				
 			}
-			this.mean = (float) (total / n);
+			
+			this.mean = gc*4 + at*2;
+			this.max = max;
+			this.min = min;
 		
 		}
 		
@@ -90,7 +97,7 @@ public class SimpleTmEstimator implements TmEstimator {
 
 	}
 	
-	private float calculate(String Seq) {
+	private double calculate(String Seq) {
 		int at;
 		int cg;
 		at = this.countAT(Seq);
