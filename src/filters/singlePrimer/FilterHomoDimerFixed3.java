@@ -30,8 +30,8 @@ public class FilterHomoDimerFixed3 extends FilterSinglePrimer{
 
 	@Override
 	public String toString() {
-		return "FilterHomoDimerFixed3 [largerthan=" + largerthan
-				+ ", matchingStrategy=" + matchingStrategy + "]";
+		return "FilterHomoDimerFixed3 [largerthan= " + largerthan
+				+ ", matchingStrategy= " + matchingStrategy + "]";
 	}
 	
 		

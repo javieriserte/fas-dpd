@@ -85,6 +85,7 @@ public class OpenFilePane extends javax.swing.JPanel {
 		jbContinue.setMargin(new Insets(2, 2,2,2));
 		jbContinue.setPreferredSize(new Dimension(100, 20));
 		jbContinue.setHorizontalAlignment(SwingConstants.CENTER );
+		jbContinue.setEnabled(false);
 
 		c.gridheight = 1;
 		c.gridwidth = 3;
@@ -170,8 +171,10 @@ public class OpenFilePane extends javax.swing.JPanel {
 			}; 
 				// Creates a filter to choose only fasta files.
 			
-			JFileChooser iFile = new JFileChooser();
+			JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
 				// Open a Dialog Box for to load a fasta file.
+
+			
 			
 			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			iFile.setMultiSelectionEnabled(false);
@@ -179,10 +182,17 @@ public class OpenFilePane extends javax.swing.JPanel {
 			iFile.setDialogType(JFileChooser.OPEN_DIALOG);
 			iFile.setCurrentDirectory(new java.io.File( "." ));
 			iFile.setFileFilter(fastaFilter);
-			iFile.showOpenDialog(OpenFilePane.this);
+			int dialogResponse = iFile.showOpenDialog(OpenFilePane.this);
 				// Set parameters to File Open Dialog Box
-			OpenFilePane.this.selectedFile = iFile.getSelectedFile();
+			File file = null;
+			if (dialogResponse == JFileChooser.APPROVE_OPTION) file = iFile.getSelectedFile();
+			OpenFilePane.this.selectedFile = file;
+			if (file != null && file.exists()) OpenFilePane.this.jbContinue.setEnabled(true);
+			else OpenFilePane.this.jbContinue.setEnabled(false);
+
 			OpenFilePane.this.updateSelectedFile();
+			
+
 			
 		}
 	}

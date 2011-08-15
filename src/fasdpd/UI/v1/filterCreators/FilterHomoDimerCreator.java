@@ -21,5 +21,5 @@ public class FilterHomoDimerCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterHomoDimer(p0,new DegeneratedDNAMatchingStrategy());
 	}
-	@Override public String toString() { return "Filter Homo Dimer larger than" + this.parametersValues[0];}	
+	@Override public String toString() { return "Filter Homo Dimer larger than: " + this.parametersValues[0];}	
 } 

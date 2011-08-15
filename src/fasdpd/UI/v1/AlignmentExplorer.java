@@ -293,7 +293,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				g.drawString(desc, 5, textLineHeight*(counter));
 			}
 			
-			this.setPreferredSize(new Dimension(textWidth + 10,  textHeight + 10));
+//			this.setPreferredSize(new Dimension(textWidth + 10,  textHeight + 10));
+			this.setPreferredSize(new Dimension(150,  textHeight + 10));
 			
 			
 
