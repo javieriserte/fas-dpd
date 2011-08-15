@@ -116,15 +116,18 @@ public class OptionsPane extends JPanel {
 			
 			SpinnerListModel strandsmodel = new SpinnerListModel(new String[] {"forward","reverse","both"});
 			strand = new JSpinner(strandsmodel);
-//			JSpinner strand = new JSpinner(strandsmodel);
 			JPanel strandPanel = new JPanel();
 			strandPanel.add(new JLabel("Strand:"));
 			strandPanel.add(strand);
 			strandPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			if (mainframe.getSearchParameter().isSearchPair()) {
+				strand.setEnabled(false);
+				strand.setValue(strandsmodel.getList().get(2));
+			}
+			
 			
 			// Text Field and label for Quantity selection
 			JPanel quantityPanel = new JPanel();
-//			JTextField quantity = new JTextField("10");
 			quantity = new JTextField("10");
 			quantity.setColumns(2);			
 			

@@ -199,7 +199,7 @@ public class FASDPD {
 		} else {
 			
 			PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
-			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), true, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
+			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(), mySp.getLenMax(), false, mySp.getFilter(),mySp.getStartPoint(),mySp.getEndPoint());
 			
 			List<PrimerPair> result = myAn.searchPrimerPairs(resultforward.ExtractSortedList(), resultreverse.ExtractSortedList(), mySp.getFilterpair());
 			results = new ResultOfSearch();

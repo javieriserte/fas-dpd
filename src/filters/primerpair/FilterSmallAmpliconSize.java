@@ -7,17 +7,17 @@ import sequences.dna.Primer;
  * 
  * @author Javi
  */
-public class FilterAmpliconSize extends FilterPrimerPair{
-	private int maxSizeAccepted;
+public class FilterSmallAmpliconSize extends FilterPrimerPair{
+	private int minSizeAccepted;
 	
-	public FilterAmpliconSize(int maxSizeAccepted) {
+	public FilterSmallAmpliconSize(int minSizeAccepted) {
 		super();
-		this.maxSizeAccepted = maxSizeAccepted;
+		this.minSizeAccepted = minSizeAccepted;
 	}
 
 	/**
-	 * verify that two primers in opposite sense produces an amplification product shorter than a maximum value.
-	 * The size of amplification product is estimated by its position in the alignment. If the alignment has gaps, the real-life prouct will be shorter than estimated value.
+	 * verify that two primers in opposite sense produces an amplification product longer than a minimum value.
+	 * The size of amplification product is estimated by its position in the alignment. If the alignment has gaps, the real-life product will be shorter than estimated value.
 	 */
 	@Override public boolean filter(Primer p1, Primer p2) {
 		if (p1.isDirectStrand()==p2.isDirectStrand()) return false;
@@ -30,12 +30,11 @@ public class FilterAmpliconSize extends FilterPrimerPair{
 		boolean correctOrientation = (s2 > f2 && s2 > s1 && s1 < f1) 
 		                              ||
 		                             (s1 > f1 && s1 > s2 && s2 < f2);
-		
-		return correctOrientation && (Math.abs(s1 - s2) + 1 <= this.maxSizeAccepted);
+		return correctOrientation && (Math.abs(s1 - s2) + 1 >= this.minSizeAccepted);
 	}
 
 	@Override public String toString() {
-		return "FilterAmpliconSize [maxSizeAccepted=" + maxSizeAccepted + "]";
+		return "FilterAmpliconSize [minSizeAccepted=" + minSizeAccepted + "]";
 	}
 	
 	

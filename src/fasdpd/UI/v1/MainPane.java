@@ -72,7 +72,7 @@ public class MainPane extends JPanel {
 
 		@Override public void actionPerformed(ActionEvent e) {
 			System.out.println("Pair Set");
-			MainPane.this.mainFrame.getSearchParameter().setSearchPair(false);
+			MainPane.this.mainFrame.getSearchParameter().setSearchPair(true);
 			MainPane.this.mainFrame.loadOpenFilePane();
 		}
 	}

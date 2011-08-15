@@ -173,7 +173,10 @@ public class SearchParameter {
 		NoOption noscore = new NoOption(parser, false, "/noscore");	
 
 		SingleOption ampsize = new SingleOption(parser, 200, "/size", IntegerParameter.getParameter());
-		NoOption noampsize = new NoOption(parser, false, "/nosize");		
+		NoOption noampsize = new NoOption(parser, false, "/nosize");
+		
+		SingleOption smallampsize = new SingleOption(parser, 100, "/minsize", IntegerParameter.getParameter());
+		NoOption nosmallampsize = new NoOption(parser, false, "/nominsize");		
 		
 		SingleOption gccomp = new SingleOption(parser, 10f, "/gccomp", FloatParameter.getParameter());
 		NoOption nogccomp= new NoOption(parser, false, "/nogccomp");		
@@ -278,6 +281,7 @@ public class SearchParameter {
 			boolean isAnyPrimerPairParameter = false;
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || noampsize.isPresent();
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || ampsize.isPresent();
+			isAnyPrimerPairParameter = isAnyPrimerPairParameter || smallampsize.isPresent();
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || nogccomp.isPresent();
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || gccomp.isPresent();
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || noheterodimer.isPresent();
@@ -288,7 +292,7 @@ public class SearchParameter {
 			isAnyPrimerPairParameter = isAnyPrimerPairParameter || tmcomp.isPresent();
 			
 			if (isAnyPrimerPairParameter) {
-	 			// there is some options for primer pair search, but /pair optiones is not present. 
+	 			// there is some options for primer pair search, but /pair option is not present. 
 	 			throw new InvalidCommandLineException("/pair option is not present in the command line, but there is one or more parameters for primer pair search.");
 			}
 			
@@ -379,6 +383,8 @@ public class SearchParameter {
 			vffpp.add(new ValidateForFilterPrimerPair(new FilterOverlapping()));
 			
 			if (! noampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) ampsize.getValue())));
+			
+			if (! nosmallampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) smallampsize.getValue())));
 	
 			if (! nogccomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterGCCompatibility((Float) gccomp.getValue())));
 	

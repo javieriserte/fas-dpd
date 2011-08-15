@@ -139,17 +139,17 @@ public class Analyzer {
 	 *  
 	 * @param forward is a list of candidate forward primers 
 	 * @param reverse is a list of candidate reverse primers
-	 * @param Filter gives the selection conditions.
+	 * @param filter gives the selection conditions.
 	 * @return a list of pairs of compatible primers. 
 	 */
-	public List<PrimerPair> searchPrimerPairs(List<Primer> forward, List<Primer> reverse, Validator Filter) {
+	public List<PrimerPair> searchPrimerPairs(List<Primer> forward, List<Primer> reverse, Validator filter) {
 		List<PrimerPair> result = new Vector<PrimerPair>();
 		
 		for (Primer primerf : forward) {
 			
 			for (Primer primerr : reverse) {
 				
-				ValidateForFilterPrimerPair filter = (ValidateForFilterPrimerPair) Filter;
+//				ValidateForFilterPrimerPair filter = (ValidateForFilterPrimerPair) Filter;
 				PrimerPairValidable ppv = new PrimerPairValidable (primerf,primerr); 
 				if (filter.validate(ppv)) result.add(new PrimerPair(primerf,primerr));
 				

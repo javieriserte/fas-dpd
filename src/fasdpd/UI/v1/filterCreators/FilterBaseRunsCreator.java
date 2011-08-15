@@ -20,6 +20,6 @@ public class FilterBaseRunsCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterBaseRuns(p0);
 	}
-	@Override public String toString() { return "Filter Runs of bases larger than "+ this.parametersValues[0]; }
+	@Override public String toString() { return "Single Primer - Remove Primers With Tandem Repeats Larger Than "+ this.parametersValues[0] + " bases"; }
 	
 } 

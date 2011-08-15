@@ -21,5 +21,5 @@ public class FilterGCCompatibilityCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterGCCompatibility(p0);
 	}
-	@Override public String toString() { return "Filter GC content difference larger than "+ this.parametersValues[0]+"%";}	
+	@Override public String toString() { return "Primer Pair - Keep Primer Pairs Whose Difference In G+C Content Is Less Than "+ this.parametersValues[0]+"%";}	
 } 

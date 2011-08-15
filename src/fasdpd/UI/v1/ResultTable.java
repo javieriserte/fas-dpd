@@ -98,7 +98,7 @@ public class ResultTable extends JPanel {
 			
 		}
 		
-		this.model = new SinglePrimerTableModel(data);
+		this.model = new PrimerPairTableModel(data);
 		this.table.setModel(this.model);
 		this.table.updateUI();
 	}

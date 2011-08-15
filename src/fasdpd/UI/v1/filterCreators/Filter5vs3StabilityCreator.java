@@ -35,5 +35,5 @@ public class Filter5vs3StabilityCreator extends FilterCreator{
 		return new Filter5vs3Stability(p0,p1,p3,p2);
 	}
 	
-	@Override public String toString() { return "Filter Stability of 5' vs 3'"; }
+	@Override public String toString() { return "Single Primer - Keep Primers With (5' - 3') Stability Greater than " + parametersValues[0] + " KJ"; }
 } 

@@ -21,5 +21,5 @@ public class FilterHomoDimerFixed3Creator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterHomoDimerFixed3(p0,new DegeneratedDNAMatchingStrategy());
 	}
-	@Override public String toString() { return "Filter Homo Dimer with 3' fixed larger than" + this.parametersValues[0];}	
+	@Override public String toString() { return "Single Primer - Remove Primers That Form Homodimer Structures, Including The 3' End And Are Larger Than " + this.parametersValues[0] + " Bases.";}	
 } 
