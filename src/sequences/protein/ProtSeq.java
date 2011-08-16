@@ -52,7 +52,7 @@ import degeneration.GeneticCode;
 /**
  * This class represents a protein Sequence.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public class ProtSeq extends Sequence implements Apilable {
 	//CONSTRUCTOR

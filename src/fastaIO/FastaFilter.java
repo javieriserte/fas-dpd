@@ -51,7 +51,7 @@ import java.io.FileFilter;
  * This class is a subclass a FileFilter that recognizes common extensions for Fasta files.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public class FastaFilter implements FileFilter {
 

@@ -48,6 +48,6 @@ package filters.validator;
  * From this class extends Validate_And, Validate_Or and Validate_Not
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public abstract class ValidatorBoolean extends Validator {}

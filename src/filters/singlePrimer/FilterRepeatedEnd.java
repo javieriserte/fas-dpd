@@ -49,7 +49,7 @@ import sequences.dna.Primer;
 /**
  * This class filters primers that has the two last positions base the same base. 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.2
+ * 
  */
 public class FilterRepeatedEnd extends FilterSinglePrimer {
 	/**

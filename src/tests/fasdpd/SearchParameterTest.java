@@ -52,7 +52,7 @@ import junit.framework.TestCase;
  * Test Case.
  * Unfinished.
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.1.1
+ * 
  */
 
 public class SearchParameterTest extends TestCase {

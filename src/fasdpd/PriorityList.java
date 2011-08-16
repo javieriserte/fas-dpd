@@ -37,7 +37,7 @@ import java.util.Vector;
  * Priority is given by natural order. Object stored in this list must implement comparable interface. 
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
+ * 
  * @param <T>
  */
 public class PriorityList<T> {

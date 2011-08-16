@@ -51,7 +51,7 @@ import java.io.IOException;
  * This class reads a buffer and permits do more actions than a simple bufferedReader.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public class TextConsumer {
 

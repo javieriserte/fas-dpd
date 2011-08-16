@@ -52,7 +52,7 @@ package filters.validator;
  * It is implemented using a 'composite' pattern.  
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public abstract class Validator {
 	/**

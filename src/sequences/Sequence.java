@@ -51,7 +51,7 @@ import sequences.alignment.Apilable;
  * Stores the sequence itself and a description useful to identify it.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.6
+ * 
  */
 public abstract class Sequence implements Apilable {
 	

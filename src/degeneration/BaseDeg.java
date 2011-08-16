@@ -68,7 +68,7 @@ import java.util.Map;
  * This class has not internal state, so all methods are class members.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.4
+ * 
  */
 public class BaseDeg {
 	

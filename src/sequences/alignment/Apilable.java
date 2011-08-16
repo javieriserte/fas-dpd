@@ -52,7 +52,7 @@ import degeneration.GeneticCode;
  * Interface to represent the operation of piling up DNA and protein sequences.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public interface Apilable {
 	public DNASeq pileUpWith(Apilable anotherApilable, GeneticCode myGC);

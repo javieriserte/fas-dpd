@@ -57,7 +57,7 @@ import java.util.Vector;
  * This class is used to read a Fasta file containing multiple sequences.
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.3.1
+ * 
  */
 public class FastaMultipleReader {
 	

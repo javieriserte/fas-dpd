@@ -58,7 +58,7 @@ import junit.framework.TestCase;
  * Test Case
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.1.2
+ * 
  */
 public class AlignmentTest extends TestCase {
 	private DNASeq ds1;

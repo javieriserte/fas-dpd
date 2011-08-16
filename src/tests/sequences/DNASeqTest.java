@@ -53,7 +53,7 @@ import junit.framework.TestCase;
  * Test Case.
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.1.1
+ * 
  */
 public class DNASeqTest extends TestCase {
 	private DNASeq myDNASeq = null;

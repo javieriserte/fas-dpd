@@ -57,7 +57,7 @@ import java.util.Vector;
  * Is a table linking amino acids to nucleotide triplets
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
+ * 
  */
 public class GeneticCode {
 

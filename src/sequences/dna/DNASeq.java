@@ -51,7 +51,7 @@ import degeneration.GeneticCode;
 /**
  * Class to represent a sequence of DNA. (or RNA)
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.7
+ * 
  */
 public class DNASeq extends Sequence implements Apilable{
 	

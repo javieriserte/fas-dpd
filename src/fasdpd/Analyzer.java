@@ -44,7 +44,7 @@ import sequences.dna.Primer;
 /**
  * This class computes scores and search the primers in a sequence.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.3.3 
+ * 
  */
 public class Analyzer {
 	private float pA;

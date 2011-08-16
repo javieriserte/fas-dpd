@@ -46,7 +46,7 @@ package filters.validator;
 /**
  * This class represents simple conditions that will be used to test primers.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  *
  */
 public abstract class ValidatorSimple extends Validator {}

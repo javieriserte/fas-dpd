@@ -48,7 +48,7 @@ package fastaIO;
  * This class represents a pair of elements.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.13
+ * 
  * 
  * @param <First> the first component of the pair.
  * @param <Second> the second component of the pair.

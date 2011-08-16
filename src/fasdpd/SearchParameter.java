@@ -70,7 +70,7 @@ import filters.validator.Validator;
 /**
  * This class contains all the parameters search.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
+ * 
  */
 public class SearchParameter {
 	// parameters are stored as instance variables 

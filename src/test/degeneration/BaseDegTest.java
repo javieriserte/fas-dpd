@@ -51,7 +51,7 @@ import junit.framework.TestCase;
  * Test case.
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.2 
+ * 
  */
 public class BaseDegTest extends TestCase {
 

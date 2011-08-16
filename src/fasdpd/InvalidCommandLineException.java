@@ -46,7 +46,7 @@ package fasdpd;
  * This exception is thrown when the command line in not well formed.
  * Usually this is given by incompatibility of arguments. 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.1.1 
+ * 
  */
 public class InvalidCommandLineException extends Exception {
 

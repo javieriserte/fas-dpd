@@ -56,7 +56,7 @@ import java.io.IOException;
  * By the moment, this class can not handle sequences with more than one line.  
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.3.1
+ * 
  */
 public class FastaReader {
 

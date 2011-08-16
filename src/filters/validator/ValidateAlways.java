@@ -48,7 +48,7 @@ package filters.validator;
 /**
  * This class represents a dummy condition that is always true. 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public class ValidateAlways extends ValidatorSimple {
 

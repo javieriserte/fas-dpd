@@ -49,7 +49,7 @@ package filters.validator;
  * This class represents the boolean operation NOT to use with a Validator Object
  * 
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * @version 1.1.1
+ * 
  */
 public class Validate_NOT extends ValidatorBoolean {
 

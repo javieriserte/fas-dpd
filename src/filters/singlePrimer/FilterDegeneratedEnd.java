@@ -51,7 +51,7 @@ import sequences.dna.Primer;
 /**
  * This class represents the condition that a primer have a degenerated base in the 3' position.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
+ * 
  */
 public class FilterDegeneratedEnd extends FilterSinglePrimer {
 

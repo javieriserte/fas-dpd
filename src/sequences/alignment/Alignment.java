@@ -63,7 +63,7 @@ import degeneration.GeneticCode;
  * This class represents an alignment of sequences.
  * A invariant of representation is that all the sequences had the same length.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.1
+ * 
  */
 public class Alignment {
 	

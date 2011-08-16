@@ -53,7 +53,7 @@ import junit.framework.TestCase;
  * Unfinished.
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
  *
- * @version 1.1.1
+ * 
  */
 public class ProtSeqTest extends TestCase {
 
