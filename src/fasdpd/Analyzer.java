@@ -1,16 +1,3 @@
-package fasdpd;
-
-import java.util.List;
-import java.util.Vector;
-
-import degeneration.GeneticCode;
-import filters.validator.PrimerPairValidable;
-import filters.validator.PrimerValidable;
-import filters.validator.ValidateForFilterPrimerPair;
-import filters.validator.Validator;
-import sequences.dna.DNASeq;
-import sequences.dna.Primer;
-
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -40,6 +27,20 @@ import sequences.dna.Primer;
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
+
+package fasdpd;
+
+import java.util.List;
+import java.util.Vector;
+
+import degeneration.GeneticCode;
+import filters.validator.PrimerPairValidable;
+import filters.validator.PrimerValidable;
+import filters.validator.ValidateForFilterPrimerPair;
+import filters.validator.Validator;
+import sequences.dna.DNASeq;
+import sequences.dna.Primer;
+
 /**
  * This class computes scores and search the primers in a sequence.
  * @author Javier Iserte <jiserte@unq.edu.ar>

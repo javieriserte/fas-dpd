@@ -26,7 +26,9 @@
  * Corresponding Authors:
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */package sequences.dna;
+ */
+
+package sequences.dna;
 
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import sequences.util.compare.SequenceComparator;
