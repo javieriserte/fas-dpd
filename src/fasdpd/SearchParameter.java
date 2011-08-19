@@ -69,8 +69,9 @@ import filters.validator.Validator;
  */
 /**
  * This class contains all the parameters search.
- * @author Javier Iserte <jiserte@unq.edu.ar>
+ * The parameters can be added one by one, or read from the command line. 
  * 
+ * @author Javier Iserte <jiserte@unq.edu.ar>
  */
 public class SearchParameter {
 	// parameters are stored as instance variables 
@@ -99,7 +100,7 @@ public class SearchParameter {
 	////////////////
 	
 	/**
-	 * 
+	 * creates an empty SearchParameter object
 	 */
 	public SearchParameter() {
 		super();
@@ -109,8 +110,9 @@ public class SearchParameter {
 	// PUBLIC INTERFACE
 	/////////////////////
 	/**
-	 * 
+	 * Looks for search parameters reading the command line options.
 	 */
+	// TODO decouple command line interpretation from SearchParameter.
 	public void retrieveFromCommandLine(String[] args) throws InvalidCommandLineException {
 	
 		Parser parser = new Parser();

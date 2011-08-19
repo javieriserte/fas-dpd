@@ -45,7 +45,11 @@
 package fasdpd;
 
 import sequences.dna.Primer;
-
+/**
+ * PrimerPair objects contains two Primer object. One supposed to be forward sense and the other to be reverse.
+ * @author Javier Iserte <jiserte@unq.edu.ar>
+ *
+ */
 public class PrimerPair {
 	private Primer forward;
 	private Primer reverse;
@@ -53,7 +57,9 @@ public class PrimerPair {
 	
 	
 	// CONSTRUCTOR
-	
+	/**
+	 * Creates a new PrimerPair. Both, forward and reverse primers must be supplied.
+	 */
 	public PrimerPair(Primer forward, Primer reverse) {
 		super();
 		this.forward = forward;
@@ -63,7 +69,6 @@ public class PrimerPair {
 
 	// GETTERS & SETTERS
 	
-	
 	/**
 	 * @return the forward
 	 */
@@ -72,7 +77,7 @@ public class PrimerPair {
 	}
 
 	/**
-	 * @param forward the forward to set
+	 * @param forward the forward primer to set
 	 */
 	public void setForward(Primer forward) {
 		this.forward = forward;
@@ -87,7 +92,7 @@ public class PrimerPair {
 
 
 	/**
-	 * @param reverse the reverse to set
+	 * @param reverse the reverse primer to set
 	 */
 	public void setReverse(Primer reverse) {
 		this.reverse = reverse;

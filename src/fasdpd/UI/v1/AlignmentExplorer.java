@@ -45,40 +45,27 @@
 package fasdpd.UI.v1;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.ScrollPane;
-import java.awt.Shape;
-
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.text.BadLocationException;
-
 import degeneration.GeneticCode;
 
 import fastaIO.FastaMultipleReader;
@@ -86,11 +73,13 @@ import fastaIO.Pair;
 
 import sequences.Sequence;
 import sequences.alignment.Alignment;
-import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
 import sequences.dna.DNASeq;
 import sequences.protein.ProtSeq;
 
-
+/**
+ * Swing component to show DNA or Protein Alignment.
+ * @author Javier Iserte <jiserte@unq.edu.ar>
+ */
 public class AlignmentExplorer extends javax.swing.JPanel {
 
 	
@@ -107,31 +96,29 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	// Components
 	
 	private JScrollPane 			mainScrollPane;
-//	private JLabel 					mainView;
 	private MainView 				mainView;
 	private JLabel 					header;
 	private Description             descriptions;
-//	private JLabel 					descriptions;
 
-	
-	///////////////////
-	// Public Interface
-	
-	public 					AlignmentExplorer				(Alignment alin1, GeneticCode geneticCode) {
+	//////////////
+	// Constructor
+	public 					AlignmentExplorer				(Alignment alingment, GeneticCode geneticCode) {
 		super();
-		this.alignment = alin1;
+		this.alignment = alingment;
 		this.geneticCode = geneticCode;
-		
-		createGUI();
-//		
-//		try { createGUI();
-//		} catch (BadLocationException e) { e.printStackTrace(); }
-//		  catch (IOException e) { e.printStackTrace();
-//		}
+		this.createGUI();
 	}
 
+	///////////////////
+	// Public Interface
+	/**
+	 * Shows selected region of alignment differentially.
+     * <b>Currently not implemented</b>
+	 * @param from start of selected region
+	 * @param to end of selected region
+	 */
 	public void highlight (Integer from, Integer to) {
-//		this.mainView.setText(this.getHTMLforSequences(from,to));
+		// TODO Implement highlighting of selected regions.
 	}
 	
 	

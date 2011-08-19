@@ -59,52 +59,20 @@ import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
 
 /**
- * Executable Class For FAS-DPD program
+ * Executable Class For Command line FAS-DPD program.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * 
  */
-
 public class FASDPD {
 
+
+	// Public Interface
 	/**
-	 * Main method. 
+	 * Performs the search of degenerated primers.
+	 * The results are sent to a file. The file name and path are defined in <code>mySp</code>.
+	 * 
+	 * @see SearchParameter
+	 * @param mySp contains all the parameters for the search.
 	 */
-	public static void main(String[] arg) {
-
-		
-		FASDPD myProgram = new FASDPD();
-			
-		SearchParameter sp = new SearchParameter();
-			// sp will store all the parameters for the search 
-
-		// Interpret command line
-		try {
-			if (arg.length==0) {throw new InvalidCommandLineException();}	
-			sp.retrieveFromCommandLine(arg);
-				// tries to get all the parameters from command line.
-		} catch (InvalidCommandLineException e) {
-
-			System.out.println(FASDPD.getHelp());
-			System.out.println(e.getMessage());
-			
-			return;
-		}
-		myProgram.doSearchAndExportResults(sp);
-			// start the search of primers
-	}
-
-	////////////////////////////
-	// New Search Strategy
-	//
-	// 1) Look if in the searchParameters indicates that must be search pair of primer or single primers.
-	// 2) If single primers are asked, do the search like before.
-	// 3) If primer pairs are searched, a list of primers must be submitted. 
-	//               In command line this list is made searching single primers first.
-	//               But, can be given as a file. ( TODO modify input parameters to read a list of primers from a file)
-	//               Search primerpairs, 
-	//
-	////////////////////////////
-	
 	public void doSearchAndExportResults(SearchParameter mySp) {
 		Alignment al = new Alignment();
 		FastaMultipleReader fmr = new FastaMultipleReader();
@@ -163,7 +131,14 @@ public class FASDPD {
 
 		}
 	}
-	
+	/**
+	 * Performs the search of degenerated primers.
+	 * The file name and path are defined in <code>mySp</code>.
+	 * 
+	 * @see SearchParameter
+	 * @param mySp contains all the parameters for the search.
+	 * @return a <code>ResultOfSearch</code> that contains the designed primers.
+	 */
 	public ResultOfSearch doSearch(SearchParameter mySp) {
 
 		ResultOfSearch results;
@@ -226,11 +201,12 @@ public class FASDPD {
 	}
 	
 	/**
-	 * export a distribution profile of primers to a text file, and also exports a simple script to view the profile with gnu-plot.
+	 * Exports a distribution profile of primers to a text file, and also exports a simple script to view the profile with gnu-plot.
 	 * 
-	 * @param outfile
-	 * @param list
-	 * @param lastPos
+	 * @param outfile is the path to the output file
+	 * @param list is the List or Primers to export
+	 * @param lastPos is the number of the last position of the alignment used to design the primers. 
+	 * Is required for drawing purposes.
 	 */
 	public void exportDistributionProfile(String outfile, List<Primer> list,int lastPos) {
 		int[] pos = distributionProfile(  list, lastPos);
@@ -279,7 +255,7 @@ public class FASDPD {
 	/**
 	 * Creates a distribution profile of a collection of primers for a DNAseq.
 	 * 
-	 * @param list
+	 * @param list is the list of primers used to make  
 	 * @param lastPos indicates the last position of the sequence. Is used to know where the profile ends. 
 	 * @return distributionProfile object representing a histogram of number of primer per position. 
 	 */
@@ -359,17 +335,49 @@ public class FASDPD {
 		}
 	}
 	/**
-	 * 
+	 * Gets the the text of help.
 	 */
-	
 	public static String getHelp() {
 		return "Usage:\r\n	java -cp \\bin;\\lib\\* fasdpd.FASDPD 'OPTIONS'\r\n\r\n	Options:\r\n		Required:\r\n			Infile: '/infile' : Path to a Fasta file with the starting alignment.\r\n			Outfile: '/outfile' : Path to a file where resulting primers will be stored.\r\n			GCfile: '/gcfile' : Path to a file containg the genetic code that will be used.\r\n		Optional:\r\n			Length: '/len' : The length of resulting primers.\r\n			Quantity: '/q' : The number of primers to search.\r\n			Staring Point: '/startingpoint' : The position of the alignment where start the search.\r\n			Ending Point: '/endpoint' : The position of the alignment where finish the search.\r\n			Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences.\r\n			Is Protein: '/isprotein' : Treat the sequences in input alignment as protein sequences.\r\n			Filter Repeated End: '/frep' : Discard primers with the last two bases repeated.\r\n			Filter Degenerated End: '/fdeg' : Discar Primers with the last base degenerated.\r\n			Complementary Strand: '/ComplementaryStrand' : Search the primers in the complementary strand.\r\n			Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.\r\n";
 	
 	}
-	
+	// Executable Main
+	/**
+	 * Executable main method for console interface of FAS-DPD.
+	 */
+	public static void main(String[] arg) {
+
+		
+		FASDPD myProgram = new FASDPD();
+			
+		SearchParameter sp = new SearchParameter();
+			// sp will store all the parameters for the search 
+
+		// Interpret command line
+		try {
+			if (arg.length==0) {throw new InvalidCommandLineException();}	
+			sp.retrieveFromCommandLine(arg);
+				// tries to get all the parameters from command line.
+		} catch (InvalidCommandLineException e) {
+
+			System.out.println(FASDPD.getHelp());
+			System.out.println(e.getMessage());
+			
+			return;
+		}
+		myProgram.doSearchAndExportResults(sp);
+			// start the search of primers
+	}
+	// Auxiliary Classes
+	/**
+	 * ResultOfSearch object are used to store the results of the search of primers.
+	 * It could contain a list of Primer or a list PrimerPair.
+	 * 
+	 * @author Javier Iserte <jiserte@unq.edu.ar>
+	 */
 	public class ResultOfSearch {
 		public List<Primer> primers = null;
 		public List<PrimerPair> primerPairs=null;
 	}
-	
+
 }
