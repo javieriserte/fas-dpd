@@ -2,6 +2,12 @@
 CHANGE LOG
 ----------
 
+#Aug 16th, 2011
+	Ver 1.2.1
+	Include several Filters for search primers.
+	Search Primer Pairs.
+	Added Swing based GUI.
+
 #Sep 22th, 2010.
 	Ver 1.1.2 Alpha.
 	Some modifications to FastaIO package. 

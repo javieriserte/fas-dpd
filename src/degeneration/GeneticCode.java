@@ -1,20 +1,23 @@
-package degeneration;
-
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
- * This program is distributed WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
+ * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
+ * PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+ * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
+ * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
+ * NECESSARY SERVICING, REPAIR OR CORRECTION.
+ 
+ * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT 
+ * HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, 
+ * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL
+ * DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED 
+ * TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD 
+ * PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH 
+ * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
  * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
@@ -38,58 +41,67 @@ import java.util.Vector;
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
  */
+
+package degeneration;
+
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 /**
  * This class represents a Genetic Code.
- * Is a table linking amino acids to nucleotide triplets
+ * It is a table linking amino acids to nucleotide triplets
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
  */
 public class GeneticCode {
 
+	// Private Instance Variables
 	private Map<String,List<String>> aminoToCodonList;
 	private Map<String,String> aminoToDegCodon;
 	private Map<String,String> codonToAmino;
 	
-	// CONSTRUCTOR
+	// Constructor
 	/**
 	 * Creates a new instance of genetic Code.
 	 * From a path file where a genetic code is stored.
 	 * 
+	 * @param pathfile is the path to the file containing the genetic code.
 	 */
 	public GeneticCode(String pathfile) {
 		this.setAminoToCodonList(new HashMap<String,List<String>>(40));
 		this.setAminoToDegCodon(new HashMap<String,String>(40));
 		this.setCodonToAmino(new HashMap<String,String>(100));
 		this.readTableFromFile(pathfile);
-		
-//		for (String amino : this.getAminoToCodonList().keySet()) {
-//			String codonRes = this.getAminoToCodonList().get(amino).get(0);
-//			for (String codon : this.getAminoToCodonList().get(amino)) {
-//				codonRes = this.pileUp(codonRes, codon);
-//			}
-//			this.getAminoToDegCodon().put(amino, codonRes);
-//		}
 		this.process();
 	}
-	
+	/**
+	 * Creates a new instance of genetic Code.
+	 * 
+	 * @param pathfile is the path to the file containing the genetic code.
+	 */	
 	public GeneticCode() {
 		this.setAminoToCodonList(new HashMap<String,List<String>>(40));
 		this.setAminoToDegCodon(new HashMap<String,String>(40));
 		this.setCodonToAmino(new HashMap<String,String>(100));
 	}
 	
-	
-	
-	
-	//INSTANCE METHODS
+	//Public Interface
 
 	/**
 	 * This method is used to construct step by step a genetic code.
 	 * In each step an amino acid must be provided, and a list of codons that codifies for it.
 	 * 
-	 * After all amino acids were added, the method process must be called in order to re-arrange data in a more efficient way. 
-	 *  
+	 * After all amino acids were added, the method <code>process</code> must be called 
+	 * in order to re-arrange data in a more efficient way. 
+	 * 
+	 * @param amino is a string representing a single amino acid.
+	 * @param codons is a list of triplets of nucleic acid that code for the given amino acid <code>amino</code>.
 	 */
 	public void addCodons(String amino,List<String> codons) {
 
@@ -106,8 +118,6 @@ public class GeneticCode {
 	 * The first to do is call many times the method 'addCodons'.
 	 * Then, after all amino acids were added, the method process must 
 	 * be called in order to re-arrange data in a more efficient way.
-	 * 
-	 * 
 	 */
 	public void process() {
 		for (String amino : this.getAminoToCodonList().keySet()) {
@@ -154,11 +164,10 @@ public class GeneticCode {
 	
 	/**
 	 * Piles Up two DNA sequences and returns it.
-	 * 
-	 * Preconditions:  DNAseq1 y DNAseq2 Have the same length
-	 * 				   DNAseq1 y DNAseq2 are upper case strings.
-	 *                 DNAseq1 y DNAseq2 are formed by IUPAC degenerated code.
-	 * 
+	 * <dl><dt>Preconditions:</dt>
+	 * <dd>DNAseq1 y DNAseq2 Have the same length.</dd>
+	 * <dd>DNAseq1 y DNAseq2 are upper case strings.</dd>
+	 * <dd>DNAseq1 y DNAseq2 are formed by IUPAC degenerated code.</dd></dl>
 	 * @param DNAseq1 String input DNAseq
 	 * @param DNAseq2 String input DNAseq
 	 * @return String representing the sequence of piling up the two sequences.
@@ -189,9 +198,8 @@ public class GeneticCode {
 		return BaseDeg.getDegValueFromChar(base);
 		
 	}
-
 	
-	// MÉTODOS PRIVADOS
+	// Private Methods
 	/**
 	 * Reads a genetic code from a file.
 	 * 

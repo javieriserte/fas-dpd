@@ -37,8 +37,8 @@ import java.util.Vector;
  * Priority is given by natural order. Object stored in this list must implement comparable interface. 
  * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.3
- * @param <T>
+ * 
+ * @param <T> A class that implements Comparable interface.
  */
 public class PriorityList<T> {
 	//INSTANCE VARIABLES
@@ -60,7 +60,7 @@ public class PriorityList<T> {
 		this.setCurrentFilled(0);
 	}
 	
-	// Instance Methods
+	// Public Interface
 	/**
 	 * Adds a new value to the list. 
 	 */
@@ -106,6 +106,8 @@ public class PriorityList<T> {
 	// Private Methods
 	/**
 	 * search the minimum in the elements of the list and returns it.
+	 * 
+	 * @return a Comparable T that is the minimum in the natural order or T.
 	 */
 	@SuppressWarnings("unchecked")
 	private Comparable<T> searchMin() {

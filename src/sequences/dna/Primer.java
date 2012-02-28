@@ -26,7 +26,9 @@
  * Corresponding Authors:
  *	Javier A. Iserte. <jiserte@unq.edu.ar>
  *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */package sequences.dna;
+ */
+
+package sequences.dna;
 
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import sequences.util.compare.SequenceComparator;
@@ -35,7 +37,7 @@ import sequences.util.compare.SequenceComparator;
  * Class to represent a Oligonucleotide that is Primer for PCR.
  * Extend of DNAseq.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * @version 1.1.2
+ * 
  */
 public class Primer extends DNASeq implements Comparable<Primer>{
 	// INSTANCE VARIABLES
