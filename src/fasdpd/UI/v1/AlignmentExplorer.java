@@ -45,13 +45,13 @@
 package fasdpd.UI.v1;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -60,21 +60,20 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import degeneration.GeneticCode;
-
-import fastaIO.FastaMultipleReader;
-import fastaIO.Pair;
 
 import sequences.Sequence;
 import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.protein.ProtSeq;
+import degeneration.GeneticCode;
+import fastaIO.FastaMultipleReader;
+import fastaIO.Pair;
 
 /**
  * Swing component to show DNA or Protein Alignment.
