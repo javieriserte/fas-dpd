@@ -83,7 +83,7 @@ import fasdpd.UI.v1.filterCreators.FilterMeltingTempCompatibilityCreator;
 import fasdpd.UI.v1.filterCreators.FilterOverlappingCreator;
 import fasdpd.UI.v1.filterCreators.FilterPrimerScoreCreator;
 import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
-import fasdpd.UI.v1.filterCreators.FilterSmallAmpliconSizeCreator;
+//import fasdpd.UI.v1.filterCreators.FilterSmallAmpliconSizeCreator;
 
 public class FiltersSelectionPane extends javax.swing.JDialog {
 
@@ -162,7 +162,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 
 		if (filtersToShow==SingleOrPair.both) {
 			listOfAllFilterCreators.add( new FilterAmpliconSizeCreator());
-			listOfAllFilterCreators.add( new FilterSmallAmpliconSizeCreator());
+//			listOfAllFilterCreators.add( new FilterSmallAmpliconSizeCreator());
 			listOfAllFilterCreators.add( new FilterGCCompatibilityCreator());
 			listOfAllFilterCreators.add( new FilterHeteroDimerCreator());
 			listOfAllFilterCreators.add( new FilterHeteroDimerFixed3Creator());
