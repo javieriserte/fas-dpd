@@ -2,6 +2,12 @@
 CHANGE LOG
 ----------
 
+#Jun 20th, 2013
+    Ver 1.2.2
+    Corrected a bug while performing back-translation. (Thanks to Dr. Hokei Nakamura).
+    Corrected the message error management in command line.
+    Added documentation of filters.
+
 #Aug 16th, 2011
 	Ver 1.2.1
 	Include several Filters for search primers.

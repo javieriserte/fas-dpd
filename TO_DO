@@ -1,8 +1,8 @@
 ----------------------------------
 Next features and Fixes of FAS-DPD
 ----------------------------------
-1  - Search for inespecific matches with oringial template or other molecules.
-2  - Export eps graphics (may be using jlibeps)
+1  - Search for non specific matches with original template or other molecules.
+2  - Export '.eps' graphics (may be using jlibeps)
 3  - Decouples FastaIO into an external library.
 4  - Modify code to do not require a genetic code if is working with DNA sequences.
 5  - Create '.exe' files to easy run the program in win32 environment.

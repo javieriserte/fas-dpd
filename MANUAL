@@ -10,19 +10,138 @@ Usage:
 	java -cp \bin;\lib\* fasdpd.FASDPD 'OPTIONS'
 
 	Options:
+	
 		Required:
+	
 			Infile: '/infile' : Path to a Fasta file with the starting alignment.
+	
 			Outfile: '/outfile' : Path to a file where resulting primers will be stored.
+	
 			GCfile: '/gcfile' : Path to a file containg the genetic code that will be used.
+		
 		Optional:
 			Length: '/len' : The length of resulting primers.
+			
 			Quantity: '/q' : The number of primers to search.
+			
 			Staring Point: '/startingpoint' : The position of the alignment where start the search.
+			
 			Ending Point: '/endpoint' : The position of the alignment where finish the search.
-			Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences.
+			
+			Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences. 
+			    By default: is assumed as DNA.
+			
 			Is Protein: '/isprotein' : Treat the sequences in input alignment as protein sequences.
+			    By default: is assumed as DNA.
+			
 			Filter Repeated End: '/frep' : Discard primers with the last two bases repeated.
+			
 			Filter Degenerated End: '/fdeg' : Discar Primers with the last base degenerated.
+			
 			Complementary Strand: '/ComplementaryStrand' : Search the primers in the complementary strand.
-			Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.
-	
+			
+			Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides 
+			    a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.
+			
+			Primer Minimum Length: '/lenMin' : With '/lenMax' option permits evaluate primers of different sizes.
+			    Default value: 20 
+			
+			Primer Maximum Length: '/lenMax' : With '/lenMin' option permits evaluate primers of different sizes.
+			    Default value: 25 
+			
+			Melting Point Filter: '/tm' : Keep primers with a melting temperature in a given range.
+			    Example: '/tm 55.0,70.0', primers with 55.0<=tm<=70.0 Celcius are used, discarding the rest.
+			    Default value: 50ºC - 65ºC.
+			    Use '/notm' option to do not filter by melting Point. 
+			
+			SantaLucia Melting Point: '/tmsantalucia' : Estimates the melting point of primers using Santa Lucia method.
+                Reference: SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA 
+                nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A. 1998 Feb 17;95(4):1460-5.
+                By default: /tmsantalucia is used.
+            
+            Simple Melting Point: '/tmsimple' : Estimates the melting point of primers using the formula Tm = 2*AT+4*GC.
+                Reference: Joseph Sambrook, E. F. Fritsch, Tom Maniatis. Molecular cloning: a laboratory manual. 
+                Cold Spring Harbor Laboratory, 1989.
+                By default: /tmsantalucia is used.
+                                
+            5' vs. 3' Thermodynamic Stability: '/end5v3' : Calculates the Delta_G values for the first (5') and last (3')
+                five nucleotides of the primer and verifies that 5' is more stable than 3', according to a given Delta_G 
+                threshold value and experimental conditions. Delta_G-5' + delta_G_Limit < Delta_G-3'.
+                Example: '/end5v3 1.5, 310, 0.05, 5', 
+                  1.5 is the Delta_G limit (in Kcal/mol), 
+                  310 is the Kelvin temperature used to estimate Delta_G values. 
+                  0.05 is the concetration of monovalent ions. Typically Na(+).
+                  5 is the number of bases from each end that will be used to estimate delta_G difference.
+                The values shown above are the dafault values.
+                Use '/noend5v3' to do not filter by 5' vs 3' thermodynamic stability. 
+                
+            Base Runs Filter: '/baserun' : Discard primers that repeats the last base at least a given number of times.
+                Example: '/baserun 4', discard primers that repeats 4, 5, or more times the last 3' base.
+                Default value: 4.
+                Use '/nobaserun' to do not filter by base runs. 
+                
+            Homodimer Filter: '/homodimer' : Eliminate primers that can form a homodimer structure of a given number of bases 
+                in any part of the primer.
+                Default value: 5.
+                Use '/nohomodimer' to do not filter homodimer structures. 
+                
+            Homodimer At The 3' Filter: '/homodimer3' : Discard primers that can form homodimeric structures of a given size 
+                containing the 3' end.
+                Dafault value: 3.
+                Use '/nohomodimer3' to do not filter homodimer structures at 3'. 
+                
+            G+C Content Filter: '/gc' :  Keep primer primers whose G+C percent content ​​are in a given range.
+                Example: '/gc 30, 70' , primers with 30<=G+C<=70 are kept.
+                Default value: 40 - 60 G+C %.
+                Use '/nogc' to do not filter primers by its G+C content.
+                
+            Score Filter: '/score' : Discard primers whose score is lower than a given value.
+                Default value: 0.8.
+                Use '/noscore' to do not filter primers by score.
+                
+            Perform PCR Primer Pair Search: '/pair' : Searches primers in both strands of a given sequence in order to find primer pairs 
+                for PCR. This option allows the use of extra filters for primer pairs.
+                By Default, single primer search are performed.
+                
+            Maximum Amplicon Size: '/size' : Search primers that can give a PCR product smaller or equal than a given size.
+                Default value: 200.
+                Use '/nosize' to do not limit the maximum size of a PCR product.
+            
+            Minimum Amplicon Size: '/minsize' : Search primers that can give a PCR product greater or equal than a given size.
+                Default value: 100.
+                Use '/nominsize' to do not limit the manimum size of a PCR product.
+               
+            G+C content compatibility: '/gccomp' : Calculates the difference of G+C content of the two primers and discard the pair if 
+                it is greater than a given value.
+                Example: '/gccomp 20'. Keep pairs whose G+C content is smaller or equal to 20 %.
+                Default value: 10 G+C %.
+                Use '/nogccomp' to do not filter primer pairs by its G+C content.
+            
+            Hetero Dimer Filter: '/hetdimer' : Eliminate primer pairs that can form a heterodimer structure of a given number of bases 
+                in any part of the primer.
+                Default value: 5.
+                Use '/nohetdimer' to do not filter primer pairs that can form heterodimer structures.
+                
+                FAS-DPD:\\nFamily Specific Degenerate Primer Design program: \\n\\nVersion 1.1.1\\n\\nFAS-DPD is a command line software that designs degenerated oligonucleotides to use in PCR in order to amplify new members of a family of sequences.\\nFAS-DPD is written in Java, so you will need a Java Virtual Machine to run it.\\n\\nUsage:\\n    java -cp \bin;\lib\* fasdpd.FASDPD 'OPTIONS'\\n\\n    Options:\\n    \\n        Required:\\n    \\n            Infile: '/infile' : Path to a Fasta file with the starting alignment.\\n    \\n            Outfile: '/outfile' : Path to a file where resulting primers will be stored.\\n    \\n            GCfile: '/gcfile' : Path to a file containg the genetic code that will be used.\\n        \\n        Optional:\\n        \\n            Length: '/len' : The length of resulting primers.\\n            \\n            Quantity: '/q' : The number of primers to search.\\n            \\n            Staring Point: '/startingpoint' : The position of the alignment where start the search.\\n            \\n            Ending Point: '/endpoint' : The position of the alignment where finish the search.\\n            \\n            Is DNA: '/isdna' : Treat the sequences in input alignment as DNA sequences. \\n                By default: is assumed as DNA.\\n            \\n            Is Protein: '/isprotein' : Treat the sequences in input alignment as protein sequences.\\n                By default: is assumed as DNA.\\n            \\n            Filter Repeated End: '/frep' : Discard primers with the last two bases repeated.\\n            \\n            Filter Degenerated End: '/fdeg' : Discar Primers with the last base degenerated.\\n            \\n            Complementary Strand: '/ComplementaryStrand' : Search the primers in the complementary strand.\\n            \\n            Profile: '/profile' : Generates an histogram of sites of the alignment occupied by primers. Also provides \\n                a simple script to generate '.png' and '.ps' graphic output with Gnu-Plot.\\n            \\n            Primer Minimum Length: '/lenMin' : With '/lenMax' option permits evaluate primers of different sizes.\\n                Default value: 20 \\n            \\n            Primer Maximum Length: '/lenMax' : With '/lenMin' option permits evaluate primers of different sizes.\\n                Default value: 25 \\n            \\n            Melting Point Filter: '/tm' : Keep primers with a melting temperature in a given range.\\n                Example: '/tm 55.0,70.0', primers with 55.0<=tm<=70.0 Celcius are used, discarding the rest.\\n                Default value: 50ºC - 65ºC.\\n                Use '/notm' option to do not filter by melting Point. \\n            \\n            SantaLucia Melting Point: '/tmsantalucia' : Estimates the melting point of primers using Santa Lucia method.\\n                Reference: SantaLucia J Jr. A unified view of polymer, dumbbell, and oligonucleotide DNA \\n                nearest-neighbor thermodynamics. Proc Natl Acad Sci U S A. 1998 Feb 17;95(4):1460-5.\\n                By default: /tmsantalucia is used.\\n            \\n            Simple Melting Point: '/tmsimple' : Estimates the melting point of primers using the formula Tm = 2*AT+4*GC.\\n                Reference: Joseph Sambrook, E. F. Fritsch, Tom Maniatis. Molecular cloning: a laboratory manual. \\n                Cold Spring Harbor Laboratory, 1989.\\n                By default: /tmsantalucia is used.\\n                                \\n            5' vs. 3' Thermodynamic Stability: '/end5v3' : Calculates the Delta_G values for the first (5') and last (3')\\n                five nucleotides of the primer and verifies that 5' is more stable than 3', according to a given Delta_G \\n                threshold value and experimental conditions. Delta_G-5' + delta_G_Limit < Delta_G-3'.\\n                Example: '/end5v3 1.5, 310, 0.05, 5', \\n                  1.5 is the Delta_G limit (in Kcal/mol), \\n                  310 is the Kelvin temperature used to estimate Delta_G values. \\n                  0.05 is the concetration of monovalent ions. Typically Na(+).\\n                  5 is the number of bases from each end that will be used to estimate delta_G difference.\\n                The values shown above are the dafault values.\\n                Use '/noend5v3' to do not filter by 5' vs 3' thermodynamic stability. \\n                \\n            Base Runs Filter: '/baserun' : Discard primers that repeats the last base at least a given number of times.\\n                Example: '/baserun 4', discard primers that repeats 4, 5, or more times the last 3' base.\\n                Default value: 4.\\n                Use '/nobaserun' to do not filter by base runs. \\n                \\n            Homodimer Filter: '/homodimer' : Eliminate primers that can form a homodimer structure of a given number of bases \\n                in any part of the primer.\\n                Default value: 5.\\n                Use '/nohomodimer' to do not filter homodimer structures. \\n                \\n            Homodimer At The 3' Filter: '/homodimer3' : Discard primers that can form homodimeric structures of a given size \\n                containing the 3' end.\\n                Dafault value: 3.\\n                Use '/nohomodimer3' to do not filter homodimer structures at 3'. \\n                \\n            G+C Content Filter: '/gc' :  Keep primer primers whose G+C percent content ​​are in a given range.\\n                Example: '/gc 30, 70' , primers with 30<=G+C<=70 are kept.\\n                Default value: 40 - 60 G+C %.\\n                Use '/nogc' to do not filter primers by its G+C content.\\n                \\n            Score Filter: '/score' : Discard primers whose score is lower than a given value.\\n                Default value: 0.8.\\n                Use '/noscore' to do not filter primers by score.\\n                \\n            Perform PCR Primer Pair Search: '/pair' : Searches primers in both strands of a given sequence in order to find primer pairs \\n                for PCR. This option allows the use of extra filters for primer pairs.\\n                By Default, single primer search are performed.\\n                \\n            Maximum Amplicon Size: '/size' : Search primers that can give a PCR product smaller or equal than a given size.\\n                Default value: 200.\\n                Use '/nosize' to do not limit the maximum size of a PCR product.\\n            \\n            Minimum Amplicon Size: '/minsize' : Search primers that can give a PCR product greater or equal than a given size.\\n                Default value: 100.\\n                Use '/nominsize' to do not limit the manimum size of a PCR product.\\n               \\n            G+C content compatibility: '/gccomp' : Calculates the difference of G+C content of the two primers and discard the pair if \\n                it is greater than a given value.\\n                Example: '/gccomp 20'. Keep pairs whose G+C content is smaller or equal to 20 %.\\n                Default value: 10 G+C %.\\n                Use '/nogccomp' to do not filter primer pairs by its G+C content.\\n            \\n            Hetero Dimer Filter: '/hetdimer' : Eliminate primer pairs that can form a heterodimer structure of a given number of bases \\n                in any part of the primer.\\n                Default value: 5.\\n                Use '/nohetdimer' to do not filter primer pairs that can form heterodimer structures.\\n                \\n            Heterodimer At The 3' Filter: '/hetdimer3' : Eliminate primer pairs that can form a heterodimer structure of a given number \\n                of bases containing the 3' end of any of the two primers.\\n                Default value: 3.\\n                Use '/nohetdimer3' to do not filter primer pairs that can form heterodimer structures at the 3' end.\\n                \\n            Tm Compatibility Filter: '/tmcomp' : Eliminate primer pairs with a difference in whose melting temperatures greater than a given value.\\n                Default value: 5 ºC.\\n                Use '/notmcomp' to do not check compatibility of melting points.          of bases containing the 3' end of any of the two primers.               Default value: 3.
+                Use '/nohetdimer3' to do not filter primer pairs that can form heterodimer structures at the 3' end.
+                
+            Tm Compatibility Filter: '/tmcomp' : Eliminate primer pairs with a difference in whose melting temperatures greater than a given value.
+                Default value: 5 ºC.
+                Use '/notmcomp' to do not check compatibility of melting points.
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
