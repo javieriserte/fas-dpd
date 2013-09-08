@@ -22,6 +22,7 @@ import filters.primerpair.FilterHeteroDimer;
 import filters.primerpair.FilterHeteroDimerFixed3;
 import filters.primerpair.FilterMeltingTempCompatibility;
 import filters.primerpair.FilterOverlapping;
+import filters.primerpair.FilterSmallAmpliconSize;
 import filters.singlePrimer.Filter5vs3Stability;
 import filters.singlePrimer.FilterBaseRuns;
 import filters.singlePrimer.FilterCGContent;
@@ -46,11 +47,11 @@ import filters.validator.Validator;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
+ * 	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas"
  * 		(Basic Molecular Microbiology and biotechnological applications)
  * 
  * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+ * 	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
  *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
  *	Universidad Nacional de Quilmes.
  *		(National University Of Quilmes)
@@ -59,7 +60,7 @@ import filters.validator.Validator;
  * The complete team for this project is formed by:
  *	Lic.  Javier A. Iserte.
  *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Goñi.
+ * 	ph.D. Sandra E. Goï¿½i.
  * 	ph.D. P. Daniel Ghiringhelli.
  *	ph.D. Mario E. Lozano.
  *
@@ -153,8 +154,8 @@ public class SearchParameter {
 		NoOption filterRep = new NoOption(parser, false , "/frep");
 		NoOption filterDeg = new NoOption(parser, false , "/fdeg");
 		
-		SingleOption tm = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatArrayParameter.getParameter());
-		NoOption notm = new NoOption(parser, false, "/notm");
+		SingleOption tmOpt = new SingleOption(parser, new Float[]{50f,65f}, "/tm", FloatArrayParameter.getParameter());
+		NoOption notmOpt = new NoOption(parser, false, "/notm");
 		
 		SingleOption end5v3 = new SingleOption(parser, new End5v3ParameterType.Result(1.5, 273 + 37, 0.05, 5), "/end5v3", End5v3ParameterType.getParameter()); 
 		NoOption noend5v3 = new NoOption(parser, false, "/noend5v3");
@@ -166,7 +167,7 @@ public class SearchParameter {
 		NoOption nohomodimer= new NoOption(parser, false, "/nohomodimer");		
 		
 		SingleOption homodimerfixedEnd = new SingleOption(parser, 3 , "/homodimer3", IntegerParameter.getParameter());
-		NoOption nohomodimerfixedEnd= new NoOption(parser, false, "/nohomodimerfixedEnd");		
+		NoOption nohomodimerfixedEnd= new NoOption(parser, false, "/nohomodimer3");		
 		
 		SingleOption gccontent = new SingleOption(parser, new Float[]{40f,60f}, "/gc", FloatArrayParameter.getParameter());
 		NoOption nogccontent = new NoOption(parser, false, "/nogccontent");	
@@ -199,9 +200,17 @@ public class SearchParameter {
 		/////////////////////////
 		
 		try {
+			
 			parser.parseEx(args);
+			
 		} catch (IncorrectParameterTypeException e) {
-			e.printStackTrace();
+
+			System.err.println("There was an error trying to parse the command line:");
+			
+			System.err.println(e.getMessage());
+			
+			System.exit(1);
+			
 		}
 		
 		
@@ -230,7 +239,7 @@ public class SearchParameter {
 			throw new InvalidCommandLineException("Max length is lesser than Min length");
 		}
 		
-		if (tm.isPresent() && notm.isPresent() ) { 
+		if (tmOpt.isPresent() && notmOpt.isPresent() ) { 
  			// This options can't be in the command line at the same time 
  			throw new InvalidCommandLineException("/tm and /notm options can not appear in the command line simoultaneously");
 		}
@@ -248,7 +257,7 @@ public class SearchParameter {
 		}
 		if (homodimerfixedEnd.isPresent() && nohomodimerfixedEnd.isPresent() ) { 
  			// This options can't be in the command line at the same time
- 			throw new InvalidCommandLineException("/homodimerfixedend and /nohomodimerfixedend options can not appear in the command line simoultaneously");
+ 			throw new InvalidCommandLineException("/homodimer3 and /nohomodimer3 options can not appear in the command line simoultaneously");
 		}
 		if (gccontent.isPresent() && nogccontent.isPresent() ) { 
  			// This options can't be in the command line at the same time
@@ -272,7 +281,7 @@ public class SearchParameter {
 		}
 		if (heterodimerfixedEnd.isPresent() && noheterodimerfixedEnd.isPresent() ) { 
  			// This options can't be in the command line at the same time
- 			throw new InvalidCommandLineException("/heterodimerfixed and /noheterodimerfixedend options can not appear in the command line simoultaneously");
+ 			throw new InvalidCommandLineException("/heterodimer3 and /noheterodimer3 options can not appear in the command line simoultaneously");
 		}
 		if (tmcomp.isPresent() && notmcomp.isPresent() ) { 
  			// This options can't be in the command line at the same time
@@ -296,6 +305,7 @@ public class SearchParameter {
 			if (isAnyPrimerPairParameter) {
 	 			// there is some options for primer pair search, but /pair option is not present. 
 	 			throw new InvalidCommandLineException("/pair option is not present in the command line, but there is one or more parameters for primer pair search.");
+	 			
 			}
 			
 		}
@@ -322,8 +332,8 @@ public class SearchParameter {
 		this.setDirectStrand(! complementary.getValue());
 			// pass if it is complementary.
 		
-		this.setDNA(isDna.getValue());
-		if (isProtein.isPresent()) this.setDNA(isProtein.getValue());
+		this.setDNA(true);
+		if (isProtein.isPresent()) this.setDNA(false);
 		
 		this.setUseSantaLuciaToEstimateTm( tmSL.getValue());
 		if (tmsimple.isPresent()) this.setUseSantaLuciaToEstimateTm(false);
@@ -354,7 +364,7 @@ public class SearchParameter {
 		
 		if (! noscore.getValue())              vffsp.add(new ValidateForFilterSinglePrimer(new FilterPrimerScore                       ((Double)score.getValue())));		
 
-		if (! notm.isPresent())                vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature           (((Float[])tm.getValue())[0], ((Float[])tm.getValue())[1], tme) ));
+		if (! notmOpt.isPresent())             vffsp.add(new ValidateForFilterSinglePrimer(new FilterMeltingPointTemperature           (((Float[])tmOpt.getValue())[0], ((Float[])tmOpt.getValue())[1], tme) ));
 		
 		End5v3ParameterType.Result r = (Result) end5v3.getValue();
 		if (! noend5v3.isPresent())            vffsp.add(new ValidateForFilterSinglePrimer(new Filter5vs3Stability                     (r.dg, r.ktemp, r.monov, r.len)));
@@ -386,7 +396,7 @@ public class SearchParameter {
 			
 			if (! noampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) ampsize.getValue())));
 			
-			if (! nosmallampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterAmpliconSize((Integer) smallampsize.getValue())));
+			if (! nosmallampsize.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterSmallAmpliconSize((Integer) smallampsize.getValue())));
 	
 			if (! nogccomp.isPresent()) vffpp.add(new ValidateForFilterPrimerPair(new FilterGCCompatibility((Float) gccomp.getValue())));
 	

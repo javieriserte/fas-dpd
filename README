@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------
-FAS-DPD - Family Specific Degenerate Primer Design tool Version 1.2.1
+FAS-DPD - Family Specific Degenerate Primer Design tool Version 1.2.2
 ---------------------------------------------------------------------
 Date: Aug 16th, 2011.
 
@@ -15,12 +15,12 @@ Authors
 -------
 FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
 
-	"Microbiología molecular básica y aplicaciones biotecnológicas" 
+	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas" 
 		(Basic Molecular Microbiology and biotechnological applications)
 
 And is being conducted in:
 		
-	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
 		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
 	Universidad Nacional de Quilmes.
 		(National University Of Quilmes)
@@ -29,7 +29,7 @@ And is being conducted in:
 The complete team for this project is formed by:
 	Lic.  Javier A. Iserte.
 	Lic.  Betina I. Stephan.
-	ph.D. Sandra E. Goñi.
+	ph.D. Sandra E. Goï¿½i.
 	ph.D. P. Daniel Ghiringhelli.
 	ph.D. Mario E. Lozano.
 
@@ -58,8 +58,8 @@ Package contents
   /examples/              : Example showing how to use FAS-DPD.
   /doc/                   : API documentation.
   /bin/                   : Compiled classes.
-  /lib/                   : Contains cmdGetArg_1.1.1.jar - Library for command line parsing.
-                          : and FAS-DPD_1.1.1.jar - Compiled Library of FAS-DPD
+  /lib/                   : Contains cmdGetArg_1.1.3.jar - Library for command line parsing.
+                          : and FAS-DPD_1.2.2.jar - Compiled Library of FAS-DPD
   StandardCode            : File containing the standard genetic code used in FAS-DPD.
   LICENCE                 : GPL v3 license terms.
   CHANGES                 : Log with version modifications.
