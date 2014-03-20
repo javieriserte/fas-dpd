@@ -8,5 +8,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/FAS-DPD/lib/cmdGetArg_1.1.3.jar!/doc"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/cmdGetArg_2.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

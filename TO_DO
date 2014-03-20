@@ -6,3 +6,11 @@ Next features and Fixes of FAS-DPD
 3  - Decouples FastaIO into an external library.
 4  - Modify code to do not require a genetic code if is working with DNA sequences.
 5  - Create '.exe' files to easy run the program in win32 environment.
+6  - Alignment explorer GUI doesn't show protein alignments correctly. 
+     The size shown corresponds to the protein alignment length and not
+     to the back-translated DNA alignment length.
+7  - In some cases, result list for primer pairs contains fowards primers that 
+     correspond to a region beyond the reverse primer.
+       rev. pr.          fw. prf.
+       <------|          |------->
+     ||||||||||||||||||||||||||||||||
