@@ -5,7 +5,7 @@
  *
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
  * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+ * PROVIDE THE PROGRAM ï¿½AS ISï¿½ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
  * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
  * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
@@ -20,11 +20,11 @@
  * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
+ * 	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas"
  * 		(Basic Molecular Microbiology and biotechnological applications)
  * 
  * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+ * 	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
  *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
  *	Universidad Nacional de Quilmes.
  *		(National University Of Quilmes)
@@ -33,7 +33,7 @@
  * The complete team for this project is formed by:
  *	Lic.  Javier A. Iserte.
  *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Goñi.
+ * 	ph.D. Sandra E. Goï¿½i.
  * 	ph.D. P. Daniel Ghiringhelli.
  *	ph.D. Mario E. Lozano.
  *
@@ -235,6 +235,11 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			g.drawString(charbase,x + charWidth*i , y + textHeight);
 		}
 	}
+//	
+	@SuppressWarnings("unused")
+	private boolean isProtein() {
+		return this.alignment.getSeq().get(0).getClass() == ProtSeq.class;
+	}
 	
 	////////////////////////////////////
 	// Auxiliary Classes
@@ -380,13 +385,17 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			
 			int textHeight    = g.getFontMetrics().getHeight();
 			 
-			int size = AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
+//			int size = AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
 			String s = null;
 			
 			if (AlignmentExplorer.this.geneticCode!=null) {
 				s = (alignment.pileUp(AlignmentExplorer.this.geneticCode)).getSequence();
 			}
-			int textwidth = g.getFontMetrics().stringWidth(s);
+			int size = s.length();
+			
+			
+//			int textwidth = g.getFontMetrics().stringWidth(s);
+			int textwidth = g.getFontMetrics().stringWidth("A")*size*2;
 			
 			int imageHeight = 3* textHeight+8;
 			int imageWidth = textwidth + 10;
@@ -462,9 +471,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			StringBuilder result = new StringBuilder();
 			
 			for (int i=0;i<s.length();i++) {
-				result.append('·');
+				result.append(' ');
 				result.append(s.charAt(i));
-				result.append('·');
+				result.append(' ');
 			}
 			return result.toString();
 		}
@@ -486,6 +495,15 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			ColoringStrategy color = null;
 			boolean isProtein=false;
 			
+			if (this.alignment.getSeq().get(0).getClass() == DNASeq.class) {
+				color = new DnaColoringStrategy();
+			} else 
+			if (this.alignment.getSeq().get(0).getClass() == ProtSeq.class) {
+				color = new ProteinColoringStrategy();
+				imageWidth = imageWidth *3;
+				isProtein = true;
+			}
+			
 			biMainView = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
 			g = (Graphics2D) biMainView.getGraphics();
 			
@@ -493,13 +511,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, imageWidth, imageHeight);
 			
-			if (this.alignment.getSeq().get(0).getClass() == DNASeq.class) {
-				color = new DnaColoringStrategy();
-			} else 
-			if (this.alignment.getSeq().get(0).getClass() == ProtSeq.class) {
-				color = new ProteinColoringStrategy();
-				isProtein = true;
-			}
+
 			
 			for (Sequence sequence : this.alignment.getSeq()) {
 				String desc = sequence.getSequence();

@@ -5,7 +5,7 @@
  *
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
  * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+ * PROVIDE THE PROGRAM ï¿½AS ISï¿½ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
  * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
  * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
@@ -20,11 +20,11 @@
  * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
+ * 	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas"
  * 		(Basic Molecular Microbiology and biotechnological applications)
  * 
  * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+ * 	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
  *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
  *	Universidad Nacional de Quilmes.
  *		(National University Of Quilmes)
@@ -33,7 +33,7 @@
  * The complete team for this project is formed by:
  *	Lic.  Javier A. Iserte.
  *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Goñi.
+ * 	ph.D. Sandra E. Goï¿½i.
  * 	ph.D. P. Daniel Ghiringhelli.
  *	ph.D. Mario E. Lozano.
  *
@@ -48,6 +48,30 @@ import sequences.dna.Primer;
 
 public class FilterOverlapping extends FilterPrimerPair {
 
+	/**
+	 * Two possible cases can be true.<br>
+	 * If primers are:
+	 * <pre>
+	 * Primer 1 : |---------> 
+	 *            s1       f1
+	 *             
+	 * Primer 2 : |--------->
+	 *            s2       f2
+	 * </pre>
+	 * The first case is:
+	 * <pre>
+	 * |--------->             <---------|
+	 * s1       f1             f2       s2
+	 * </pre>
+	 * Then: s2>f2; f2>f1; f1>s1;<br>
+	 * 
+	 * The second case is:
+	 * <pre>
+	 * |--------->             <---------|
+	 * s2       f2             f1       s1
+	 * </pre>
+	 * Then: s1>f1; f1>f2; f2>s2;
+	 */
 	@Override
 	public boolean filter(Primer p1, Primer p2) {
 
@@ -56,12 +80,15 @@ public class FilterOverlapping extends FilterPrimerPair {
 		int f1 = p1.getEnd();
 		int f2 = p2.getEnd();
 		
-		int maxp1 = Math.max(s1, f1);
-		int maxp2 = Math.max(s2, f2);
-		int minp1 = Math.min(s1, f1);
-		int minp2 = Math.min(s2, f2);
+		return s1 > f1 && f1 > f2 && f2 > s2  ||
+			   s2 > f2 && f2 > f1 && f1 > s1;
 		
-		return (minp2>maxp1)||(minp1>maxp2);		
+//		int maxp1 = Math.max(s1, f1);
+//		int maxp2 = Math.max(s2, f2);
+//		int minp1 = Math.min(s1, f1);
+//		int minp2 = Math.min(s2, f2);
+//		
+//		return (minp2>maxp1)||(minp1>maxp2);		
 	}
 
 	@Override public String toString() {
