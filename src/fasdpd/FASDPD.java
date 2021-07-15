@@ -57,6 +57,7 @@ import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
+import sequences.util.tmcalculator.SantaluciaTmEstimator;
 
 /**
  * Executable Class For Command line FAS-DPD program.
@@ -277,30 +278,35 @@ public class FASDPD {
 		}
 		return pos;
 	}
-	
+
 	/**
 	 * Send a primer list to a file.
 	 * @param outfile a string containing the path of the file
 	 * @param list a List of Primer objects
 	 */
 	public void exportPairs(String outfile, List<PrimerPair> list){
-		
+
 		try {
 			FileWriter fr = new FileWriter(outfile);
 			fr.write("Sequence\tScore\tStart\tEnd\tDirectStrand\tSequence\tScore\tStart\tEnd\tDirectStrand\t\n");
+			SantaluciaTmEstimator tm_calc = new SantaluciaTmEstimator();
 			for (PrimerPair primer : list) {
 				fr.write(primer.getForward().getSequence()+"\t");
 				fr.write(primer.getForward().getScore()+"\t");
 				fr.write(primer.getForward().getStart()+"\t");
 				fr.write(primer.getForward().getEnd()+"\t");
-				fr.write(primer.getForward().isDirectStrand()+"\n");
-				
+				fr.write(primer.getForward().isDirectStrand()+"\t");
+				tm_calc.calculateTM(primer.getForward());
+				fr.write(String.valueOf(tm_calc.mean()) + "\t");
+
 				fr.write(primer.getReverse().getSequence()+"\t");
 				fr.write(primer.getReverse().getScore()+"\t");
 				fr.write(primer.getReverse().getStart()+"\t");
 				fr.write(primer.getReverse().getEnd()+"\t");
-				fr.write(primer.getReverse().isDirectStrand()+"\n");
-				
+				fr.write(primer.getReverse().isDirectStrand()+"\t");
+				tm_calc.calculateTM(primer.getReverse());
+				fr.write(String.valueOf(tm_calc.mean()) + "\t");
+
 			}
 			fr.flush();
 			fr.close();
