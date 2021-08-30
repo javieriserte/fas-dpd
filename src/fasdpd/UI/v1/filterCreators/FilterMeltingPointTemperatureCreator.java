@@ -65,5 +65,11 @@ public class FilterMeltingPointTemperatureCreator extends FilterCreator{
 		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
 		return new FilterMeltingPointTemperature(p0,p1, new SantaluciaTmEstimator()); // TODO use default TME
 	}
-	@Override public String toString() { return "Single Primer - Keep Primers Whose Melting Temperature Is Between [" + this.parametersValues[0] + "�C - " + this.parametersValues[1] + "�C]";}	
-} 
+	@Override public String toString() {
+		return "Single Primer - Keep Primers Whose Melting Temperature Is Between ["
+			+ this.parametersValues[0]
+			+ "°C - "
+			+ this.parametersValues[1]
+			+ "°C]";
+	}
+}

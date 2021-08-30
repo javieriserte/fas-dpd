@@ -5,7 +5,7 @@
  *
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
  * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+ * PROVIDE THE PROGRAM ï¿½AS ISï¿½ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
  * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
  * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
@@ -20,11 +20,11 @@
  * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
+ * 	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas"
  * 		(Basic Molecular Microbiology and biotechnological applications)
  * 
  * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+ * 	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
  *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
  *	Universidad Nacional de Quilmes.
  *		(National University Of Quilmes)
@@ -33,7 +33,7 @@
  * The complete team for this project is formed by:
  *	Lic.  Javier A. Iserte.
  *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Goñi.
+ * 	ph.D. Sandra E. Goï¿½i.
  * 	ph.D. P. Daniel Ghiringhelli.
  *	ph.D. Mario E. Lozano.
  *
@@ -103,34 +103,35 @@ public class DNASeq extends Sequence implements Apilable{
 	public DNASeq pileUpWithProtseq(ProtSeq anotherSeq, GeneticCode myGC) {
 		return anotherSeq.backTranslate(myGC).pileUpWithDNAseq(this,myGC);
 	}
-	
+
 	/**
-	 * This method is used to design a primer from a DNA sequence. 
-	 * The first position of the sequence is One and the last is the same that the length of the sequence.
-	 * If directStrans is false, it is assumed that this sequence is the complementary of an original one.
-	 * In this case the value 'from' and 'to' are modified to fit the original sequence.
-	 * If you want to design primers in the complementary strand, you only need to create it just once.
-	 * 
-	 * <blockquote>
-	 * Example: <br>
-	 * My original sequence 'mySeq' is:<br>
-	 * <p><code>
-	 * |---------- ----------21-------30 ---------- ---------- ----------<br>  
-	 * "AAAAAAAAAA AAAAAAAAAA GCAGCAGCAG AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA"<br>
-	 * "TTTTTTTTTT TTTTTTTTTT CGTCGTCGTC TTTTTTTTTT TTTTTTTTTT TTTTTTTTTT"<br>
-	 *  </code></p>
-	 * I want to design a primer from position 21 to 30 in the direct strand (GCAGCAGCAG).:
- 	 * <p><code>
-	 * Primer myPrimer = mySeq.designPrimer(21,30,true)<br>
-	 * </code></p>
-	 *  
-	 * If I want to design a primer from position 21 to 30 in the complementary strand of 'mySeq' (CTGCTGCTGC):
-	 * <p><code>
-	 * myCompSeq = mySeq.getComplementary();<br>
-	 * Primer myPrimer = myCompSeq.designPrimer(21,30,false);
-	 *  </code></p>
-	 * 
-	 * @param from an index that indicates the first position of the primer	 
+	 * This method is used to design a primer from a DNA sequence. The first
+	 * position of the sequence is One and the last is the same that the length
+	 * of the sequence. If directStrans is false, it is assumed that this
+	 * sequence is the complementary of an original one. In this case the value
+	 * 'from' and 'to' are modified to fit the original sequence. If you want to
+	 * design primers in the complementary strand, you only need to create it
+	 * just once.
+	 * <pre>
+	 * Example:
+	 * My original sequence 'mySeq' is:
+	 *---------- ----------21-------30 ---------- ---------- ----------
+	 *AAAAAAAAAA AAAAAAAAAA GCAGCAGCAG AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA
+	 *TTTTTTTTTT TTTTTTTTTT CGTCGTCGTC TTTTTTTTTT TTTTTTTTTT TTTTTTTTTT
+     * </pre>
+	 * I want to design a primer from position 21 to 30 in the direct strand
+	 * (GCAGCAGCAG).:
+ 	 * <pre>
+	 *Primer myPrimer = mySeq.designPrimer(21,30,true)<br>
+	 * </pre>
+	 * If I want to design a primer from position 21 to 30 in the complementary
+	 * strand of 'mySeq' (CTGCTGCTGC):
+	 * <pre>
+	 *myCompSeq = mySeq.getComplementary();
+	 *Primer myPrimer = myCompSeq.designPrimer(21,30,false);
+	 * </pre>
+	 *
+	 * @param from an index that indicates the first position of the primer
 	 * @param to an index that indicates the last position of the primer
 	 * @return Primer the resulting primer.
 	 */
@@ -139,13 +140,11 @@ public class DNASeq extends Sequence implements Apilable{
 		int i=0;
 		int f=0;
 		String seq = "";
-	
 		if(directStrand) {
 			i=from;
 			f=to;
 			Des="Forward primer " + this.getDescription() + " from: " + i + " to: " + f;
 			seq = this.getSequence().substring(i-1, f);
-
 		} else {
 			i= to;
 			f= from;
@@ -154,18 +153,17 @@ public class DNASeq extends Sequence implements Apilable{
 		}
 		return new Primer(seq,Des,i,f,directStrand);
 	}
-	
+
 	/**
 	 * Gets the revere complementary strand of a DNA sequence.
-	 * This method supports the IUPAC ambiguity code for bases.   
+	 * This method supports the IUPAC ambiguity code for bases.
 	 * @param sequence the original DNA sequence.
 	 * @return another DNA Sequence that is the reverse-complementary one.
 	 */
 	static public String reverseComplementary(String sequence) {
 
-		StringBuilder result = new StringBuilder(sequence.length()); 
+		StringBuilder result = new StringBuilder(sequence.length());
 		for (char base : sequence.toCharArray()) {
-			
 			result.append(DNASeq.getComplementaryBase(base));
 		}
 		return result.reverse().toString();
@@ -174,42 +172,37 @@ public class DNASeq extends Sequence implements Apilable{
 
 	/**
 	 * Gets the complementary strand of a DNA sequence.
-	 * This method supports the IUPAC ambiguity code for bases.   
-	 * 
-	 * <blockquote>
-	 * Example:
-	 * 
+	 * This method supports the IUPAC ambiguity code for bases.
+	 *
+	 * <p>Example:
+	 * <pre>
 	 * DNASeq.complementary("AAAATT") = "TTTTAA"
-	 * 
-	 * </blockquote>
-	 * 
+	 * </pre>
+	 *
 	 * @param sequence the original DNA sequence.
 	 * @return another DNA Sequence that is the complementary one.
 	 */
 	static public String complementary(String sequence) {
 
-		StringBuilder result = new StringBuilder(sequence.length()); 
+		StringBuilder result = new StringBuilder(sequence.length());
 		for (char base : sequence.toCharArray()) {
-			
 			result.append(DNASeq.getComplementaryBase(base));
 		}
 		return result.toString();
 	}
-	
-	
 	/**
 	 * Gets the DNA sequence given in reverse order.
-	 * 
+	 *
 	 * <blockquote>
 	 * Example:
-	 * 
+	 *
 	 * reverse("AAAATT") = "TTAAAA"
-	 * 
+	 *
 	 * </blockquote>
-	 * 
+	 *
 	 * @param sequence the original DNA sequence.
 	 * @return another DNA Sequence that is the complementary one.
-	 */	
+	 */
 	static public String reverse(String sequence) {
 		StringBuilder result = new StringBuilder(sequence);
 		return result.reverse().toString();
