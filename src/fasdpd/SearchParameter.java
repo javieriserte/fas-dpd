@@ -507,8 +507,9 @@ public class SearchParameter {
 	public String getInfile() {
 		return infile;
 	}
-	public void setInfile(String infile) {
+	public SearchParameter setInfile(String infile) {
 		this.infile = infile;
+		return this;
 	}
 	public String getOutfile() {
 		return outfile;
@@ -569,8 +570,9 @@ public class SearchParameter {
 	public boolean isDNA() {
 		return  this.isDNA;
 	}
-	public void setDNA(boolean isDNA) {
+	public SearchParameter setDNA(boolean isDNA) {
 		this.isDNA = isDNA;
+		return this;
 	}
 	public void setProfile(String profile) {
 		this.profile= profile;

@@ -1,47 +1,3 @@
-/*
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or credit authors.
- *
- * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
- * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM �AS IS� WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
- * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
- * NECESSARY SERVICING, REPAIR OR CORRECTION.
- 
- * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT 
- * HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, 
- * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL
- * DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED 
- * TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD 
- * PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH 
- * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- * 
- * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiolog�a molecular b�sica y aplicaciones biotecnol�gicas"
- * 		(Basic Molecular Microbiology and biotechnological applications)
- * 
- * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingenier�a Gen�tica y Biolog�a Celular y Molecular.
- *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
- *	Universidad Nacional de Quilmes.
- *		(National University Of Quilmes)
- *	Quilmes, Buenos Aires, Argentina.
- *
- * The complete team for this project is formed by:
- *	Lic.  Javier A. Iserte.
- *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Go�i.
- * 	ph.D. P. Daniel Ghiringhelli.
- *	ph.D. Mario E. Lozano.
- *
- * Corresponding Authors:
- *	Javier A. Iserte. <jiserte@unq.edu.ar>
- *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */
-
 package degeneration;
 
 import java.io.BufferedReader;
@@ -82,9 +38,9 @@ public class GeneticCode {
 	}
 	/**
 	 * Creates a new instance of genetic Code.
-	 * 
+	 *
 	 * @param pathfile is the path to the file containing the genetic code.
-	 */	
+	 */
 	public GeneticCode() {
 		this.setAminoToCodonList(new HashMap<String,List<String>>(40));
 		this.setAminoToDegCodon(new HashMap<String,String>(40));
@@ -96,10 +52,10 @@ public class GeneticCode {
 	/**
 	 * This method is used to construct step by step a genetic code.
 	 * In each step an amino acid must be provided, and a list of codons that codifies for it.
-	 * 
+	 *
 	 * After all amino acids were added, the method <code>process</code> must be called 
 	 * in order to re-arrange data in a more efficient way. 
-	 * 
+	 *
 	 * @param amino is a string representing a single amino acid.
 	 * @param codons is a list of triplets of nucleic acid that code for the given amino acid <code>amino</code>.
 	 */
@@ -128,40 +84,39 @@ public class GeneticCode {
 			this.getAminoToDegCodon().put(amino, codonRes);
 		}
 	}
-	
-	
+
 	/**
 	 * This method returns a string representing an codon from a string representing a amino acid.
 	 * An Amino acid can be coded by more than one codon. In this case all possible codons are pile up into one codon and this is returned.
-	 * 
+	 *
 	 * @param amino One of the 20 standard amino acid represented in one letter uppercase form.  
 	 * @return String a triplet representing a codon.
 	 */
 	public String getRetroCodon(String amino) {
 		return this.getAminoToDegCodon().get(amino);
 	}
-	
+
 	/**
 	 * Returns an array with all the codons that codifies for a particular amino acid. 
-	 * 
+	 *
 	 * @param amino One of the 20 standard amino acid represented in one letter uppercase form. 
 	 * @return a list of triplets, each one representing a codon.
 	 */
 	public List<String> getCodonArray(String amino){
 		return this.getAminoToCodonList().get(amino);
 	}
-	
+
 	/**
 	 * Translate a single codon into an amino acid.
 	 * The codon must be formed with non degenerated bases.
-	 * 
+	 *
 	 * @param codon String that represents a codon.
 	 * @return String One of the 20 standard amino acid represented in one letter uppercase form.
 	 */
 	public String translate(String codon) {
 		return this.getCodonToAmino().get(codon);
 	}
-	
+
 	/**
 	 * Piles Up two DNA sequences and returns it.
 	 * <dl><dt>Preconditions:</dt>
@@ -180,7 +135,7 @@ public class GeneticCode {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Calculates the degeneration value for a particular base.
 	 * @param base string a degenerated base
@@ -196,24 +151,23 @@ public class GeneticCode {
 	 */
 	public int calculateDegValue(char base){
 		return BaseDeg.getDegValueFromChar(base);
-		
 	}
-	
+
 	// Private Methods
 	/**
 	 * Reads a genetic code from a file.
-	 * 
+	 *
 	 * The file must have the next format:
 	 * One line is used by amino acid and one more is used for stop signal (represented by '*').
 	 * Each line starts with the amino acid written in one letter code. Followed by the codons that can codifies the amino acid.
 	 * Each element is separated bye a comma ','.
-	 * 
+	 *
 	 * <blockquote>
-	 * Example for a line:<br>		
+	 * Example for a line:<br>
 	 * "A, ATC, GGT, TTT, AAA, CAC"<br>
-	 * </blockquote> 
-	 * 
-	 * @param pathfile String with the path to the file containing the genetic code.   
+	 * </blockquote>
+	 *
+	 * @param pathfile String with the path to the file containing the genetic code.
 	 */
 	private void readTableFromFile(String pathfile) {
 			// TODO rewrite this code
@@ -221,11 +175,9 @@ public class GeneticCode {
 			BufferedReader br = null;
 			String d="";
 			String[] s;
-			
 			boolean exit = false;
 			try {
 				br = new BufferedReader(new FileReader(f));
-				
 				while(!exit) {
 					d = br.readLine();
 					if (d==null) {exit=true;}
@@ -238,17 +190,14 @@ public class GeneticCode {
 							this.getCodonToAmino().put(s[i].trim(), amino);
 							}
 						this.getAminoToCodonList().put(amino,codons);
-						
-					}					
+					}
 				}
 			} catch (EOFException e) {
 				// EOF - OK.
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 	}
-	
 
 	// GETTERS & SETTERS
 	protected Map<String, List<String>> getAminoToCodonList() {

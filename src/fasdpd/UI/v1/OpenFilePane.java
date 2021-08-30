@@ -5,7 +5,7 @@
  *
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
  * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
+ * PROVIDE THE PROGRAM ï¿½AS ISï¿½ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
  * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
  * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
@@ -20,11 +20,11 @@
  * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  * 
  * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiología molecular básica y aplicaciones biotecnológicas"
+ * 	"Microbiologï¿½a molecular bï¿½sica y aplicaciones biotecnolï¿½gicas"
  * 		(Basic Molecular Microbiology and biotechnological applications)
  * 
  * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingeniería Genética y Biología Celular y Molecular.
+ * 	LIGBCM: Laboratorio de Ingenierï¿½a Genï¿½tica y Biologï¿½a Celular y Molecular.
  *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
  *	Universidad Nacional de Quilmes.
  *		(National University Of Quilmes)
@@ -33,7 +33,7 @@
  * The complete team for this project is formed by:
  *	Lic.  Javier A. Iserte.
  *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Goñi.
+ * 	ph.D. Sandra E. Goï¿½i.
  * 	ph.D. P. Daniel Ghiringhelli.
  *	ph.D. Mario E. Lozano.
  *
@@ -43,6 +43,9 @@
  */
 
 package fasdpd.UI.v1;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -76,8 +79,8 @@ public class OpenFilePane extends javax.swing.JPanel {
 	private File selectedFile;
 	private JLabel jlSelectedFileName;
 	private MainFASDPD control;
-	
-	
+	private List<SelectFileListener> selectFileListeners;
+
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new OpenFilePane(null));
@@ -85,11 +88,12 @@ public class OpenFilePane extends javax.swing.JPanel {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	//  CONSTRUCTOR
 	public OpenFilePane(MainFASDPD mainFASDPD) {
 		super();
 		this.setControl(mainFASDPD);
+		this.selectFileListeners = new ArrayList<OpenFilePane.SelectFileListener>();
 		this.selectedFile = null;
 		createGUI();
 	}
@@ -97,23 +101,20 @@ public class OpenFilePane extends javax.swing.JPanel {
 	// Private Methods
 
 	private void createGUI() {
-	
 		GridBagLayout thisLayout = new GridBagLayout();
-		thisLayout.columnWeights = new double[] {1, 0,0,0,1}; 
+		thisLayout.columnWeights = new double[] {1, 0,0,0,1};
 		thisLayout.columnWidths = new int[] {50, 100, 10,100,50}; // total width of panel is 310
 		thisLayout.rowWeights = new double[] {1, 0, 0, 0, 0, 1};
 		thisLayout.rowHeights = new int[] {50, 30, 30, 20, 20, 50}; // total width of panel is 200
 		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(thisLayout);
 			// Layout Settings
-		
 		jBopen = new JButton();
 		jBopen.setText("<HTML><CENTER>Open Alignment File</CENTER></html>");
 		jBopen.setMargin(new Insets(2, 2,2,2));
 		jBopen.setPreferredSize(new Dimension(100, 60));
 		jBopen.setHorizontalAlignment(SwingConstants.CENTER );
 		jBopen.addActionListener(new jbOpenFileAction());
-	
 		c.gridheight = 2;
 		c.fill = GridBagConstraints.HORIZONTAL ;
 		c.gridx = 1;
@@ -136,7 +137,6 @@ public class OpenFilePane extends javax.swing.JPanel {
 		c.gridy = 4;
 		this.add(jbContinue,c);
 			// Continue Button Settings
-		
 		jlSelectedFileName = new JLabel(this.getSelectedFileName());
 		jlSelectedFileName.setToolTipText("Selected File Name");
 		jlSelectedFileName.setPreferredSize(new Dimension(100,20));
@@ -146,10 +146,9 @@ public class OpenFilePane extends javax.swing.JPanel {
 		c.gridy = 3;
 		this.add(jlSelectedFileName,c);
 			// File Name Label Button Settings
-		
-		
+
 		dna = new JRadioButton();
-		dna.setText("from DNA ");
+		dna.setText("DNA MSA");
 		dna.setMargin(new Insets(2, 2,2,2));
 		dna.setPreferredSize(new Dimension(100, 30));
 		c.gridwidth = 1;
@@ -160,9 +159,9 @@ public class OpenFilePane extends javax.swing.JPanel {
 		c.anchor = GridBagConstraints.CENTER;
 		this.add(dna,c);
 			// Select DNA type Radio Button settings
-		
+
 		protein = new JRadioButton();
-		protein.setText("from protein ");
+		protein.setText("Protein MSA");
 		protein.setMargin(new Insets(2, 2,2,2));
 		protein.setPreferredSize(new Dimension(100, 30));
 		c.fill = GridBagConstraints.NONE;
@@ -170,30 +169,36 @@ public class OpenFilePane extends javax.swing.JPanel {
 		c.gridy = 2;
 		this.add(protein,c);
 			// Select protein type Radio Button settings
-		
-		this.dnaorprotein = new ButtonGroup();
+
+			this.dnaorprotein = new ButtonGroup();
 		this.dnaorprotein.add(dna);
 		this.dnaorprotein.add(protein);
 		dna.setSelected(true);
 			// Select protein or DNA buttongroup settings
-		
+	}
+
+	public void addSelectFileListener(SelectFileListener listener) {
+		selectFileListeners.add(listener);
+	}
+
+	private void notifySelectFileListerners() {
+		for (SelectFileListener l : selectFileListeners) {
+			l.afterSelectFile(this.selectedFile, dna.isSelected());
+		}
 	}
 
 	private String getSelectedFileName() {
 		if (this.selectedFile==null) return "No File Selected";
 		return this.selectedFile.getName();
 	}
-	
+
 	protected void updateSelectedFile() {
 		String selectedFileName = this.getSelectedFileName();
 		this.jlSelectedFileName.setText(selectedFileName);
 		this.jlSelectedFileName.setToolTipText("<HTML>Selected File: " + selectedFileName + "</HTML>");
 	}
 
-	
-	
 	// GETTERS AND SETTERS
-	
 	public void setControl(MainFASDPD control) {
 		this.control = control;
 	}
@@ -201,23 +206,21 @@ public class OpenFilePane extends javax.swing.JPanel {
 	public MainFASDPD getControl() {
 		return control;
 	}
-	
+
 	// LISTENERS AND EXTRA CLASSES
-	
 	private class jbOpenFileAction implements ActionListener {
 
 		@Override public void actionPerformed(ActionEvent e) {
 			FileFilter fastaFilter = new FileFilter() {
 				@Override public String getDescription() { return "Fasta files"; }
-				@Override public boolean accept(File f) { return f.isDirectory() || (new FastaFilter()).accept(f); }
-			}; 
+				@Override public boolean accept(File f) {
+					return f.isDirectory() || (new FastaFilter()).accept(f);
+				}
+			};
 				// Creates a filter to choose only fasta files.
-			
 			JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
 				// Open a Dialog Box for to load a fasta file.
 
-			
-			
 			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			iFile.setMultiSelectionEnabled(false);
 			iFile.setDialogTitle("Select Fasta Alignment");
@@ -231,34 +234,26 @@ public class OpenFilePane extends javax.swing.JPanel {
 			OpenFilePane.this.selectedFile = file;
 			if (file != null && file.exists()) OpenFilePane.this.jbContinue.setEnabled(true);
 			else OpenFilePane.this.jbContinue.setEnabled(false);
-
 			OpenFilePane.this.updateSelectedFile();
-			
-
-			
 		}
 	}
-	
-	private class jbConAction implements ActionListener {
 
+	interface SelectFileListener {
+		void afterSelectFile(File selected, boolean isDNA);
+	}
+
+	private class jbConAction implements ActionListener {
 		@Override public void actionPerformed(ActionEvent e) {
-			
-			if (!selectedFile.exists()) {JOptionPane.showMessageDialog(
-					                       getParent(),
-					                       "Selected File Does Not Exists", 
-					                       "Error", 
-					                       JOptionPane.ERROR_MESSAGE );
-										 return;
+			if (!selectedFile.exists()) {
+				JOptionPane.showMessageDialog(
+					getParent(),
+					"Selected File Does Not Exists",
+					"Error",
+					JOptionPane.ERROR_MESSAGE
+				);
+				return;
 			};
-				// check that file selected is valid.
-			
-			SearchParameter searchParameter = OpenFilePane.this.control.getSearchParameter();
-			searchParameter.setInfile(OpenFilePane.this.selectedFile.getAbsolutePath());
-			searchParameter.setDNA(dna.isSelected());
-				// Modify Search Parameter Options
-			
-			control.loadOptionsPane();
-			
+			notifySelectFileListerners();
 		}
 	}
 }
