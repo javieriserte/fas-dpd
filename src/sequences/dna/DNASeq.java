@@ -53,7 +53,7 @@ import degeneration.GeneticCode;
  * @author Javier Iserte <jiserte@unq.edu.ar>
  * 
  */
-public class DNASeq extends Sequence implements Apilable{
+public class DNASeq extends Sequence {
 	
 	// CONSTRUCTOR
 	public DNASeq(String sequence, String description) {

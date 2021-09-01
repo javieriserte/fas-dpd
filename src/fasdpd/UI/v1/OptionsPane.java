@@ -58,7 +58,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerModel;
 import javax.swing.WindowConstants;
@@ -118,8 +117,6 @@ public class OptionsPane extends JPanel {
 		this.createGUI();
 	}
 
-
-
 	public OptionsPane(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
 		super();
 		this.mainframe = mainframe;
@@ -130,6 +127,12 @@ public class OptionsPane extends JPanel {
 			this.geneticCode);
 		this.listOfFilterCreators = new Vector<FilterCreator>();
 		this.createGUI();
+	}
+
+	public void updateAlignment(Alignment alignment) {
+		this.align = alignment;
+		this.alignmentExplorer.updateAlignment(alignment);
+		this.updateUI();
 	}
 
 	//////////////////
@@ -148,7 +151,9 @@ public class OptionsPane extends JPanel {
 			this.setLayout(thisLayout);
 
 			// TextArea for view results // Other Pane
-			resultViewer = new ResultViewer(this.mainframe, align.lenght());
+			resultViewer = new ResultViewer(
+				this.mainframe, align.lenght()
+			);
 			resultViewer.setOpaque(true);
 
 			// Spinner for strand selection
@@ -486,7 +491,5 @@ public class OptionsPane extends JPanel {
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-
 	}
-
 }

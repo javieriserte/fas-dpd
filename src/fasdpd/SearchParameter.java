@@ -1,6 +1,7 @@
 package fasdpd;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
@@ -37,44 +38,9 @@ import filters.validator.Validate_AND;
 import filters.validator.Validator;
 
 
-/*
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or credit authors.
- * This program is distributed WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * 
- * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiolog�a molecular b�sica y aplicaciones biotecnol�gicas"
- * 		(Basic Molecular Microbiology and biotechnological applications)
- * 
- * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingenier�a Gen�tica y Biolog�a Celular y Molecular.
- *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
- *	Universidad Nacional de Quilmes.
- *		(National University Of Quilmes)
- *	Quilmes, Buenos Aires, Argentina.
- *
- * The complete team for this project is formed by:
- *	Lic.  Javier A. Iserte.
- *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Go�i.
- * 	ph.D. P. Daniel Ghiringhelli.
- *	ph.D. Mario E. Lozano.
- *
- * Corresponding Authors:
- *	Javier A. Iserte. <jiserte@unq.edu.ar>
- *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */
-/**
- * This class contains all the parameters search.
- * The parameters can be added one by one, or read from the command line. 
- * 
- * @author Javier Iserte <jiserte@unq.edu.ar>
- */
 public class SearchParameter {
 	// parameters are stored as instance variables 
-	private String infile;
+	private Optional<String> infile = Optional.empty();
 	private String outfile;
 	private String gcfile;
 	private String profile="";
@@ -284,23 +250,17 @@ public class SearchParameter {
 //			System.exit(1);
 //			
 //		}
-		
 		try {
-		
 			cmd.read(args);
-			
 		} catch (IncorrectCommandLineException e) {
 			System.err.println("There was an error trying to parse the command line:");
-			
 			System.err.println(e.getMessage());
-		
 			System.exit(1);
 		}
-		
 		/////////////////////////////
 		// CHECK COMMAND LINE SYNTAX
 		/////////////////////////////
-		
+
 		if (! (infile.isPresent()&&outfile.isPresent()&&gcfile.isPresent())) {
 			// infile, outfile and gcfile are required!
 			// if one of them is not present then the command line is not well formed.
@@ -504,11 +464,11 @@ public class SearchParameter {
 	// GETTERS && SETTERS
 	///////////////////////
 
-	public String getInfile() {
+	public Optional<String> getInfile() {
 		return infile;
 	}
 	public SearchParameter setInfile(String infile) {
-		this.infile = infile;
+		this.infile = Optional.ofNullable(infile);
 		return this;
 	}
 	public String getOutfile() {

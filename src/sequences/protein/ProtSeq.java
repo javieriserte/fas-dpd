@@ -54,7 +54,7 @@ import degeneration.GeneticCode;
  * @author Javier Iserte <jiserte@unq.edu.ar>
  * 
  */
-public class ProtSeq extends Sequence implements Apilable {
+public class ProtSeq extends Sequence {
 	//CONSTRUCTOR
 	/**
 	 * Creates a new instance of ProtSeq from a sequence and a description that is useful 

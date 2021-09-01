@@ -1,47 +1,3 @@
-/*
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or credit authors.
- *
- * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
- * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM �AS IS� WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
- * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
- * NECESSARY SERVICING, REPAIR OR CORRECTION.
- 
- * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT 
- * HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, 
- * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL
- * DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED 
- * TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD 
- * PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH 
- * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- * 
- * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiolog�a molecular b�sica y aplicaciones biotecnol�gicas"
- * 		(Basic Molecular Microbiology and biotechnological applications)
- * 
- * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingenier�a Gen�tica y Biolog�a Celular y Molecular.
- *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
- *	Universidad Nacional de Quilmes.
- *		(National University Of Quilmes)
- *	Quilmes, Buenos Aires, Argentina.
- *
- * The complete team for this project is formed by:
- *	Lic.  Javier A. Iserte.
- *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Go�i.
- * 	ph.D. P. Daniel Ghiringhelli.
- *	ph.D. Mario E. Lozano.
- *
- * Corresponding Authors:
- *	Javier A. Iserte. <jiserte@unq.edu.ar>
- *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */
-
 package fasdpd.UI.v1;
 
 import java.awt.BorderLayout;
@@ -91,12 +47,29 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	private MainView mainView;
 	private JLabel header;
 	private Description descriptions;
+	private Font monoSpaceFont;
 
 	public AlignmentExplorer(Alignment alingment, GeneticCode geneticCode) {
 		super();
 		this.alignment = alingment;
 		this.geneticCode = geneticCode;
 		this.createGUI();
+	}
+
+	public void updateAlignment(Alignment aln) {
+		this.alignment = aln;
+		setUpMainScrollPane();
+		mainView.updateAlignment(aln);
+		this.updateUI();
+	}
+
+
+	public void updateGeneticCode(GeneticCode code) {
+		this.geneticCode = code;
+	}
+
+	public boolean hasNonEmptyMsa() {
+		return alignment.lenght() > 0;
 	}
 
 	/**
@@ -110,34 +83,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		// TODO Implement highlighting of selected regions.
 	}
 
-	private void createGUI() {
-		BorderLayout thisLayout = new BorderLayout();
-		this.setLayout(thisLayout);
-		mainScrollPane = new JScrollPane();
-		this.add(mainScrollPane, BorderLayout.CENTER);
-		Font font = new Font("Courier New", Font.PLAIN, 14);
-		this.setFont(font);
-		mainView = new MainView(this.alignment);
-		mainView.setFont(font);
-		mainView.setOpaque(true);
-		mainView.setBackground(this.backgroundColor);
-		header = new Header(this.alignment);
-		header.setFont(font);
-		header.setBackground(this.backgroundColor);
-		header.setOpaque(true);
 
-		descriptions = new Description(this.alignment);
-		descriptions.setFont(font);
-		descriptions.setBackground(this.backgroundColor);
-		descriptions.setOpaque(true);
-		descriptions.setVisible(true);
-
-		mainScrollPane.setColumnHeaderView(header);
-		mainScrollPane.add(mainView);
-
-		this.add(mainScrollPane);
-
-		this.setPreferredSize(new Dimension(400, 300));
+	private JPanel createRowHeaderPanel() {
+		setUpDescriptions();
 
 		JPanel rowHeaderPanel = new JPanel();
 
@@ -149,9 +97,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		rowHeaderPanel.setLayout(rhpL);
 
 		rhpL.columnWeights = new double[] { 1, 0 };
-		rhpL.columnWidths = new int[] { 140, 15 }; // total width of panel is 310
+		rhpL.columnWidths = new int[] { 140, 15 };
 		rhpL.rowWeights = new double[] { 1 };
-		rhpL.rowHeights = new int[] { 100 }; // total width of panel is 200
+		rhpL.rowHeights = new int[] { 100 };
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -177,32 +125,75 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		split.addMouseListener((MouseListener) sbml);
 
 		rowHeaderPanel.add(split, c);
-		mainScrollPane.setRowHeaderView(rowHeaderPanel);
+		return rowHeaderPanel;
+	}
 
+	private void setUpLayout() {
+		BorderLayout thisLayout = new BorderLayout();
+		this.setLayout(thisLayout);
+	}
+
+	private void setUpMonoSpaceFont() {
+		monoSpaceFont = new Font("Courier New", Font.PLAIN, 14);
+		this.setFont(monoSpaceFont);
+	}
+
+	private void addCornersToMainScrollPane(JScrollPane pane) {
+		String[] corners = new String[]{
+			ScrollPaneConstants.UPPER_RIGHT_CORNER,
+			ScrollPaneConstants.LOWER_LEFT_CORNER,
+			ScrollPaneConstants.UPPER_LEFT_CORNER
+		};
+		for (String c : corners) {
+			JLabel lb = new JLabel();
+			lb.setBackground(this.backgroundColor);
+			lb.setOpaque(true);
+			lb.setVisible(true);
+			mainScrollPane.setCorner(c, lb);
+		}
+	}
+
+	private void setUpMainScrollPane() {
+		mainScrollPane = new JScrollPane();
+		setUpMainView();
 		mainScrollPane.setViewportView(mainView);
+		setUpHeader();
+		mainScrollPane.setColumnHeaderView(header);
+		if (hasNonEmptyMsa()) {
+			JPanel rowHeaderPanel = createRowHeaderPanel();
+			mainScrollPane.setRowHeaderView(rowHeaderPanel);
+		}
+		addCornersToMainScrollPane(mainScrollPane);
+		this.removeAll();
+		this.add(mainScrollPane, BorderLayout.CENTER);
+	}
 
-		JLabel lowerleftcorner = new JLabel();
-		lowerleftcorner.setOpaque(true);
-		lowerleftcorner.setBackground(this.backgroundColor);
-		lowerleftcorner.setVisible(true);
+	private void setUpDescriptions() {
+		descriptions = new Description(this.alignment);
+		descriptions.setFont(monoSpaceFont);
+		descriptions.setBackground(this.backgroundColor);
+		descriptions.setOpaque(true);
+	}
 
-		JLabel upperleftcorner = new JLabel();
-		upperleftcorner.setBackground(this.backgroundColor);
-		upperleftcorner.setOpaque(true);
-		upperleftcorner.setVisible(true);
+	private void setUpHeader() {
+		header = new Header(this.alignment);
+		header.setFont(monoSpaceFont);
+		header.setBackground(this.backgroundColor);
+		header.setOpaque(true);
+	}
 
-		JLabel upperrightcorner = new JLabel();
-		upperrightcorner.setBackground(this.backgroundColor);
-		upperrightcorner.setOpaque(true);
-		upperrightcorner.setVisible(true);
+	private void setUpMainView() {
+		mainView = new MainView(this.alignment);
+		mainView.setFont(monoSpaceFont);
+		mainView.setOpaque(true);
+		mainView.setBackground(this.backgroundColor);
+	}
 
-		mainScrollPane
-			.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, upperrightcorner);
-		mainScrollPane
-			.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, lowerleftcorner);
-		mainScrollPane
-			.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, upperleftcorner);
-
+	private void createGUI() {
+		setUpLayout();
+		setUpMonoSpaceFont();
+		setUpMainScrollPane();
+		this.setPreferredSize(new Dimension(400, 300));
 	}
 
 	private void printColoredSequence(
@@ -213,7 +204,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		ColoringStrategy color) {
 		int textHeight = g.getFontMetrics().getHeight();
 		int charWidth = g.getFontMetrics().stringWidth("A");
-
 		for (int i = 0; i < sequence.length(); i++) {
 			String charbase = sequence.substring(i, i + 1);
 			g.setColor(color.getColor(charbase.charAt(0)));
@@ -282,42 +272,28 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private Alignment alignment = null;
 		private BufferedImage biDescriptions = null;
 
-		// Constructor
 		public Description(Alignment alignment) {
 			super();
 			this.alignment = alignment;
-
 		}
 
-		// Public Interface
 		public void paint(Graphics g) {
-			// Redefinition of paint method.
 			super.paint(g);
-
 			if (biDescriptions == null)
 				createImage();
-
 			g.drawImage((Image) this.biDescriptions, 0, 0, null);
-
 		}
 
-		// Private Methods
 		private void createImage() {
-
 			List<Sequence> sequences = this.alignment.getSeq();
 			int size = sequences.size();
 			String maxLengthDesc = "";
-
 			maxLengthDesc = getMaxLengthSequence(sequences);
-
 			biDescriptions = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-
 			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
 			g.setFont(AlignmentExplorer.this.getFont());
-
 			int textWidth = g.getFontMetrics().stringWidth(maxLengthDesc);
 			int textHeight = g.getFontMetrics().getHeight() * size;
-
 			// System.out.println("textWidth : " + textWidth);
 			// System.out.println("textHeight: " + textHeight);
 			//
@@ -326,13 +302,10 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				textHeight + 10,
 				BufferedImage.TYPE_INT_RGB);
 			g = (Graphics2D) biDescriptions.getGraphics();
-
 			g.setColor(Color.white);
 			g.fillRect(0, 0, textWidth + 10, textHeight + 10);
-
 			g.setColor(Color.black);
 			g.setFont(AlignmentExplorer.this.getFont());
-
 			int textLineHeight = g.getFontMetrics().getHeight();
 			int counter = 0;
 			for (Sequence sequence : this.alignment.getSeq()) {
@@ -340,7 +313,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				counter++;
 				g.drawString(desc, 5, textLineHeight * (counter));
 			}
-
 			// this.setPreferredSize(new Dimension(textWidth + 10, textHeight + 10));
 			this.setPreferredSize(new Dimension(150, textHeight + 10));
 
@@ -355,7 +327,11 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 					s = seq;
 				}
 			}
-			return s.getDescription();
+			if (s!=null) {
+				return s.getDescription();
+			} else {
+				return "";
+			}
 		}
 	}
 
@@ -373,15 +349,11 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 
 		public void paint(Graphics g) {
 			super.paint(g);
-
 			if (biHeader == null) {
 				createImage();
 			}
-
 			g.drawImage((Image) biHeader, 0, 0, null);
-
 			// this.setPreferredSize(new Dimension(w+10,textHeight*3+8));
-
 		}
 
 		private void createImage() {
@@ -451,28 +423,33 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private static final long serialVersionUID = -3012075092592318198L;
 		private Alignment alignment = null;
 		private BufferedImage biMainView = null;
+		private boolean hasMsaImage = false;
 
-		// Constructor
 		public MainView(Alignment alignment) {
 			super();
 			this.alignment = alignment;
 			this.createImage();
 		}
 
-		// Public Interface
 		public void paint(Graphics g) {
-			// Redefinition of paint method.
 			super.paint(g);
-
 			if (biMainView == null) {
 				createImage();
+			}
+			if (!hasMsaImage) {
+				createImage();
+				g.drawImage((Image) biMainView, 0, 0, null);
 			}
 			g.drawImage((Image) biMainView, 0, 0, null);
 		}
 
+		public void updateAlignment(Alignment aln) {
+			this.alignment = aln;
+			createImage();
+		}
+
 		private String expandProteinSequence(String s) {
 			StringBuilder result = new StringBuilder();
-
 			for (int i = 0; i < s.length(); i++) {
 				result.append(' ');
 				result.append(s.charAt(i));
@@ -481,9 +458,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			return result.toString();
 		}
 
-		private void createImage() {
+		private void createImageForAlignment(){
 			List<Sequence> sequences = this.alignment.getSeq();
-			int size = sequences.size();
 			biMainView = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = (Graphics2D) biMainView.getGraphics();
 			g.setFont(AlignmentExplorer.this.getFont());
@@ -491,7 +467,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				.stringWidth(sequences.get(0).getSequence());
 			int textHeight = g.getFontMetrics().getHeight();
 			int imageWidth = textWidth + 10;
-			int imageHeight = textHeight * size;
+			int imageHeight = textHeight * sequences.size();
 			int counter = 0;
 			ColoringStrategy color = null;
 			boolean isProtein = false;
@@ -522,7 +498,42 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 					desc,
 					color);
 			}
-			this.setPreferredSize(new Dimension(imageWidth, imageHeight));
+		}
+
+		private void createImageWhenNoAlignment() {
+			if (mainView!=null) {
+				int w = mainView.getWidth();
+				int h = mainView.getHeight();
+				biMainView = new BufferedImage(w, h,
+					BufferedImage.TYPE_INT_RGB
+				);
+				Graphics2D g = (Graphics2D) biMainView.getGraphics();
+				g.setFont(new Font("Verdana", 0, 20));
+				String text = "No MSA data";
+				int textHeight = g.getFontMetrics().getHeight();
+				int textWidth = g.getFontMetrics().stringWidth(text);
+				g.setColor(new Color(1.0f, 1.0f, 1.0f));
+				g.fillRect(0, 0, w, h);
+				g.setColor(new Color(127,127,127));
+				g.drawString(text, (w - textWidth)/2, (h-textHeight)/2);
+			} else {
+				biMainView = null;
+			}
+		}
+
+		private void createImage() {
+			if (this.alignment.lenght()==0) {
+				createImageWhenNoAlignment();
+				return;
+			}
+			createImageForAlignment();
+			this.setPreferredSize(
+				new Dimension(
+					biMainView.getWidth(),
+					biMainView.getHeight()
+				)
+			);
+			hasMsaImage = true;
 		}
 	}
 

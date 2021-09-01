@@ -50,6 +50,7 @@ package fasdpd;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import degeneration.GeneticCode;
@@ -76,52 +77,54 @@ public class FASDPD {
 	 * @param mySp contains all the parameters for the search.
 	 */
 	public void doSearchAndExportResults(SearchParameter mySp) {
-		Alignment al = new Alignment();
-		FastaMultipleReader fmr = new FastaMultipleReader();
-		List<Pair<String, String>> ps = null;
-		try {
-			ps = fmr.readFile(mySp.getInfile());
-		} catch (FileNotFoundException e) {
-			System.out.println("\r\nFASDPD exit with errors\r\nFile: " + mySp.getInfile() + " not found.\r\n");
-			System.out.println(FASDPD.getHelp());
-			System.exit(0);
-		}
-		for (Pair<String, String> pair : ps) {
-			if (mySp.isDNA()) {
-				// Working with DNA sequences
-				al.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
+		if (mySp.getInfile().isPresent()) {
+			Alignment al = new Alignment();
+			FastaMultipleReader fmr = new FastaMultipleReader();
+			List<Pair<String, String>> ps = null;
+			try {
+				ps = fmr.readFile(mySp.getInfile().get());
+			} catch (FileNotFoundException e) {
+				System.out.println("\r\nFASDPD exit with errors\r\nFile: " + mySp.getInfile() + " not found.\r\n");
+				System.out.println(FASDPD.getHelp());
+				System.exit(0);
+			}
+			for (Pair<String, String> pair : ps) {
+				if (mySp.isDNA()) {
+					// Working with DNA sequences
+					al.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
+				} else {
+					// Working with protein sequences
+					al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
+				}
+			}
+			GeneticCode myGC = new GeneticCode(mySp.getGCfile());
+			// Creates a genetic Code
+			DNASeq consense = al.pileUp(myGC);
+			// Generates the degenerated consensus
+			Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(), myGC);
+			// creates a new analyzer with standard parameters
+			if (!mySp.isSearchPair()) {
+				PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
+						mySp.getLenMax(), mySp.isDirectStrand(), mySp.getFilter(), mySp.getStartPoint(),
+						mySp.getEndPoint());
+				List<Primer> sorted = result.ExtractSortedList();
+				// Get the results
+				if (mySp.getProfile() != null) {
+					// if profile == null means that no profile generations is needed
+					exportDistributionProfile(mySp.getProfile(), sorted, al.lenght());
+					// creates and exports a histogram distribution
+				}
+				exportPrimers(mySp.getOutfile(), sorted);
+				// send primers list to file
 			} else {
-				// Working with protein sequences
-				al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
+				PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
+						mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
+				PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
+						mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
+				List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(),
+						resultreverse.ExtractSortedList(), mySp.getFilterpair());
+				exportPairs(mySp.getOutfile(), pairs);
 			}
-		}
-		GeneticCode myGC = new GeneticCode(mySp.getGCfile());
-		// Creates a genetic Code
-		DNASeq consense = al.pileUp(myGC);
-		// Generates the degenerated consensus
-		Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(), myGC);
-		// creates a new analyzer with standard parameters
-		if (!mySp.isSearchPair()) {
-			PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-					mySp.getLenMax(), mySp.isDirectStrand(), mySp.getFilter(), mySp.getStartPoint(),
-					mySp.getEndPoint());
-			List<Primer> sorted = result.ExtractSortedList();
-			// Get the results
-			if (mySp.getProfile() != null) {
-				// if profile == null means that no profile generations is needed
-				exportDistributionProfile(mySp.getProfile(), sorted, al.lenght());
-				// creates and exports a histogram distribution
-			}
-			exportPrimers(mySp.getOutfile(), sorted);
-			// send primers list to file
-		} else {
-			PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-					mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
-			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-					mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
-			List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(),
-					resultreverse.ExtractSortedList(), mySp.getFilterpair());
-			exportPairs(mySp.getOutfile(), pairs);
 		}
 	}
 
@@ -141,7 +144,11 @@ public class FASDPD {
 		FastaMultipleReader fmr = new FastaMultipleReader();
 		List<Pair<String, String>> ps = null;
 		try {
-			ps = fmr.readFile(mySp.getInfile());
+			if (mySp.getInfile().isPresent()) {
+				ps = fmr.readFile(mySp.getInfile().get());
+			} else {
+				ps = new ArrayList<Pair<String,String>>();
+			}
 		} catch (FileNotFoundException e) {
 			System.out.println(
 				"\r\nFASDPD exit with errors\r\nFile: "

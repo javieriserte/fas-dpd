@@ -124,13 +124,12 @@ public class Alignment {
 	 * @return a DNASeq representing the consensus of the alignment.
 	 */
 	public DNASeq pileUp(GeneticCode myGC){
-
+		if (this.getSeq().size()==0) {
+			return new DNASeq("", "");
+		}
 		Sequence result =  this.getSeq().get(0);
-		
 		for (Sequence sec : this.getSeq()) {
-			
 			result = result.pileUpWith(sec, myGC);
-			
 		}
 		return (DNASeq) result;
 	}
@@ -139,6 +138,9 @@ public class Alignment {
 	 * @return int the length of all sequences in the alignment.
 	 */
 	public int lenght() {
+		if (this.getSeq().size() == 0) {
+			return 0;
+		}
 		return this.getSeq().get(0).getLength();
 			// all the sequences must have the same length
 	}
