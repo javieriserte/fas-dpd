@@ -62,7 +62,6 @@ import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
-import sequences.util.tmcalculator.SantaluciaTmEstimator;
 
 /**
  * Executable Class For Command line FAS-DPD program.
