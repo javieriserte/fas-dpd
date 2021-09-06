@@ -47,6 +47,7 @@
 
 package fasdpd;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -77,61 +78,82 @@ public class FASDPD {
 	 * @param mySp contains all the parameters for the search.
 	 */
 	public void doSearchAndExportResults(SearchParameter mySp) {
-		if (mySp.getInfile().isPresent()) {
-			Alignment al = new Alignment();
-			FastaMultipleReader fmr = new FastaMultipleReader();
-			List<Pair<String, String>> ps = null;
-			try {
-				ps = fmr.readFile(mySp.getInfile().get());
-			} catch (FileNotFoundException e) {
-				System.out.println("\r\nFASDPD exit with errors\r\nFile: " + mySp.getInfile() + " not found.\r\n");
-				System.out.println(FASDPD.getHelp());
-				System.exit(0);
-			}
-			for (Pair<String, String> pair : ps) {
-				if (mySp.isDNA()) {
-					// Working with DNA sequences
-					al.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
-				} else {
-					// Working with protein sequences
-					al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
-				}
-			}
-			GeneticCode myGC = new GeneticCode(mySp.getGCfile());
-			// Creates a genetic Code
-			DNASeq consense = al.pileUp(myGC);
-			// Generates the degenerated consensus
-			Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(), myGC);
-			// creates a new analyzer with standard parameters
-			if (!mySp.isSearchPair()) {
-				PriorityList<Primer> result = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-						mySp.getLenMax(), mySp.isDirectStrand(), mySp.getFilter(), mySp.getStartPoint(),
-						mySp.getEndPoint());
-				List<Primer> sorted = result.ExtractSortedList();
-				// Get the results
-				if (mySp.getProfile() != null) {
-					// if profile == null means that no profile generations is needed
-					exportDistributionProfile(mySp.getProfile(), sorted, al.lenght());
-					// creates and exports a histogram distribution
-				}
-				exportPrimers(mySp.getOutfile(), sorted);
-				// send primers list to file
+		if (!mySp.getInfile().isPresent()) {
+			return;
+		}
+		Alignment al = new Alignment();
+		FastaMultipleReader fmr = new FastaMultipleReader();
+		List<Pair<String, String>> ps = null;
+		try {
+			ps = fmr.readFile(mySp.getInfile().get());
+		} catch (FileNotFoundException e) {
+			System.out.println("\r\nFASDPD exit with errors\r\nFile: " + mySp.getInfile() + " not found.\r\n");
+			System.out.println(FASDPD.getHelp());
+			System.exit(0);
+		}
+		List<PrimerOrPrimerPair> exportData = new ArrayList<PrimerOrPrimerPair>();
+		for (Pair<String, String> pair : ps) {
+			if (mySp.isDNA()) {
+				// Working with DNA sequences
+				al.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
 			} else {
-				PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-						mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
-				PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
-						mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
-				List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(),
-						resultreverse.ExtractSortedList(), mySp.getFilterpair());
-				exportPairs(mySp.getOutfile(), pairs);
+				// Working with protein sequences
+				al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
 			}
+		}
+		GeneticCode myGC = new GeneticCode(mySp.getGCfile());
+		// Creates a genetic Code
+		DNASeq consense = al.pileUp(myGC);
+		// Generates the degenerated consensus
+		Analyzer myAn = new Analyzer(mySp.getpA(), mySp.getNy(), mySp.getNx(), myGC);
+		// creates a new analyzer with standard parameters
+		if (!mySp.isSearchPair()) {
+			PriorityList<Primer> result = myAn.searchBestPrimers(
+				mySp.getQuantity(),
+				consense,
+				mySp.getLenMin(),
+				mySp.getLenMax(),
+				mySp.isDirectStrand(),
+				mySp.getFilter(),
+				mySp.getStartPoint(),
+				mySp.getEndPoint()
+			);
+			List<Primer> sorted = result.ExtractSortedList();
+			// Get the results
+			if (mySp.getProfile() != null) {
+				// if profile == null means that no profile generations is needed
+				exportDistributionProfile(mySp.getProfile(), sorted, al.lenght());
+				// creates and exports a histogram distribution
+			}
+			for (Primer s: sorted) {
+				exportData.add(new PrimerOrPrimerPair(s));
+			}
+			// send primers list to file
+		} else {
+			PriorityList<Primer> resultforward = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
+					mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
+			PriorityList<Primer> resultreverse = myAn.searchBestPrimers(mySp.getQuantity(), consense, mySp.getLenMin(),
+					mySp.getLenMax(), true, mySp.getFilter(), mySp.getStartPoint(), mySp.getEndPoint());
+			List<PrimerPair> pairs = myAn.searchPrimerPairs(resultforward.ExtractSortedList(),
+					resultreverse.ExtractSortedList(), mySp.getFilterpair());
+			for (PrimerPair s: pairs) {
+				exportData.add(new PrimerOrPrimerPair(s));
+			}
+		}
+		try {
+			PrimerListExporter.exportPrimersToFile(
+				new File(mySp.getOutfile()),
+				exportData
+			);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
 	/**
 	 * Performs the search of degenerated primers. The file name and path are
 	 * defined in <code>mySp</code>.
-	 * 
+	 *
 	 * @see SearchParameter
 	 * @param mySp contains all the parameters for the search.
 	 * @return a <code>ResultOfSearch</code> that contains the designed primers.
@@ -285,71 +307,6 @@ public class FASDPD {
 		}
 		return pos;
 	}
-
-	/**
-	 * Send a primer list to a file.
-	 * 
-	 * @param outfile a string containing the path of the file
-	 * @param list    a List of Primer objects
-	 */
-	public void exportPairs(String outfile, List<PrimerPair> list) {
-
-		try {
-			FileWriter fr = new FileWriter(outfile);
-			fr.write("Sequence\tScore\tStart\tEnd\tDirectStrand\tSequence\tScore\tStart\tEnd\tDirectStrand\t\n");
-			SantaluciaTmEstimator tm_calc = new SantaluciaTmEstimator();
-			for (PrimerPair primer : list) {
-				fr.write(primer.getForward().getSequence() + "\t");
-				fr.write(primer.getForward().getScore() + "\t");
-				fr.write(primer.getForward().getStart() + "\t");
-				fr.write(primer.getForward().getEnd() + "\t");
-				fr.write(primer.getForward().isDirectStrand() + "\t");
-				tm_calc.calculateTM(primer.getForward());
-				fr.write(String.valueOf(tm_calc.mean()) + "\t");
-
-				fr.write(primer.getReverse().getSequence() + "\t");
-				fr.write(primer.getReverse().getScore() + "\t");
-				fr.write(primer.getReverse().getStart() + "\t");
-				fr.write(primer.getReverse().getEnd() + "\t");
-				fr.write(primer.getReverse().isDirectStrand() + "\t");
-				tm_calc.calculateTM(primer.getReverse());
-				fr.write(String.valueOf(tm_calc.mean()) + "\t");
-
-			}
-			fr.flush();
-			fr.close();
-
-		} catch (IOException e) {
-			System.out.println("There was an error in the file. No primer list file was generated.");
-		}
-	}
-
-	/**
-	 * Send a primer list to a file.
-	 * 
-	 * @param outfile a string containing the path of the file
-	 * @param list    a List of Primer objects
-	 */
-	public void exportPrimers(String outfile, List<Primer> list) {
-
-		try {
-			FileWriter fr = new FileWriter(outfile);
-			fr.write("Sequence\tScore\tStart\tEnd\tDirectStrand\n");
-			for (Primer primer : list) {
-				fr.write(primer.getSequence() + "\t");
-				fr.write(primer.getScore() + "\t");
-				fr.write(primer.getStart() + "\t");
-				fr.write(primer.getEnd() + "\t");
-				fr.write(primer.isDirectStrand() + "\n");
-			}
-			fr.flush();
-			fr.close();
-
-		} catch (IOException e) {
-			System.out.println("There was an error in the file. No primer list file was generated.");
-		}
-	}
-
 	/**
 	 * Gets the the text of help.
 	 */

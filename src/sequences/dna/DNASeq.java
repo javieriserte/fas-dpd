@@ -54,17 +54,13 @@ import degeneration.GeneticCode;
  * 
  */
 public class DNASeq extends Sequence {
-	
-	// CONSTRUCTOR
 	public DNASeq(String sequence, String description) {
 		super(sequence,description);
 	}
 
-	// INSTANCE METHODS
 	public DNASeq getReverseComplementary() {
 		return new DNASeq(DNASeq.reverseComplementary(this.getSequence()),"Complement of " + this.getDescription());
 	}
-	
 	/**
 	 * This method translate a DNA sequence into a amino acid sequence, according to a genetic Code.
 	 * 
@@ -229,7 +225,7 @@ public class DNASeq extends Sequence {
 		case 'C':result='G';break;
 		case 'T':result='A';break;
 		case 'G':result='C';break;
-		
+
 		case 'S':result='S';break;
 		case 'W':result='W';break;
 		case 'K':result='M';break;
@@ -241,10 +237,20 @@ public class DNASeq extends Sequence {
 		case 'D':result='H';break;
 		case 'H':result='D';break;
 		case 'V':result='B';break;
-		
+
 		case 'N':result='N';break;
 		case '-':result='-';break;
 		}
 		return result;
+	}
+
+	@Override
+	public Sequence toDNA() {
+		return this;
+	}
+
+	@Override
+	public Sequence toProtein() {
+		return new ProtSeq(this.getSequence(), this.getDescription());
 	}
 }

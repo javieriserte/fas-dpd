@@ -1,7 +1,9 @@
 package fasdpd;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Vector;
 
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
@@ -44,19 +46,20 @@ public class SearchParameter {
 	private String outfile;
 	private String gcfile;
 	private String profile="";
-	private int lenMin;
-	private int lenMax;
+	private int lenMin=20;
+	private int lenMax=25;
 	private Validator filter= new ValidateAlways();
 	private Validator filterpair= new ValidateAlways();
 	private int quantity=20;
 	private int startPoint=1; // The number of the first position is One, not Zero.
 	private int endPoint=-1; // -1 represents the end the sequence.
-	private boolean directStrand=true; 
+	private boolean directStrand = true;
 	private boolean isDNA = false;
-	private float Nx; 
-	private float Ny;
-	private float pA;
-	
+	private float Nx = 1f;
+	private float Ny = 1f;
+	private float pA = 0f;
+	private Set<StrandSearchDirection> strands;
+
 	private boolean searchPair=false;
 	private boolean useSantaLuciaToEstimateTm = true; // TODO MAY BE USELESS. 
 
@@ -69,11 +72,26 @@ public class SearchParameter {
 	 */
 	public SearchParameter() {
 		super();
+		strands = new HashSet<StrandSearchDirection>();
+		strands.add(StrandSearchDirection.Forward);
 	}
-	
+
     /////////////////////
 	// PUBLIC INTERFACE
 	/////////////////////
+
+	public Set<StrandSearchDirection> getStrands() {
+		return this.strands;
+	}
+
+	public void addStrand(StrandSearchDirection strand) {
+		this.strands.add(strand);
+	}
+
+	public void clearStrands() {
+		this.strands.clear();
+	}
+
 	/**
 	 * Looks for search parameters reading the command line options.
 	 */

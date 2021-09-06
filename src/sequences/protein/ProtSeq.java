@@ -75,19 +75,12 @@ public class ProtSeq extends Sequence {
 	public DNASeq backTranslate(GeneticCode myGC){
 
 		StringBuilder result = new StringBuilder(3*this.getLength());
-		
 		for (int x=0;x<this.getLength();x++){
-			
 			String currentAminoAcid = this.getSequence().substring(x, x+1);
-			
 			String retroCodon = myGC.getRetroCodon(currentAminoAcid);
-			
 			if (retroCodon==null) { // If gaps or non amino acid chars are found, an "NNN" codon is assigned.
-				
 				retroCodon = "NNN";
-				
 			}
-			
 			result.append(retroCodon);
 		}
 
@@ -116,6 +109,16 @@ public class ProtSeq extends Sequence {
 	 */
 	public DNASeq pileUpWithProtseq(ProtSeq otraSeq, GeneticCode myGC) {
 		return otraSeq.backTranslate(myGC).pileUpWithProtseq(this, myGC);
+	}
+
+	@Override
+	public Sequence toDNA() {
+		return new DNASeq(this.getSequence(), this.getDescription());
+	}
+
+	@Override
+	public Sequence toProtein() {
+		return this;
 	}
 }
 

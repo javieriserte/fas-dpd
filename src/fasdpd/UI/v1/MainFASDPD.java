@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -22,11 +23,15 @@ import javax.swing.filechooser.FileFilter;
 
 import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
+import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
 
 import fasdpd.FASDPD;
+import fasdpd.PrimerSearchType;
 import fasdpd.SearchParameter;
+import fasdpd.StrandSearchDirection;
+import fasdpd.UI.v1.filterCreators.FilterCreator;
 import fastaIO.FastaFilter;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
@@ -39,8 +44,15 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private OptionsPane op;
 	private List<SelectFileListener> selectFileListeners;
 	private File selectedFile;
+
 	private boolean isDNA = true;
 	private PropertyChangeSupport dna = new PropertyChangeSupport(this);
+
+	private PrimerSearchType searchType = PrimerSearchType.SingleEnd;
+	private PropertyChangeSupport searchTypeProp = new PropertyChangeSupport(
+		this);
+	public ParametersPane params;
+	protected ArrayList<FilterCreator> filterCreators;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -48,10 +60,10 @@ public class MainFASDPD extends javax.swing.JFrame {
 				MainFASDPD inst = new MainFASDPD();
 				inst.setControl(new FASDPD());
 				inst.setSearchParameter(new SearchParameter());
-				inst.setLocationRelativeTo(null);
 				inst.setTitle("FAS - DPD main window");
 				inst.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				inst.createGUI();
+				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 				inst.pack();
 			}
@@ -61,26 +73,87 @@ public class MainFASDPD extends javax.swing.JFrame {
 	public MainFASDPD() {
 		super();
 		selectFileListeners = new ArrayList<SelectFileListener>();
-		this.addSelectFileListener(
-			new SelectFileListener() {
-				@Override
-				public void afterSelectFile(File selected, boolean isDNA) {
-					getSearchParameter()
-						.setInfile(selected.getAbsolutePath())
-						.setDNA(isDNA);
-					op.updateAlignment(getAlignment());
-				}
+		filterCreators = new ArrayList<FilterCreator>();
+		this.addSelectFileListener(new SelectFileListener() {
+			@Override
+			public void afterSelectFile(File selected, boolean isDNA) {
+				getSearchParameter().setInfile(selected.getAbsolutePath())
+					.setDNA(isDNA);
+				op.updateAlignment(getAlignment());
 			}
-		);
+		});
+	}
+
+	public void doSearch() {
+		FilterValidatorBuilder fb = new FilterValidatorBuilder()
+			.add(filterCreators);
+		searchParameter.setFilter(fb.getSinglePrimerValidator());
+		searchParameter.setFilterpair(fb.getPrimerPairValidator());
+		FASDPD.ResultOfSearch results = null;
+		if (searchParameter.isSearchPair()) {
+			results = control.doSearch(searchParameter);
+			op.setPairData(results.primerPairs);
+		} else {
+			List<Primer> partialResult = new Vector<Primer>();
+			for (StrandSearchDirection strand : searchParameter.getStrands()) {
+				searchParameter
+					.setDirectStrand(strand.equals(StrandSearchDirection.Forward));
+				results = control.doSearch(searchParameter);
+				if (results.primers != null) {
+					partialResult.addAll(results.primers);
+				}
+				results.primers = partialResult;
+			}
+			op.setPrimerData(results.primers);
+		}
 	}
 
 	private void createGUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			setMinimumSize(new Dimension(800, 500));
+			setPreferredSize(new Dimension(1200, 700));
+			createParametersPane();
 			loadOptionsPane();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void updateSearchParams(SearchParameter sp) {
+		searchParameter.setEndPoint(sp.getEndPoint());
+		searchParameter.setStartPoint(sp.getStartPoint());
+		searchParameter.setLenMax(sp.getLenMax());
+		searchParameter.setLenMin(sp.getLenMin());
+		searchParameter.setNx(sp.getNx());
+		searchParameter.setNx(sp.getNx());
+		searchParameter.setpA(sp.getpA());
+		searchParameter.setQuantity(sp.getQuantity());
+		searchParameter
+			.setUseSantaLuciaToEstimateTm(sp.isUseSantaLuciaToEstimateTm());
+		searchParameter.clearStrands();
+		for (StrandSearchDirection s : sp.getStrands()) {
+			searchParameter.addStrand(s);
+		}
+	}
+
+	private void createParametersPane() {
+		params = new ParametersPane();
+		params.populateParameterValues(searchParameter);
+		params.addParameterSetChangeListener(new ParameterSetChangeListener() {
+			@Override
+			public void stateChanged(SearchParameter sp) {
+				updateSearchParams(sp);
+			}
+		});
+		params.addOnCloseListener(new CloseActionListener() {
+			@Override
+			public void executeOnClose() {
+				MainFASDPD.this.remove(params);
+				MainFASDPD.this.add(op, BorderLayout.CENTER);
+				op.updateUI();
+			}
+		});
 	}
 
 	private Alignment getAlignment() {
@@ -92,7 +165,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 			if (infileOpt.isPresent()) {
 				seqPairs = mfr.readFile(infileOpt.get());
 			} else {
-				seqPairs = new ArrayList<Pair<String,String>>();
+				seqPairs = new ArrayList<Pair<String, String>>();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -141,35 +214,103 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 	private GridBagLayout toolbarLayout() {
 		GridBagLayout l = new GridBagLayout();
-		l.columnWidths = new int[] { 100 };
+		l.columnWidths = new int[] { 150 };
 		l.columnWeights = new double[] { 1 };
-		l.rowHeights = new int[] {75, 75, 75, 75, 25, 75, 75};
-		l.rowWeights = new double[] {0, 0, 0, 0, 0, 0, 1};
+		l.rowHeights = new int[] { 75, 75, 75, 75, 75, 25, 75, 500 };
+		l.rowWeights = new double[] { 0, 0, 0, 0, 0, 0, 0, 1 };
 		return l;
+	}
+
+	private void setTextValueForDnaButton(JButton b) {
+		String t = isDNA ? "DNA" : "Protein";
+		b.setText(t);
+	}
+
+	private void setTextValueForSearchTypeButton(JButton b) {
+		if (searchType.equals(PrimerSearchType.SingleEnd)) {
+			b.setText("Single primers");
+		}
+		if (searchType.equals(PrimerSearchType.DoubleEnd)) {
+			b.setText("Primer pair");
+		}
+	}
+
+	private JButton createOpenMsaButton() {
+		JButton b = new JButton("Open MSA");
+		b.addActionListener(new jbOpenFileAction());
+		return b;
+	}
+
+	private JButton createSearchTypeButton() {
+		final JButton b = new JButton();
+		setTextValueForSearchTypeButton(b);
+		searchTypeProp
+			.addPropertyChangeListener("search-type", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					setTextValueForSearchTypeButton(b);
+				}
+			});
+		b.addActionListener(new toggleSearchTypeAction());
+		return b;
+	}
+
+	private JButton createToggleMolTypeButton() {
+		final JButton b3 = new JButton();
+		setTextValueForDnaButton(b3);
+		dna.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("isdna")) {
+					setTextValueForDnaButton(b3);
+				}
+			}
+		});
+		b3.addActionListener(new toggleDnaAndProteinAction());
+		return b3;
+	}
+
+	private JButton createSearchParametersButton() {
+		final JButton b = new JButton("Parameters");
+		b.addActionListener(new showParametersAction());
+		return b;
+	}
+
+	private JButton createPerformSearchButton() {
+		JButton b = new JButton("Search");
+		b.addActionListener(new jbDoSearchAction());
+		return b;
+	}
+
+	private JButton createFiltersButton() {
+		JButton b = new JButton("Filters");
+		b.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(filterCreators.size());
+				FiltersSelectionPane filterPane = new FiltersSelectionPane(
+					MainFASDPD.this,
+					filterCreators,
+					getSearchParameter().isSearchPair());
+				filterPane.dispose();
+			}
+		});
+		return b;
 	}
 
 	private JToolBar createToolbar() {
 		JToolBar t = new JToolBar(JToolBar.VERTICAL);
 		t.setLayout(toolbarLayout());
-		t.setMinimumSize( new Dimension(100, 100));
-		JButton b1 = new JButton("Open MSA");
-		JButton b2 = new JButton("Single primers");
-		final JButton b3 = new JButton("DNA");
-		JButton b4 = new JButton("Parameters");
-		JButton b5 = new JButton("Search");
-		dna.addPropertyChangeListener(
-			new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getPropertyName().equals("isdna")) {
-						boolean v = Boolean.parseBoolean((String) evt.getNewValue());
-						String t = v ? "DNA" : "Protein";
-						b3.setText(t);
-					}
-				}
-			}
-		);
+		JButton[] buttons = new JButton[] { createOpenMsaButton(),
+			createSearchTypeButton(), createToggleMolTypeButton(),
+			createSearchParametersButton(), createFiltersButton(),
+			createPerformSearchButton() };
+		addToolbarButtons(t, buttons);
+		t.setFloatable(false);
+		return t;
+	}
 
+	private void addToolbarButtons(JToolBar t, JButton[] buttons) {
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
 		c.ipadx = 5;
@@ -179,40 +320,59 @@ public class MainFASDPD extends javax.swing.JFrame {
 		c.gridheight = 1;
 		c.gridx = 0;
 		c.gridy = 0;
-		for (JButton b : new JButton[]{b1, b2, b3, b4, b5}) {
-			b.setMinimumSize(new Dimension(100, 100));
+		for (JButton b : buttons) {
+			b.setMinimumSize(new Dimension(100, 30));
+			b.setPreferredSize(new Dimension(100, 100));
+			b.setMaximumSize(new Dimension(100, 100));
 			b.setMargin(new Insets(10, 10, 10, 10));
 			b.setOpaque(false);
-			if (c.gridy==4) {c.gridy=5;}
+			if (c.gridy == 5) {
+				c.gridy = 6;
+			}
 			t.add(b, c);
 			c.gridy++;
-		};
-		b1.addActionListener(new jbOpenFileAction());
-		b3.addActionListener(new toggleDnaAndProteinAction());
-		t.setFloatable(false);
-		return t;
+		}
+		;
+	}
+
+	public void toggleSearchType() {
+		PrimerSearchType old = this.searchType;
+		PrimerSearchType novel;
+		if (old.equals(PrimerSearchType.SingleEnd)) {
+			novel = PrimerSearchType.DoubleEnd;
+		} else {
+			novel = PrimerSearchType.SingleEnd;
+		}
+		this.searchType = novel;
+		searchParameter.setSearchPair(novel == PrimerSearchType.DoubleEnd);
+		searchTypeProp.firePropertyChange("search-type", old, novel);
 	}
 
 	public void setIsDna(boolean value) {
-		if (this.isDNA!=value) {
+		if (this.isDNA != value) {
 			this.isDNA = value;
+			this.searchParameter.setDNA(isDNA);
+			this.op.updateDna(isDNA);
+			;
 			this.dna.firePropertyChange(
 				"isdna",
 				String.valueOf(!value),
-				String.valueOf(value)
-			);
+				String.valueOf(value));
 		}
 	}
 
 	public void setSearchParameter(SearchParameter searchParameter) {
 		this.searchParameter = searchParameter;
 	}
+
 	public SearchParameter getSearchParameter() {
 		return searchParameter;
 	}
+
 	public void setControl(FASDPD control) {
 		this.control = control;
 	}
+
 	public FASDPD getControl() {
 		return control;
 	}
@@ -224,8 +384,26 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 
+	private class showParametersAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			MainFASDPD.this.remove(op);
+			MainFASDPD.this.add(params, BorderLayout.CENTER);
+			params.updateUI();
+		}
+	}
+
+	private class toggleSearchTypeAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			toggleSearchType();
+			params.updatePrimerSearchType(searchType);
+		}
+	}
+
 	private class jbOpenFileAction implements ActionListener {
-		@Override public void actionPerformed(ActionEvent e) {
+		@Override
+		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc = createFileChooser();
 			int dialogResponse = fc.showOpenDialog(MainFASDPD.this);
 			processResponse(dialogResponse, fc);
@@ -241,12 +419,11 @@ public class MainFASDPD extends javax.swing.JFrame {
 		private JFileChooser createFileChooser() {
 			FileFilter fastaFilter = getFileFilter();
 			JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
-				// Open a Dialog Box for to load a fasta file.
 			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			iFile.setMultiSelectionEnabled(false);
 			iFile.setDialogTitle("Select Fasta Alignment");
 			iFile.setDialogType(JFileChooser.OPEN_DIALOG);
-			iFile.setCurrentDirectory(new java.io.File( "." ));
+			iFile.setCurrentDirectory(new java.io.File("."));
 			iFile.setFileFilter(fastaFilter);
 			return iFile;
 		}
@@ -254,10 +431,13 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 	private FileFilter getFileFilter() {
 		return new FileFilter() {
-			@Override public String getDescription() {
+			@Override
+			public String getDescription() {
 				return "Fasta files";
 			}
-			@Override public boolean accept(File f) {
+
+			@Override
+			public boolean accept(File f) {
 				return f.isDirectory() || (new FastaFilter()).accept(f);
 			}
 		};
@@ -265,5 +445,12 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 	interface SelectFileListener {
 		void afterSelectFile(File selected, boolean isDNA);
+	}
+
+	private class jbDoSearchAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			doSearch();
+		}
 	}
 }

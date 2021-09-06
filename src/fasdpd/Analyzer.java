@@ -93,22 +93,25 @@ public class Analyzer {
 	 *
 	 * @param numberOfPrimers is the number of primers that are stored in the
 	 *                        result.
-	 * @param DNASeq          is the sequence where the primers will be
-	 *                        searched.
+	 * @param DNASeq          is the sequence where the primers will be searched.
 	 * @param primerLength    is the length of desired primers.
 	 * @param directStrand    indicates that the sequence of primers will be
 	 *                        search in the complementary strand of DNASeq.
 	 * @param Filter          is a Validator that checks if the primers meet any
 	 *                        additional requirements.
 	 * @param StartPoint      is the position of DNAseq where the search start.
-	 * @param EndPoint        is the position of DNAseq where the search Ends.
-	 *                        If EndPoint == -1 the search will be done until
-	 *                        the end of the sequence is reached
+	 * @param EndPoint        is the position of DNAseq where the search Ends. If
+	 *                        EndPoint == -1 the search will be done until the end
+	 *                        of the sequence is reached
 	 */
 	public PriorityList<Primer> searchBestPrimers(
-			int numberOfPrimers, DNASeq seq, int primerLength,
-			boolean directStrand, Validator Filter,
-			int StartPoint, int EndPoint) {
+		int numberOfPrimers,
+		DNASeq seq,
+		int primerLength,
+		boolean directStrand,
+		Validator Filter,
+		int StartPoint,
+		int EndPoint) {
 		// PRECONDITION : StartPoint is equal o greater than one and is lesser
 		// than (sequence length - primer length).
 		// End point is greater than startpoint plus primer length and lesser
@@ -135,8 +138,15 @@ public class Analyzer {
 		return lp;
 	}
 
-	public PriorityList<Primer> searchBestPrimers(int numberOfPrimers, DNASeq seq, int primerLengthMin,
-			int primerLengthMax, boolean directStrand, Validator Filter, int StartPoint, int EndPoint) {
+	public PriorityList<Primer> searchBestPrimers(
+		int numberOfPrimers,
+		DNASeq seq,
+		int primerLengthMin,
+		int primerLengthMax,
+		boolean directStrand,
+		Validator Filter,
+		int StartPoint,
+		int EndPoint) {
 		// PRECONDITION : StartPoint is equal o greater than one and is lesser than
 		// (sequence length - primer length)
 		// : End point is greater than startpoint plus primer length and lesser than
@@ -144,7 +154,14 @@ public class Analyzer {
 		PriorityList<Primer> lp = new PriorityList<Primer>(numberOfPrimers);
 		PriorityList<Primer> lppartial = new PriorityList<Primer>(numberOfPrimers);
 		for (int i = primerLengthMin; i <= primerLengthMax; i++) {
-			lppartial = this.searchBestPrimers(numberOfPrimers, seq, i, directStrand, Filter, StartPoint, EndPoint);
+			lppartial = this.searchBestPrimers(
+				numberOfPrimers,
+				seq,
+				i,
+				directStrand,
+				Filter,
+				StartPoint,
+				EndPoint);
 			for (Primer primer : lppartial.ExtractSortedList()) {
 				lp.addValue(primer);
 			}
@@ -161,7 +178,10 @@ public class Analyzer {
 	 * @param filter  gives the selection conditions.
 	 * @return a list of pairs of compatible primers.
 	 */
-	public List<PrimerPair> searchPrimerPairs(List<Primer> forward, List<Primer> reverse, Validator filter) {
+	public List<PrimerPair> searchPrimerPairs(
+		List<Primer> forward,
+		List<Primer> reverse,
+		Validator filter) {
 		List<PrimerPair> result = new Vector<PrimerPair>();
 		for (Primer primerf : forward) {
 			for (Primer primerr : reverse) {
@@ -197,7 +217,6 @@ public class Analyzer {
 		return sum / this.Ms(p.getLength());
 	}
 
-	// PRIVATE AND PROTECTED METHODS
 	private float Sp(int NDi) {
 		return (float) (1 - Math.log10(NDi));
 	}

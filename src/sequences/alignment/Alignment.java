@@ -134,6 +134,22 @@ public class Alignment {
 		return (DNASeq) result;
 	}
 
+	public Alignment toDnaAlignment() {
+		Alignment aln = new Alignment();
+		for (Sequence s : this.seq) {
+			aln.addSequence(s.toDNA());
+		}
+		return aln;
+	}
+
+	public Alignment toProteinAlignment() {
+		Alignment aln = new Alignment();
+		for (Sequence s : this.seq) {
+			aln.addSequence(s.toProtein());
+		}
+		return aln;
+	}
+
 	/**
 	 * @return int the length of all sequences in the alignment.
 	 */
@@ -152,6 +168,5 @@ public class Alignment {
 	public void setSeq(List<Sequence> seq) {
 		this.seq = seq;
 	}
-	
-	
+
 }

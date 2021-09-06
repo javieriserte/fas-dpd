@@ -23,12 +23,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 
 import sequences.Sequence;
 import sequences.alignment.Alignment;
 import sequences.dna.DNASeq;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
+import fasdpd.UI.v1.colors.ColoringStrategy;
+import fasdpd.UI.v1.colors.DnaColoringStrategy;
+import fasdpd.UI.v1.colors.ProteinColoringStrategy;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 
@@ -75,7 +79,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	/**
 	 * Shows selected region of alignment differentially. <b>Currently not
 	 * implemented</b>
-	 * 
+	 *
 	 * @param from start of selected region
 	 * @param to   end of selected region
 	 */
@@ -155,6 +159,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 
 	private void setUpMainScrollPane() {
 		mainScrollPane = new JScrollPane();
+		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setUpMainView();
 		mainScrollPane.setViewportView(mainView);
 		setUpHeader();
@@ -504,6 +509,10 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			if (mainView!=null) {
 				int w = mainView.getWidth();
 				int h = mainView.getHeight();
+				if (!(w>0&&h>0)) {
+					biMainView = null;
+					return;
+				}
 				biMainView = new BufferedImage(w, h,
 					BufferedImage.TYPE_INT_RGB
 				);
@@ -566,4 +575,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		ae.highlight(5, 10);
 		frame.setVisible(true);
 	}
+
+
 }

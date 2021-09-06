@@ -1,131 +1,44 @@
-/*
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or credit authors.
- *
- * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
- * EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES 
- * PROVIDE THE PROGRAM �AS IS� WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
- * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE 
- * PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
- * NECESSARY SERVICING, REPAIR OR CORRECTION.
- 
- * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT 
- * HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, 
- * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL
- * DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED 
- * TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD 
- * PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH 
- * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- * 
- * FAS-DPD project, including algorithms design, software implementation and experimental laboratory work, is being developed as a part of the Research Program:
- * 	"Microbiolog�a molecular b�sica y aplicaciones biotecnol�gicas"
- * 		(Basic Molecular Microbiology and biotechnological applications)
- * 
- * And is being conducted in:
- * 	LIGBCM: Laboratorio de Ingenier�a Gen�tica y Biolog�a Celular y Molecular.
- *		(Laboratory of Genetic Engineering and Cellular and Molecular Biology)
- *	Universidad Nacional de Quilmes.
- *		(National University Of Quilmes)
- *	Quilmes, Buenos Aires, Argentina.
- *
- * The complete team for this project is formed by:
- *	Lic.  Javier A. Iserte.
- *	Lic.  Betina I. Stephan.
- * 	ph.D. Sandra E. Go�i.
- * 	ph.D. P. Daniel Ghiringhelli.
- *	ph.D. Mario E. Lozano.
- *
- * Corresponding Authors:
- *	Javier A. Iserte. <jiserte@unq.edu.ar>
- *	Mario E. Lozano. <mlozano@unq.edu.ar>
- */
-
 package fasdpd.UI.v1;
 
-import java.awt.FlowLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
+import java.awt.Insets;
 import java.util.List;
-import java.util.Vector;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerModel;
-import javax.swing.WindowConstants;
-import javax.swing.JFrame;
 
-import sequences.alignment.Alignment;
-import sequences.dna.DNASeq;
-import sequences.dna.Primer;
 import degeneration.GeneticCode;
-import fasdpd.FASDPD;
-import fasdpd.SearchParameter;
-import fasdpd.UI.v1.filterCreators.FilterCreator;
-import fastaIO.FastaMultipleReader;
-import fastaIO.Pair;
-import filters.Filter;
-import filters.primerpair.FilterOverlapping;
-import filters.primerpair.FilterPrimerPair;
-import filters.singlePrimer.FilterSinglePrimer;
-import filters.validator.ValidateAlways;
-import filters.validator.ValidateForFilterPrimerPair;
-import filters.validator.ValidateForFilterSinglePrimer;
-import filters.validator.Validate_AND;
-import filters.validator.Validator;
+import fasdpd.PrimerPair;
+import sequences.alignment.Alignment;
+import sequences.dna.Primer;
 
 public class OptionsPane extends JPanel {
 	private static final long serialVersionUID = -5923205806932143474L;
 	private Alignment align;
 	private GeneticCode geneticCode;
-	private Vector<FilterCreator> listOfFilterCreators;
-	private MainFASDPD mainframe;
 	// COMPONENTS
 	private AlignmentExplorer alignmentExplorer;
-	private JButton jbDoSearch;
-	private JButton jbOpenFilters;
-	private JTextField quantity;
 	private ResultViewer resultViewer;
-	private JTextField minimumSize;
-	private JTextField maximumSize;
-	private JTextField rangeFrom;
-	private JTextField rangeTo;
-	private SpinnerModel tmemodel;
-	private JSpinner strand;
-	private JTextField nyt;
-	private JTextField nxt;
-	private JTextField apt;
 
 	// CONSTRUCTORS
 	public OptionsPane(Alignment align, GeneticCode gc) {
 		super();
-		this.mainframe = null;
 		this.geneticCode = gc;
 		this.align = align;
 		this.alignmentExplorer = new AlignmentExplorer(
 			this.align,
 			this.geneticCode);
-		this.listOfFilterCreators = new Vector<FilterCreator>();
 		this.createGUI();
 	}
 
 	public OptionsPane(Alignment align, GeneticCode gc, MainFASDPD mainframe) {
 		super();
-		this.mainframe = mainframe;
 		this.geneticCode = gc;
 		this.align = align;
 		this.alignmentExplorer = new AlignmentExplorer(
 			this.align,
 			this.geneticCode);
-		this.listOfFilterCreators = new Vector<FilterCreator>();
 		this.createGUI();
 	}
 
@@ -135,361 +48,51 @@ public class OptionsPane extends JPanel {
 		this.updateUI();
 	}
 
-	//////////////////
-	// PRIVATE METHODS
+	public void updateDna(boolean isDNA) {
+		Alignment aln;
+		if (isDNA) {
+			aln = this.align.toDnaAlignment();
+		} else {
+			aln = this.align.toProteinAlignment();
+		}
+		updateAlignment(aln);
+	}
 
 	private void createGUI() {
-		try {
-			// SET LAYOUT FORMAT
-			GridBagLayout thisLayout = new GridBagLayout();
-			GridBagConstraints c = new GridBagConstraints();
-			this.setPreferredSize(new java.awt.Dimension(640, 500));
-			thisLayout.rowWeights = new double[] { 1, 0, 0, 0, 0, 0 };
-			thisLayout.rowHeights = new int[] { 250, 50, 50, 50, 50, 50 };
-			thisLayout.columnWeights = new double[] { 1, 0, 0 };
-			thisLayout.columnWidths = new int[] { 250, 100, 100 };
-			this.setLayout(thisLayout);
+		GridBagLayout thisLayout = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		this.setOpaque(true);
+		this.setBackground(Color.WHITE);
+		thisLayout.rowWeights = new double[] { 1, 0 };
+		thisLayout.rowHeights = new int[] { 450, 250 };
+		thisLayout.columnWeights = new double[] { 1 };
+		thisLayout.columnWidths = new int[] { 250 };
+		this.setLayout(thisLayout);
 
-			// TextArea for view results // Other Pane
-			resultViewer = new ResultViewer(
-				this.mainframe, align.lenght()
-			);
-			resultViewer.setOpaque(true);
+		resultViewer = new ResultViewer();
+		resultViewer.setOpaque(true);
 
-			// Spinner for strand selection
+		c.insets = new Insets(5, 5, 5, 5);
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.CENTER;
+		this.add(alignmentExplorer, c);
 
-			SpinnerListModel strandsmodel = new SpinnerListModel(
-				new String[] { "forward", "reverse", "both" });
-			strand = new JSpinner(strandsmodel);
-			JPanel strandPanel = new JPanel();
-			strandPanel.add(new JLabel("Strand:"));
-			strandPanel.add(strand);
-			strandPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-			if (mainframe.getSearchParameter().isSearchPair()) {
-				strand.setEnabled(false);
-				strand.setValue(strandsmodel.getList().get(2));
-			}
-
-			// Text Field and label for Quantity selection
-			JPanel quantityPanel = new JPanel();
-			quantity = new JTextField("10");
-			quantity.setColumns(2);
-
-			quantityPanel.add(new JLabel("Quantity:"));
-			quantityPanel.add(quantity);
-			quantityPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// 2 Text Area and 2 label for Size selection
-			// JTextField minimumSize = new JTextField("20");
-			minimumSize = new JTextField("20");
-			minimumSize.setColumns(2);
-			// JTextField maximumSize = new JTextField("25");
-			maximumSize = new JTextField("25");
-			maximumSize.setColumns(2);
-			JPanel sizePanel = new JPanel();
-			sizePanel.add(new JLabel("Size:"));
-			sizePanel.add(minimumSize);
-			sizePanel.add(new JLabel("To:"));
-			sizePanel.add(maximumSize);
-			sizePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// 2 Text Area and 2 label for range selection
-			rangeFrom = new JTextField("1");
-			rangeFrom.setToolTipText("The sequence start in position 1, not 0");
-			// JTextField rangeFrom = new JTextField("0");
-			rangeFrom.setColumns(2);
-			rangeTo = new JTextField("-1");
-			// JTextField rangeTo = new JTextField("-1");
-			rangeTo.setColumns(2);
-			JPanel rangePanel = new JPanel();
-			rangePanel.add(new JLabel("Range:"));
-			rangePanel.add(rangeFrom);
-			rangePanel.add(new JLabel("To:"));
-			rangePanel.add(rangeTo);
-			rangePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// Spinner for TME selection
-
-			tmemodel = new SpinnerListModel(
-				new String[] { "Santalucia 1998", "Simple Tm" });
-			// SpinnerModel tmemodel = new SpinnerListModel(new String[] {"Santalucia
-			// 1998", "Simple Tm"});
-			JSpinner tmeSpinner = new JSpinner(tmemodel);
-			JPanel tmePanel = new JPanel();
-			tmePanel.add(new JLabel("Tm:"));
-			tmePanel.add(tmeSpinner);
-			tmePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// Text Field and label for ny
-			nyt = new JTextField("1");
-			// JTextField nyt = new JTextField("1");
-			nyt.setColumns(2);
-			JPanel nyPanel = new JPanel();
-			nyPanel.add(new JLabel("Ny:"));
-			nyPanel.add(nyt);
-			nyPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// Text Field and label for nx
-			nxt = new JTextField("1");
-			// JTextField nxt = new JTextField("1");
-			nxt.setColumns(2);
-			JPanel nxPanel = new JPanel();
-			nxPanel.add(new JLabel("Nx:"));
-			nxPanel.add(nxt);
-			nxPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// Text Field and label for aP
-			apt = new JTextField("0");
-			// JTextField apt = new JTextField("0");
-			apt.setColumns(2);
-			JPanel apPanel = new JPanel();
-			apPanel.add(new JLabel("Ap:"));
-			apPanel.add(apt);
-			apPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-			// Button for open filter selection pane
-			jbOpenFilters = new JButton("Filters");
-			jbOpenFilters.addActionListener(new jbOpenFiltersAction());
-
-			// Button for search
-			jbDoSearch = new JButton("do Search");
-			jbDoSearch.addActionListener(new jbDoSearchAction());
-
-			// Adding components
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 0;
-			c.gridy = 1;
-			c.gridheight = 5;
-			c.anchor = GridBagConstraints.CENTER;
-			this.add(resultViewer, c);
-
-			c.gridheight = 1;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 4;
-			c.anchor = GridBagConstraints.CENTER;
-			this.add(jbOpenFilters, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 5;
-			c.anchor = GridBagConstraints.CENTER;
-			this.add(jbDoSearch, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 1;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(nyPanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 2;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(nxPanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 2;
-			c.gridy = 3;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(apPanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 4;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(tmePanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 1;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(rangePanel, c);
-
-			c.gridwidth = 1;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 3;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(quantityPanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 5;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(strandPanel, c);
-
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 1;
-			c.gridy = 2;
-			c.anchor = GridBagConstraints.WEST;
-			this.add(sizePanel, c);
-
-			c.gridheight = 1;
-			c.gridwidth = 4;
-			c.fill = GridBagConstraints.BOTH;
-			c.gridx = 0;
-			c.gridy = 0;
-			c.anchor = GridBagConstraints.CENTER;
-			this.add(alignmentExplorer, c);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.CENTER;
+		this.add(resultViewer, c);
 	}
 
-	////////////////////
-	// AUXILIARY CLASSES
-
-	private class jbOpenFiltersAction implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			if (listOfFilterCreators == null) {
-				listOfFilterCreators = new Vector<FilterCreator>();
-			}
-
-			new FiltersSelectionPane(
-				mainframe,
-				listOfFilterCreators,
-				mainframe.getSearchParameter().isSearchPair());
-
-		}
-
+	public void setPairData(List<PrimerPair> primers) {
+		resultViewer.setPairdata(primers);
+		this.updateUI();
 	}
 
-	private class jbDoSearchAction implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			List<Boolean> loopStrand = new Vector<Boolean>();
-			// check if is forward, reverse or both strands
-			if (strand.getValue() == "forward") {
-				// forward
-				loopStrand.add(true);
-			} else if (strand.getValue() == "reverse") {
-				// reverse
-				loopStrand.add(false);
-			} else {
-				// both
-				loopStrand.add(true);
-				loopStrand.add(false);
-			}
-
-			// check every value
-			// ny, nx, ap, rango, tme, strand, sizes, quantity
-
-			SearchParameter sp = mainframe.getSearchParameter();
-
-			sp.setQuantity(Integer.valueOf(quantity.getText()));
-			sp.setLenMin(Integer.valueOf(minimumSize.getText()));
-			sp.setLenMax(Integer.valueOf(maximumSize.getText()));
-			sp.setStartPoint(Integer.valueOf(rangeFrom.getText()));
-			sp.setEndPoint(Integer.valueOf(rangeTo.getText()));
-
-			if (tmemodel.getValue() == "Santalucia 1998") { // TODO use enumerations
-																											// instead of strings
-				sp.setUseSantaLuciaToEstimateTm(true);
-			} else {
-				sp.setUseSantaLuciaToEstimateTm(false);
-			}
-
-			sp.setNx(Integer.valueOf(nxt.getText()));
-			sp.setNy(Integer.valueOf(nyt.getText()));
-			sp.setpA(Integer.valueOf(apt.getText()));
-
-			// create Filters
-			Validator filterSinglePrimers = new ValidateAlways();
-			Validator filterPrimerPairs = new ValidateAlways();
-
-			List<ValidateForFilterSinglePrimer> vffsp = new Vector<ValidateForFilterSinglePrimer>();
-			List<ValidateForFilterPrimerPair> vffpp = new Vector<ValidateForFilterPrimerPair>();
-
-			for (FilterCreator filterCreator : listOfFilterCreators) {
-
-				Filter filter = filterCreator.create();
-				if (filter.isSinglePrimerFilter()) {
-					vffsp.add(
-						new ValidateForFilterSinglePrimer((FilterSinglePrimer) filter));
-				} else {
-					vffpp.add(new ValidateForFilterPrimerPair((FilterPrimerPair) filter));
-				}
-
-			}
-
-			for (ValidateForFilterSinglePrimer vr : vffsp) {
-				filterSinglePrimers = new Validate_AND(filterSinglePrimers, vr);
-			}
-
-			for (ValidateForFilterPrimerPair vr : vffpp) {
-				filterPrimerPairs = new Validate_AND(filterPrimerPairs, vr);
-			}
-			filterPrimerPairs = new Validate_AND(
-				filterPrimerPairs,
-				new ValidateForFilterPrimerPair(new FilterOverlapping()));
-
-			sp.setFilter(filterSinglePrimers);
-			sp.setFilterpair(filterPrimerPairs);
-
-			// make fasdpd work
-
-			FASDPD.ResultOfSearch results = null;
-
-			if (sp.isSearchPair()) {
-				// if pair search is selected, override strands option
-				results = mainframe.getControl().doSearch(sp);
-				// post results to table
-				OptionsPane.this.resultViewer.setPairdata(results.primerPairs);
-
-			} else {
-
-				// if not, loop for strands
-				List<Primer> partialResult = new Vector<Primer>();
-
-				for (Boolean strandBoolean : loopStrand) {
-					sp.setDirectStrand(strandBoolean);
-					results = mainframe.getControl().doSearch(sp);
-					if (results.primers != null) {
-						partialResult.addAll(results.primers);
-					}
-					results.primers = partialResult;
-				}
-				// post results to table
-				OptionsPane.this.resultViewer.setdata(results.primers);
-			}
-		}
-	}
-
-	// EXECUTABLE MAIN. DO NOT USE IT.
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-
-		Alignment alin1 = new Alignment();
-
-		FastaMultipleReader mfr = new FastaMultipleReader();
-
-		List<Pair<String, String>> l = null;
-		try {
-			l = mfr.readFile("example\\Cyto_c_ox.fas");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		if (l != null) {
-			for (Pair<String, String> pair : l)
-				alin1.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
-		} else {
-			return;
-		}
-
-		OptionsPane comp = new OptionsPane(alin1, new GeneticCode("StandardCode"));
-		// TODO Ugly !! file hardcoded.!
-		comp.setOpaque(true);
-		frame.setContentPane(comp);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+	public void setPrimerData(List<Primer> primers) {
+		resultViewer.setdata(primers);
+		this.updateUI();
 	}
 }

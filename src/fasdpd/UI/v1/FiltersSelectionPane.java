@@ -1,50 +1,11 @@
-/*
- * You may not change or alter any portion of this comment or credits of
- * supporting developers from this source code or any supporting source code
- * which is considered copyrighted (c) material of the original comment or
- * credit authors.
- *
- * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE
- * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
- * OTHER PARTIES PROVIDE THE PROGRAM �AS IS� WITHOUT WARRANTY OF ANY KIND,
- * EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
- * ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.
- * SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY
- * SERVICING, REPAIR OR CORRECTION.
- *
- * IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL
- * ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE
- * PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
- * GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE
- * OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR
- * DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR
- * A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH
- * HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- *
- * FAS-DPD project, including algorithms design, software implementation and
- * experimental laboratory work, is being developed as a part of the Research
- * Program: "Microbiolog�a molecular b�sica y aplicaciones biotecnol�gicas"
- * (Basic Molecular Microbiology and biotechnological applications)
- *
- * And is being conducted in: LIGBCM: Laboratorio de Ingenier�a Gen�tica y
- * Biolog�a Celular y Molecular. (Laboratory of Genetic Engineering and Cellular
- * and Molecular Biology) Universidad Nacional de Quilmes. (National University
- * Of Quilmes) Quilmes, Buenos Aires, Argentina.
- *
- * The complete team for this project is formed by: Lic. Javier A. Iserte. Lic.
- * Betina I. Stephan. ph.D. Sandra E. Go�i. ph.D. P. Daniel Ghiringhelli. ph.D.
- * Mario E. Lozano.
- *
- * Corresponding Authors: Javier A. Iserte. <jiserte@unq.edu.ar> Mario E.
- * Lozano. <mlozano@unq.edu.ar>
- */
-
 package fasdpd.UI.v1;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -55,9 +16,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -66,6 +30,7 @@ import javax.swing.event.ListSelectionListener;
 import fasdpd.UI.v1.filterCreators.Filter5vs3StabilityCreator;
 import fasdpd.UI.v1.filterCreators.FilterAmpliconSizeCreator;
 import fasdpd.UI.v1.filterCreators.FilterBaseRunsCreator;
+import fasdpd.UI.v1.filterCreators.FilterCGClampCreator;
 import fasdpd.UI.v1.filterCreators.FilterCGContentCreator;
 import fasdpd.UI.v1.filterCreators.FilterCreator;
 import fasdpd.UI.v1.filterCreators.FilterDegeneratedEndCreator;
@@ -81,15 +46,16 @@ import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
 // import fasdpd.UI.v1.filterCreators.FilterSmallAmpliconSizeCreator;
 
 public class FiltersSelectionPane extends javax.swing.JDialog {
-	// INSTANCE VARIABLES
 	private static final long serialVersionUID = 224125693439076213L;
 	private List<FilterCreator> availableFilters;
 	private List<FilterCreator> selectedFilters;
-	private List<FilterCreator> result;
+	private List<FilterCreator> currentFilters;
 	private boolean includePairFilters;
-	// COMPONENTS
+	private List<Runnable> onSaveRunable;
+
 	private JList<FilterCreator> jlSelectedFilters;
 	private JButton addButton;
+	private JButton addAllButton;
 	private JButton remButton;
 	private JButton setButton;
 	private JButton saveButton;
@@ -98,19 +64,18 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private FilterCreator currentSelectedFilterCreator;
 	private JScrollPane jspFilters;
 	private JScrollPane jspOptions;
-	private List<Runnable> onSaveRunable;
 
 	// CONSTRUCTOR
 	public FiltersSelectionPane(
 			JFrame owner,
-			List<FilterCreator> result,
+			List<FilterCreator> currentFilters,
 			boolean includePair) {
 		super(owner, true);
-		this.result = result;
+		this.currentFilters = currentFilters;
 		this.includePairFilters = includePair;
-		this.selectedFilters = new Vector<FilterCreator>();
+		this.selectedFilters = new Vector<FilterCreator>(currentFilters);
 		this.onSaveRunable = new ArrayList<Runnable>();
-		this.setTitle("adding Filters");
+		this.setTitle("Select Primer Filters");
 		this.createGUI();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -120,10 +85,10 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		this.setSize(new Dimension(600, 450));
 		this.setPreferredSize(new Dimension(600, 450));
 		GridBagLayout gbl = new GridBagLayout();
-		gbl.columnWeights = new double[] { 1, 1, 1, 1 };
-		gbl.columnWidths = new int[] { 50, 50, 50, 50 };
+		gbl.columnWeights = new double[] { 1, 1, 1, 1, 1 };
+		gbl.columnWidths = new int[] { 50, 50, 50, 50, 50 };
 		gbl.rowWeights = new double[] { 0, 0.7, 0.3, 0 };
-		gbl.rowHeights = new int[] { 30, 200, 100, 30 };
+		gbl.rowHeights = new int[] { 50, 200, 100, 50 };
 		this.setLayout(gbl);
 	}
 
@@ -138,9 +103,9 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		filters.add(new FilterMeltingPointTemperatureCreator());
 		filters.add(new FilterPrimerScoreCreator());
 		filters.add(new FilterRepeatedEndCreator());
+		filters.add(new FilterCGClampCreator());
 		if (this.includePairFilters) {
 			filters.add(new FilterAmpliconSizeCreator());
-			// availableFilters.add( new FilterSmallAmpliconSizeCreator());
 			filters.add(new FilterGCCompatibilityCreator());
 			filters.add(new FilterHeteroDimerCreator());
 			filters.add(new FilterHeteroDimerFixed3Creator());
@@ -154,10 +119,12 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private void createFilterCreatorsToChooseComboBox() {
 		availableFilters = this.getAvailableFilters();
 		filterModel = new DefaultComboBoxModel<FilterCreator>(
-			(Vector<FilterCreator>) availableFilters);
+			(Vector<FilterCreator>) availableFilters
+		);
 		this.cbAvailableFilters = new JComboBox<FilterCreator>(filterModel);
 		cbAvailableFilters.setEditable(false);
-		cbAvailableFilters.setOpaque(true);
+		cbAvailableFilters.setOpaque(false);
+		cbAvailableFilters.setRenderer(new FilterCreatorRendered());
 		cbAvailableFilters.addActionListener(new jcbFilterAction());
 	}
 
@@ -170,6 +137,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		this.createAndSetLayout();
 		this.createFilterCreatorsToChooseComboBox();
 		this.createAddFilterCreatorButton();
+		this.createAddAllFilterCreatorButton();
 		this.createDeleteFilterCreatorButton();
 		this.createSetFilterCreatorButton();
 		this.createSaveFilterCreatorButton();
@@ -192,40 +160,33 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 
 	private void setComponentsInLayout() {
 		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(10, 5, 5, 5);
 		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 4;
-		c.gridx = 0;
-		c.gridy = 1;
-		this.add(this.jspFilters, c);
-		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 4;
-		c.gridx = 0;
-		c.gridy = 2;
-		this.add(jspOptions, c);
-		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 4;
+		c.gridwidth = 5;
 		c.gridx = 0;
 		c.gridy = 0;
 		this.add(cbAvailableFilters, c);
-		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 1;
+		c.insets = new Insets(5, 5, 5, 5);
 		c.gridx = 0;
+		c.gridy = 1;
+		this.add(this.jspFilters, c);
+		c.gridy = 2;
+		this.add(jspOptions, c);
+		c.gridwidth = 1;
 		c.gridy = 3;
 		this.add(addButton, c);
-		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 1;
 		c.gridx = 1;
 		c.gridy = 3;
-		this.add(remButton, c);
-		c.fill = GridBagConstraints.BOTH;
+		this.add(addAllButton, c);
 		c.gridwidth = 1;
 		c.gridx = 2;
-		c.gridy = 3;
-		this.add(setButton, c);
-		c.fill = GridBagConstraints.BOTH;
+		this.add(remButton, c);
 		c.gridwidth = 1;
 		c.gridx = 3;
-		c.gridy = 3;
+		this.add(setButton, c);
+		c.gridwidth = 1;
+		c.gridx = 4;
 		this.add(saveButton, c);
 	}
 
@@ -244,6 +205,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 				(Vector<FilterCreator>) this.selectedFilters
 			)
 		);
+		jlSelectedFilters.setCellRenderer(new FilterCreatorRendered());
 	}
 
 	private void createSaveFilterCreatorButton() {
@@ -269,14 +231,18 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		addButton.setEnabled(false);
 	}
 
+	private void createAddAllFilterCreatorButton() {
+		addAllButton = new JButton("Add All");
+		addAllButton.addActionListener(new jbAddAllAction());
+		addAllButton.setEnabled(true);
+	}
+
 	// AUXILIARY CLASSES
 	private class jcbFilterAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.currentSelectedFilterCreator =
 				(FilterCreator) cbAvailableFilters.getSelectedItem();
-			System.out
-				.println(FiltersSelectionPane.this.currentSelectedFilterCreator);
 			FiltersSelectionPane.this.jspOptions.setViewportView(
 				FiltersSelectionPane.this.currentSelectedFilterCreator
 					.getCreationPanel());
@@ -286,22 +252,30 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 
+	private class jbAddAllAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			selectedFilters.clear();
+			for (FilterCreator f : availableFilters) {
+				selectedFilters.add(f);
+			}
+			jlSelectedFilters.updateUI();
+		}
+	}
+
 	private class jbAddAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			FiltersSelectionPane.this.selectedFilters.add(
 				FiltersSelectionPane.this.currentSelectedFilterCreator
 					.duplicateWithGUIvalues());
-
 			int index = FiltersSelectionPane.this.jlSelectedFilters
 				.getSelectedIndex();
 			boolean canSelect = (index >= 0
 				&& index < selectedFilters.size());
 			FiltersSelectionPane.this.setButton.setEnabled(canSelect);
 			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
-
 			FiltersSelectionPane.this.jlSelectedFilters.updateUI();
-			// FiltersSelectionPane.this.addButton.setEnabled(false);
 		}
 	}
 
@@ -341,11 +315,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private class jbSaveAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			FiltersSelectionPane.this.result.clear();
-			FiltersSelectionPane.this.result
+			FiltersSelectionPane.this.currentFilters.clear();
+			FiltersSelectionPane.this.currentFilters
 				.addAll(FiltersSelectionPane.this.selectedFilters);
 			FiltersSelectionPane.this.onSavePerformed();
-			FiltersSelectionPane.this.dispose();
+			FiltersSelectionPane.this.setVisible(false);
 		}
 	}
 
@@ -355,9 +329,6 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		public void valueChanged(ListSelectionEvent e) {
 			FiltersSelectionPane.this.currentSelectedFilterCreator =
 				(FilterCreator) jlSelectedFilters.getSelectedValue();
-			System.out.println(
-				FiltersSelectionPane.this.currentSelectedFilterCreator
-			);
 			FiltersSelectionPane.this.jspOptions.setViewportView(
 				FiltersSelectionPane.this.currentSelectedFilterCreator
 					.getCreationPanel()
@@ -368,11 +339,37 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		}
 	}
 
-	public enum SingleOrPair {
-		single, both;
+	protected void onSavePerformed() {
+		for (Runnable r : this.onSaveRunable) {
+			r.run();
+		}
 	}
 
-	// EXECUTABLE MAIN. DO NOT USE IT.
+	class FilterCreatorRendered extends JLabel implements ListCellRenderer<FilterCreator> {
+
+		@Override
+		public Component getListCellRendererComponent(
+				JList<? extends FilterCreator> list,
+				FilterCreator value,
+				int index,
+				boolean isSelected,
+				boolean cellHasFocus) {
+			JLabel l = new JLabel() {
+				public Dimension getPreferredSize() {
+					return new Dimension(200, 35);
+				}
+			};
+			l.setBorder(new EmptyBorder(0,10,0,0));
+			l.setText(value.toString());
+			if (isSelected) {
+				l.setOpaque(true);
+				l.setForeground(Color.BLACK);
+				l.setBackground(new Color(87, 165, 255));
+			}
+			return l;
+		}
+	}
+
 	public static void main(String[] args) {
 
 		JFrame frame = new JFrame();
@@ -380,13 +377,6 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
 		@SuppressWarnings("unused")
 		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2, true);
-		System.out.println(result2);
-
 	}
 
-	public void onSavePerformed() {
-		for (Runnable r : this.onSaveRunable) {
-			r.run();
-		}
-	}
 }

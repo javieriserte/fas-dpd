@@ -55,7 +55,7 @@ public class FilterHeteroDimerCreator extends FilterCreator{
 		parametersTypes = new ParameterType[] { new IntegerParameter() };
 		parametersValues = new String[] {"6"};
 	}
-	
+
 	@Override public Filter create() {
 		Integer p0=null;
 		try {
@@ -64,4 +64,4 @@ public class FilterHeteroDimerCreator extends FilterCreator{
 		return new FilterHeteroDimer(p0, new DegeneratedDNAMatchingStrategy());
 	}
 	@Override public String toString() { return "Primer Pair - Remove Primers That Form Heterodimeric Structures Larger Than " + this.parametersValues[0] + " Bases.";}	
-} 
+}
