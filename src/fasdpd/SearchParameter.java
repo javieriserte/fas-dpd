@@ -41,7 +41,7 @@ import filters.validator.Validator;
 
 
 public class SearchParameter {
-	// parameters are stored as instance variables 
+	// parameters are stored as instance variables
 	private Optional<String> infile = Optional.empty();
 	private String outfile;
 	private String gcfile;
@@ -63,22 +63,11 @@ public class SearchParameter {
 	private boolean searchPair=false;
 	private boolean useSantaLuciaToEstimateTm = true; // TODO MAY BE USELESS. 
 
-    ////////////////
-	// CONSTRUCTOR
-	////////////////
-	
-	/**
-	 * creates an empty SearchParameter object
-	 */
 	public SearchParameter() {
 		super();
 		strands = new HashSet<StrandSearchDirection>();
 		strands.add(StrandSearchDirection.Forward);
 	}
-
-    /////////////////////
-	// PUBLIC INTERFACE
-	/////////////////////
 
 	public Set<StrandSearchDirection> getStrands() {
 		return this.strands;
@@ -92,19 +81,12 @@ public class SearchParameter {
 		this.strands.clear();
 	}
 
-	/**
-	 * Looks for search parameters reading the command line options.
-	 */
-	// TODO decouple command line interpretation from SearchParameter.
 	public void retrieveFromCommandLine(String[] args) throws InvalidCommandLineException {
-	
-		///////////////////////////////////
-		// Create Command Line
 		CommandLine cmd = new CommandLine();
-		
+
 		SingleArgumentOption<Integer> lenMin = new SingleArgumentOption<Integer>(cmd, "/lenMin", new IntegerValue(), 20);
 		SingleArgumentOption<Integer> lenMax = new SingleArgumentOption<Integer>(cmd, "/lenMax", new IntegerValue(), 25);
-		
+
 		SingleArgumentOption<String> infile = new SingleArgumentOption<String>(cmd, "/infile", new StringValue(), null);
 		SingleArgumentOption<String> outfile = new SingleArgumentOption<String>(cmd, "/outfile", new StringValue(), null);
 		SingleArgumentOption<String> gcfile = new SingleArgumentOption<String>(cmd, "/gcfile", new StringValue(), null);
@@ -116,7 +98,7 @@ public class SearchParameter {
 		SingleArgumentOption<Float> nx = new SingleArgumentOption<Float>(cmd, "/nx", new FloatValue(), (float)1);
 		SingleArgumentOption<Float> ny = new SingleArgumentOption<Float>(cmd, "/ny", new FloatValue(), (float)1);
 		SingleArgumentOption<Float> pa = new SingleArgumentOption<Float>(cmd, "/pa", new FloatValue(), (float)0);
-		
+
 		NoArgumentOption isDna = new NoArgumentOption(cmd, "/isDNA");
 		NoArgumentOption isProtein = new NoArgumentOption(cmd, "/isProtein");
 		NoArgumentOption complementary = new NoArgumentOption(cmd, "/ComplementaryStrand");
@@ -124,7 +106,7 @@ public class SearchParameter {
 		NoArgumentOption pair = new NoArgumentOption(cmd, "/pair");
 		NoArgumentOption tmSL = new NoArgumentOption(cmd, "/tmsantalucia");
 		NoArgumentOption tmsimple = new NoArgumentOption(cmd, "/tmsimple");
-		
+
 		//////////////////
 		// DEFINE OPTIONS FOR FILTERS
 		//////////////////
