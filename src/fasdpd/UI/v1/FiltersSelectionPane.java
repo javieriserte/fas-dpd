@@ -43,7 +43,6 @@ import fasdpd.UI.v1.filterCreators.FilterMeltingPointTemperatureCreator;
 import fasdpd.UI.v1.filterCreators.FilterMeltingTempCompatibilityCreator;
 import fasdpd.UI.v1.filterCreators.FilterPrimerScoreCreator;
 import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
-// import fasdpd.UI.v1.filterCreators.FilterSmallAmpliconSizeCreator;
 
 public class FiltersSelectionPane extends javax.swing.JDialog {
 	private static final long serialVersionUID = 224125693439076213L;
@@ -110,7 +109,6 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			filters.add(new FilterHeteroDimerCreator());
 			filters.add(new FilterHeteroDimerFixed3Creator());
 			filters.add(new FilterMeltingTempCompatibilityCreator());
-			// availableFilters.add( new FilterOverlappingCreator());
 			// TODO: This must be always present!!!
 		}
 		return filters;
@@ -347,6 +345,8 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 
 	class FilterCreatorRendered extends JLabel implements ListCellRenderer<FilterCreator> {
 
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public Component getListCellRendererComponent(
 				JList<? extends FilterCreator> list,
@@ -355,6 +355,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 				boolean isSelected,
 				boolean cellHasFocus) {
 			JLabel l = new JLabel() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public Dimension getPreferredSize() {
 					return new Dimension(200, 35);
 				}

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16.15126mm"
+   height="16.151003mm"
+   viewBox="0 0 16.15126 16.151003"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="fasdpd.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.7144713"
+     inkscape:cx="21.883364"
+     inkscape:cy="30.559215"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:snap-intersection-paths="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-31.503196,-48.479346)">
+    <rect
+       style="fill:#aaccff;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+       id="rect873"
+       width="16.051003"
+       height="16.051003"
+       x="31.553196"
+       y="48.529346"
+       ry="4.6078138" />
+    <path
+       id="rect835-3"
+       style="fill:#0088aa;stroke:#ff00ff;stroke-width:0;stop-color:#000000"
+       d="m 119.25586,223.67969 v 2.98828 c 0,2.8953 0.7113,5.61425 1.95117,8.01172 h 56.76367 c 1.23987,-2.39747 1.95118,-5.11642 1.95118,-8.01172 v -2.98828 h -16.25 a 17.232039,17.232039 0 0 1 -14.08399,7.30273 17.232039,17.232039 0 0 1 -14.08203,-7.30273 z"
+       transform="scale(0.26458333)" />
+    <circle
+       style="fill:#aa0000;stroke:#ff00ff;stroke-width:0;stop-color:#000000"
+       id="path833"
+       cx="39.578697"
+       cy="56.554848"
+       r="3.4922378" />
+    <path
+       id="rect835"
+       style="fill:#aa0000;stroke:#ff00ff;stroke-width:0;stop-color:#000000"
+       d="M 148.85547,208.25195 V 219.25 h 31.25586 v -10.99805 z"
+       transform="scale(0.26458333)" />
+    <g
+       id="g949">
+      <rect
+         style="fill:#00d4aa;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         id="rect915"
+         width="1.0040871"
+         height="0.97013909"
+         x="45.18092"
+         y="59.181919" />
+      <rect
+         style="fill:#d45500;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         id="rect915-0"
+         width="1.0040871"
+         height="0.97013909"
+         x="45.18092"
+         y="60.152058" />
+      <rect
+         style="fill:#c837ab;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         id="rect915-6"
+         width="1.0040871"
+         height="0.97013909"
+         x="45.18092"
+         y="61.122196" />
+    </g>
+    <path
+       id="rect915-8"
+       style="fill:#2c89a0;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+       d="m 170.76172,208.25195 v 3.66602 3.66797 3.66601 h 3.79492 v -3.66601 -3.66797 -3.66602 z"
+       transform="scale(0.26458333)" />
+  </g>
+</svg>

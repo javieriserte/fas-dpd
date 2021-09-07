@@ -422,12 +422,12 @@ public class ParametersPane extends JPanel {
 
 	class ParameterChangeListener implements ChangeListener, CaretListener {
 		@Override
-		public void stateChanged(ChangeEvent _) {
+		public void stateChanged(ChangeEvent e) {
 			processInputsAfterChange();
 		}
 
 		@Override
-		public void caretUpdate(CaretEvent _) {
+		public void caretUpdate(CaretEvent e) {
 			processInputsAfterChange();
 		}
 	}

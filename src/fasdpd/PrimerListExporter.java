@@ -1,13 +1,10 @@
 package fasdpd;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
 import sequences.dna.Primer;
 import sequences.util.tmcalculator.SantaluciaTmEstimator;
@@ -62,9 +59,7 @@ public class PrimerListExporter {
       String[] header,
       List<String[]> content,
       File outfile) throws IOException {
-    PrintWriter writer = new PrintWriter(
-      new BufferedWriter(new FileWriter(outfile, StandardCharsets.UTF_8))
-    );
+    PrintWriter writer = new PrintWriter(outfile ,"UTF8");
     writer.println(String.join("\t", header));
     for (String[] line : content) {
       writer.println(String.join("\t", line));

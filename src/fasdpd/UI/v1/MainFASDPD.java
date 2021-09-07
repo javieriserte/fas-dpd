@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Vector;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -60,9 +61,10 @@ public class MainFASDPD extends javax.swing.JFrame {
 				MainFASDPD inst = new MainFASDPD();
 				inst.setControl(new FASDPD());
 				inst.setSearchParameter(new SearchParameter());
-				inst.setTitle("FAS - DPD main window");
+				inst.setTitle("FAS - DPD");
 				inst.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				inst.createGUI();
+				inst.setIcon();
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 				inst.pack();
@@ -82,6 +84,16 @@ public class MainFASDPD extends javax.swing.JFrame {
 				op.updateAlignment(getAlignment());
 			}
 		});
+	}
+
+	private ImageIcon getIconFromResource(String resourcePath) {
+		URL iconURL = getClass().getResource(resourcePath);
+		return new ImageIcon(iconURL);
+	}
+
+	private void setIcon() {
+		ImageIcon icon = getIconFromResource("icons/fasdpd.png");
+	this.setIconImage(icon.getImage());
 	}
 
 	public void doSearch() {
@@ -165,7 +177,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 			if (infileOpt.isPresent()) {
 				seqPairs = mfr.readFile(infileOpt.get());
 			} else {
-				seqPairs = new ArrayList<Pair<String, String>>();
+				seqPairs = new ArrayList<>();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -222,22 +234,31 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	private void setTextValueForDnaButton(JButton b) {
-		String t = isDNA ? "DNA" : "Protein";
-		b.setText(t);
+    if (isDNA) {
+      b.setIcon(getIconFromResource("icons/dna.png"));
+      b.setToolTipText("DNA MSA");
+    } else {
+      b.setIcon(getIconFromResource("icons/protein.png"));
+      b.setToolTipText("Protein MSA");
+    }
 	}
 
 	private void setTextValueForSearchTypeButton(JButton b) {
 		if (searchType.equals(PrimerSearchType.SingleEnd)) {
-			b.setText("Single primers");
+			b.setIcon(getIconFromResource("icons/single-primer.png"));
+			b.setToolTipText("Single Primer");
 		}
 		if (searchType.equals(PrimerSearchType.DoubleEnd)) {
-			b.setText("Primer pair");
+			b.setIcon(getIconFromResource("icons/pair_primer.png"));
+			b.setToolTipText("Primer Pair");
 		}
 	}
 
 	private JButton createOpenMsaButton() {
-		JButton b = new JButton("Open MSA");
+		JButton b = new JButton();
+		b.setToolTipText("Open MSA");
 		b.addActionListener(new jbOpenFileAction());
+		b.setIcon(getIconFromResource("icons/open.png"));
 		return b;
 	}
 
@@ -271,23 +292,28 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	private JButton createSearchParametersButton() {
-		final JButton b = new JButton("Parameters");
+		final JButton b = new JButton();
+		b.setToolTipText("Parameters");
+		b.setIcon(getIconFromResource("icons/parameters.png"));
 		b.addActionListener(new showParametersAction());
 		return b;
 	}
 
 	private JButton createPerformSearchButton() {
-		JButton b = new JButton("Search");
+		JButton b = new JButton();
+		b.setToolTipText("Search");
+		b.setIcon(getIconFromResource("icons/doSearch.png"));
 		b.addActionListener(new jbDoSearchAction());
 		return b;
 	}
 
 	private JButton createFiltersButton() {
-		JButton b = new JButton("Filters");
+		JButton b = new JButton();
+		b.setToolTipText("Filters");
+		b.setIcon(getIconFromResource("icons/filters.png"));
 		b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(filterCreators.size());
 				FiltersSelectionPane filterPane = new FiltersSelectionPane(
 					MainFASDPD.this,
 					filterCreators,
@@ -301,10 +327,14 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private JToolBar createToolbar() {
 		JToolBar t = new JToolBar(JToolBar.VERTICAL);
 		t.setLayout(toolbarLayout());
-		JButton[] buttons = new JButton[] { createOpenMsaButton(),
-			createSearchTypeButton(), createToggleMolTypeButton(),
-			createSearchParametersButton(), createFiltersButton(),
-			createPerformSearchButton() };
+		JButton[] buttons = new JButton[] {
+			createOpenMsaButton(),
+			createSearchTypeButton(),
+			createToggleMolTypeButton(),
+			createSearchParametersButton(),
+			createFiltersButton(),
+			createPerformSearchButton()
+		};
 		addToolbarButtons(t, buttons);
 		t.setFloatable(false);
 		return t;
