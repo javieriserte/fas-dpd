@@ -12,8 +12,6 @@ import java.util.Vector;
 /**
  * This class represents a Genetic Code.
  * It is a table linking amino acids to nucleotide triplets
- * 
- * @author Javier Iserte <jiserte@unq.edu.ar>
  */
 public class GeneticCode {
 

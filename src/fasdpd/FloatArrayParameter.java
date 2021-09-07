@@ -6,7 +6,6 @@ import cmdGA.parameterType.ParameterType;
  * Recognizes an array of float value.
  *
  * @see cmdGA.parameterType.ParameterType
- * @author Javier Iserte <jiserte@unq.edu.ar>
  */
 public class FloatArrayParameter extends ParameterType {
 	// Private Class Variables

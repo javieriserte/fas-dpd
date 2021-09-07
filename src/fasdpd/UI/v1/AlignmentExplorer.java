@@ -38,8 +38,6 @@ import fastaIO.Pair;
 
 /**
  * Swing component to show DNA or Protein Alignment.
- *
- * @author Javier Iserte <jiserte@unq.edu.ar>
  */
 public class AlignmentExplorer extends javax.swing.JPanel {
 	private static final long serialVersionUID = 7978892495301236840L;

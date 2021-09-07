@@ -9,8 +9,6 @@ import java.util.Vector;
  * a greater priority. Priority is given by natural order. Object stored in this
  * list must implement comparable interface.
  *
- * @author Javier Iserte <jiserte@unq.edu.ar>
- *
  * @param <T> A class that implements Comparable interface.
  */
 public class PriorityList<T> {

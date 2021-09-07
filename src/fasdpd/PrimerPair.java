@@ -2,9 +2,8 @@ package fasdpd;
 
 import sequences.dna.Primer;
 /**
- * PrimerPair objects contains two Primer object. One supposed to be forward sense and the other to be reverse.
- * @author Javier Iserte <jiserte@unq.edu.ar>
- *
+ * PrimerPair objects contains two Primer object. One supposed to be forward
+ * sense and the other to be reverse.
  */
 public class PrimerPair {
 	private Primer forward;
@@ -23,7 +22,7 @@ public class PrimerPair {
 	}
 
 	// GETTERS & SETTERS
-	
+
 	/**
 	 * @return the forward
 	 */

@@ -516,7 +516,7 @@ public class SearchParameter {
 	}
 	/**
 	 * A value of -1 means the last position of the sequence
-	 * @param endpoint
+	 * @param endPoint
 	 */
 	public void setEndPoint(int endPoint) {
 		this.endPoint = endPoint;
