@@ -2,6 +2,11 @@
 CHANGE LOG
 ----------
 
+#Oct 15th, 2021
+    Ver 1.4.1
+	Updated to Java JRE 15.
+	Updated GUI.
+
 #Jun 20th, 2013
     Ver 1.2.2
     Corrected a bug while performing back-translation. (Thanks to Dr. Hokei Nakamura).
@@ -16,7 +21,7 @@ CHANGE LOG
 
 #Sep 22th, 2010.
 	Ver 1.1.2 Alpha.
-	Some modifications to FastaIO package. 
+	Some modifications to FastaIO package.
 
 #Sep 19th, 2010.
 	Ver 1.1.1 Alpha. : First Versioned Release.
