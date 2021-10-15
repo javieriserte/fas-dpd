@@ -41,6 +41,7 @@ import fasdpd.UI.v1.filterCreators.FilterHomoDimerCreator;
 import fasdpd.UI.v1.filterCreators.FilterHomoDimerFixed3Creator;
 import fasdpd.UI.v1.filterCreators.FilterMeltingPointTemperatureCreator;
 import fasdpd.UI.v1.filterCreators.FilterMeltingTempCompatibilityCreator;
+import fasdpd.UI.v1.filterCreators.FilterMinimumAmpliconSizeCreator;
 import fasdpd.UI.v1.filterCreators.FilterPrimerScoreCreator;
 import fasdpd.UI.v1.filterCreators.FilterRepeatedEndCreator;
 
@@ -109,7 +110,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			filters.add(new FilterHeteroDimerCreator());
 			filters.add(new FilterHeteroDimerFixed3Creator());
 			filters.add(new FilterMeltingTempCompatibilityCreator());
-			// TODO: This must be always present!!!
+			filters.add(new FilterMinimumAmpliconSizeCreator());
 		}
 		return filters;
 	}

@@ -25,14 +25,16 @@ public class ResultViewer extends JPanel {
 
 	private static final long serialVersionUID = -5492613920686356173L;
 	private JButton jbSaveList;
+	private JButton jbExportFilters;
 	private ResultTable resultTable;
 	private List<PrimerOrPrimerPair> primerData;
-
+	
 	public ResultViewer() {
 		super();
 		this.createGUI();
 	}
-
+	
+  
 	public void setdata(List<Primer> primers) {
 		resultTable.setData(primers);
 		this.primerData = new ArrayList<PrimerOrPrimerPair>();
@@ -82,6 +84,16 @@ public class ResultViewer extends JPanel {
 		c.gridy = 1;
 		this.add(jbSaveList, c);
 
+    jbExportFilters = new JButton();
+    jbExportFilters.setText("Export Filter Data");
+    c.gridx = 0;
+    c.gridy = 1;
+    this.add(jbExportFilters, c);
+		
+	}
+	
+	public void addExportFiltersActionListener(ActionListener listener) {
+	  jbExportFilters.addActionListener(listener);
 	}
 
 	private class SaveListActionListener implements ActionListener {
@@ -89,11 +101,11 @@ public class ResultViewer extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser iFile = setUpFileChooser();
-			List<PrimerOrPrimerPair> pdata = new ArrayList<PrimerOrPrimerPair>();
+		
 			try {
 				PrimerListExporter.exportPrimersToFile(
 					iFile.getSelectedFile(),
-					pdata
+					primerData
 				);
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -104,11 +116,12 @@ public class ResultViewer extends JPanel {
 			JFileChooser iFile = new JFileChooser();
 			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			iFile.setMultiSelectionEnabled(false);
-			iFile.setDialogTitle("Select a File to Sale Primers Data");
+			iFile.setDialogTitle("Select a File to Save Primers Data");
 			iFile.setDialogType(JFileChooser.SAVE_DIALOG);
 			iFile.setCurrentDirectory(new java.io.File("."));
 			iFile.showOpenDialog(ResultViewer.this);
 			return iFile;
 		}
 	}
+	
 }

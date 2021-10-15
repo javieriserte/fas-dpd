@@ -5,10 +5,15 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 /**
  * This class represents a Genetic Code.
  * It is a table linking amino acids to nucleotide triplets
@@ -134,6 +139,58 @@ public class GeneticCode {
 		return sb.toString();
 	}
 
+ /**
+  * Piles Up two DNA sequences and returns it.
+  * Ignores terminal gaps of sequences.
+  * 
+  * @param DNAseq1 String input DNAseq
+  * @param DNAseq2 String input DNAseq
+  * @return String representing the sequence of piling up the two sequences.
+  */
+  public String pileUpIgnoreTerminalGaps(String DNAseq1, String DNAseq2) {
+    StringBuilder sb = new StringBuilder(DNAseq1.length());
+
+    Boolean[] gapsS1 = terminalGaps(DNAseq1);
+    Boolean[] gapsS2 = terminalGaps(DNAseq2);
+    for(int x=0;x<DNAseq1.length();x++) {
+      if (!gapsS1[x] && !gapsS2[x]) {
+        sb.append(BaseDeg.pileUpBase(DNAseq1.charAt(x), DNAseq2.charAt(x)));
+      } else
+      if (gapsS1[x] && gapsS2[x]) {
+        sb.append("-");
+      } else 
+      if (gapsS1[x]) {
+        sb.append(DNAseq2.charAt(x));
+      } else 
+      sb.append(DNAseq1.charAt(x));
+    }
+    return sb.toString();
+  }
+  
+  private Boolean[] terminalGaps(String dnaseq) {
+    List<Boolean> gapped = dnaseq
+        .chars()
+        .mapToObj(x -> Boolean.FALSE)
+        .collect(Collectors.toList());
+    for (int i=0; i<dnaseq.length(); i++) {
+      if (dnaseq.charAt(i) == '-') {
+        gapped.set(i, Boolean.TRUE);
+      } else {
+        break;
+      }
+    }
+
+    for (int i=dnaseq.length()-1; i>0; i--) {
+      if (dnaseq.charAt(i) == '-') {
+        gapped.set(i, Boolean.TRUE);
+      } else {
+        break;
+      }
+    }
+    
+    return gapped.toArray(new Boolean[gapped.size()]); 
+  }
+	
 	/**
 	 * Calculates the degeneration value for a particular base.
 	 * @param base string a degenerated base
@@ -216,4 +273,5 @@ public class GeneticCode {
 	protected void setCodonToAmino(Map<String, String> codonToAmino) {
 		this.codonToAmino = codonToAmino;
 	}
+
 }

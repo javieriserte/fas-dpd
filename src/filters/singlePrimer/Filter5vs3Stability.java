@@ -56,8 +56,6 @@ import sequences.util.santaLuciaEnergeticParameters.SantaLuciaEnergetics;
  * If 3' end is much more stable than 5' there is not a efficient and specific annealing.
  * 
  * This calculation is made using SantaLucia method. penalties for 5' and 3' position are not considered.
- * 
- * @author Javier Iserte
  */
 public class Filter5vs3Stability extends FilterSinglePrimer{
 
@@ -105,7 +103,6 @@ public class Filter5vs3Stability extends FilterSinglePrimer{
 		
 		this.deltaG5 = this.calculateStability(ssInit);
 		this.deltaG3 = this.calculateStability(ssEnd);
-//		System.out.println(p.getSequence() +": " + ssInit + " vs. " +ssEnd +" - " +this.deltaG5 + " + " + this.deltaGLimit + " < " + this.deltaG3);
 		return (this.deltaG5 + this.deltaGLimit < this.deltaG3 );
 	}
 

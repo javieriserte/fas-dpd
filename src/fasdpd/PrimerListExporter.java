@@ -83,7 +83,7 @@ public class PrimerListExporter {
   private static String[] getHeader(List<PrimerOrPrimerPair> primerData) {
     if (primerData.size()>0) {
       PrimerOrPrimerPair firstElement = primerData.get(0);
-      if (firstElement.isPrimer()) {
+      if (!firstElement.isPrimer()) {
         return new String[]{
           "Sequence",
           "Score",

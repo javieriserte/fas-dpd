@@ -49,13 +49,10 @@ import fasdpd.SearchParameter;
 import junit.framework.TestCase;
 /**
  * Test Case.
- * Unfinished.
- * @author "Javier Iserte <jiserte@unq.edu.ar>"
  * 
  */
 
 public class SearchParameterTest extends TestCase {
-// TODO modify test to include new options!
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -67,10 +64,10 @@ public class SearchParameterTest extends TestCase {
 		try { s = new SearchParameter();
 			s.retrieveFromCommandLine(cl);
 		} catch (InvalidCommandLineException e) {e.printStackTrace(); fail(); }
-		
-		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile());
-		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile());
-		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile());
+
+		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile().get().strip());
+		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile().strip());
+		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile().strip());
 		assertEquals(1f,s.getNx());
 		assertEquals(1f,s.getNy());
 		assertEquals(0f,s.getpA());
@@ -112,9 +109,9 @@ public class SearchParameterTest extends TestCase {
 			fail();
 		}
 		
-		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile());
-		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile());
-		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile());
+		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile().get().strip());
+		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile().strip());
+		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile().strip());
 		assertEquals(1f,s.getNx());
 		assertEquals(1f,s.getNy());
 		assertEquals(0f,s.getpA());
@@ -135,10 +132,8 @@ public class SearchParameterTest extends TestCase {
 		assertTrue(s.getFilter().toString().contains("FilterHomoDimerFixed3"));
 		assertTrue(s.getFilter().toString().contains("FilterCGContent"));
 		
-		System.out.println(s.getFilterpair());
-		
 		assertTrue(s.getFilterpair().toString().contains("FilterOverlapping"));
-		assertFalse(s.getFilterpair().toString().contains("FilterAmpliconSize"));
+		assertTrue(s.getFilterpair().toString().contains("FilterAmpliconSize"));
 		assertTrue(s.getFilterpair().toString().contains("FilterGCCompatibility"));
 		assertTrue(s.getFilterpair().toString().contains("FilterHeteroDimer"));
 		assertTrue(s.getFilterpair().toString().contains("FilterHeteroDimerFixed3"));

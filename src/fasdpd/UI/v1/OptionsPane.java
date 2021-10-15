@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -94,5 +95,9 @@ public class OptionsPane extends JPanel {
 	public void setPrimerData(List<Primer> primers) {
 		resultViewer.setdata(primers);
 		this.updateUI();
+	}
+	
+	public void addExportFiltersActionListener(ActionListener listener) {
+	  resultViewer.addExportFiltersActionListener(listener);
 	}
 }
