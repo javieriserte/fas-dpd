@@ -6,15 +6,18 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -154,8 +157,24 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 
 	private void setUpMonoSpaceFont() {
-		monoSpaceFont = new Font("Courier New", Font.PLAIN, 14);
+		String[] fontNames = new String[]{
+			"Courier New",
+			"FreeMono",
+			"Arial"
+		};
+		GraphicsEnvironment env = GraphicsEnvironment
+			.getLocalGraphicsEnvironment();
+		String[] fonts = env.getAvailableFontFamilyNames();
+		Set<String> fontSet = new HashSet<>();
+		Collections.addAll(fontSet, fonts);
+		fontNames = Arrays
+			.stream(fontNames)
+			.filter(f -> fontSet.contains(f))
+			.toArray(String[]::new);
+		String fontName = fontNames.length>0?fontNames[0]:fonts[0];
+		monoSpaceFont = new Font(fontName, Font.PLAIN, 18);
 		this.setFont(monoSpaceFont);
+
 	}
 
 	private void addCornersToMainScrollPane(JScrollPane pane) {
@@ -355,17 +374,14 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 
 	private class Header extends JLabel {
-
 		private static final long serialVersionUID = 1221448808240337613L;
 		private Alignment alignment;
 		private BufferedImage biHeader = null;
-
 		public Header(Alignment alignment) {
 			super();
 			this.alignment = alignment;
 			createImage();
 		}
-
 		public void paint(Graphics g) {
 			super.paint(g);
 			if (biHeader == null) {
@@ -374,44 +390,33 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			g.drawImage((Image) biHeader, 0, 0, null);
 			// this.setPreferredSize(new Dimension(w+10,textHeight*3+8));
 		}
-
 		private void createImage() {
-
 			this.biHeader = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = (Graphics2D) this.biHeader.getGraphics();
-
 			g.setFont(AlignmentExplorer.this.getFont());
-
 			int textHeight = g.getFontMetrics().getHeight();
-
 			// int size =
 			// AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
 			String s = null;
-
 			if (AlignmentExplorer.this.geneticCode != null) {
 				s = (alignment.pileUp(AlignmentExplorer.this.geneticCode))
 					.getSequence();
 			}
 			int size = s.length();
-
 			// int textwidth = g.getFontMetrics().stringWidth(s);
+			g.setFont(AlignmentExplorer.this.getFont());
 			int textwidth = g.getFontMetrics().stringWidth("A") * size * 2;
-
 			int imageHeight = 3 * textHeight + 8;
 			int imageWidth = textwidth + 10;
-
 			StringBuilder line1 = new StringBuilder();
 			StringBuilder line2 = new StringBuilder();
-
 			this.biHeader = new BufferedImage(
 				imageWidth,
 				imageHeight,
 				BufferedImage.TYPE_INT_RGB);
 			g = (Graphics2D) this.biHeader.getGraphics();
 			g.setFont(AlignmentExplorer.this.getFont());
-
 			g.setColor(Color.white);
-
 			String base = "''''|";
 			int nb = ((size - 1) / 5) + 1;
 			while (nb-- > 0) {
@@ -432,8 +437,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			AlignmentExplorer.this
 				.printColoredSequence(5, 2 * textHeight, (Graphics2D) g, s, color);
 			this.setPreferredSize(new Dimension(imageWidth, imageHeight));
-			// String s1 = alignment.getSeq().get(0).getSequence();
-			// int w = g.getFontMetrics().stringWidth(s1);
 		}
 
 	};
@@ -443,14 +446,12 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private Alignment alignment = null;
 		private BufferedImage biMainView = null;
 		private boolean hasMsaImage = false;
-		private int textHeight;
 
 		public MainView(Alignment alignment) {
 			super();
 			this.alignment = alignment;
 			this.createImage();
 		}
-
 		public void paint(Graphics g) {
 			super.paint(g);
 			if (biMainView == null) {
@@ -458,175 +459,37 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			}
 			if (!hasMsaImage) {
 				createImage();
-				g.drawImage((Image) biMainView, 0, 0, null);
+				// g.drawImage((Image) biMainView, 0, 0, null);
 			}
 			g.drawImage((Image) biMainView, 0, 0, null);
 		}
-
 		public void updateAlignment(Alignment aln) {
 			this.alignment = aln;
 			createImage();
 		}
-
-		private String expandProteinSequence(String s) {
-			StringBuilder result = new StringBuilder();
-			for (int i = 0; i < s.length(); i++) {
-				result.append(' ');
-				result.append(s.charAt(i));
-				result.append(' ');
-			}
-			return result.toString();
-		}
-
-		private ColoringStrategy getColorStrategy() {
-			if (AlignmentExplorer.this.isMolTypeDNA()) {
-				return new DnaColoringStrategy();
-			} else if (AlignmentExplorer.this.isMolTypeProtein()) {
-				return new ProteinColoringStrategy();
-			}
-			return new DefaultColoringStrategy();
-		}
-
-		private Dimension computeImageDimension() {
-			List<Sequence> sequences = this.alignment.getSeq();
-			biMainView = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g = (Graphics2D) biMainView.getGraphics();
-			g.setFont(AlignmentExplorer.this.getFont());
-			int textWidth = g.getFontMetrics()
-				.stringWidth(sequences.get(0).getSequence());
-			int textHeight = g.getFontMetrics().getHeight();
-			int imageWidth = textWidth * sequences.get(0).sizeInBases() + 10;
-			int imageHeight = textHeight * sequences.size();
-			return new Dimension(imageWidth, imageHeight);
-		}
-
-		private Graphics2D createGraphics(Dimension dim) {
-			biMainView = new BufferedImage(
-				dim.width,
-				dim.height,
-				BufferedImage.TYPE_INT_RGB
-			);
-			Graphics2D g = (Graphics2D) biMainView.getGraphics();
-			g.setFont(AlignmentExplorer.this.getFont());
-			return g;
-		}
-
-		private void paintBackground(Graphics2D g) {
-			g.setColor(Color.white);
-			g.fillRect(0, 0, biMainView.getWidth(), biMainView.getHeight());
-		}
-
-		private void paintSequence(Graphics2D g, ColoringStrategy color) {
-			int counter = 0;
-			textHeight = g.getFontMetrics().getHeight();
-			for (Sequence sequence : this.alignment.getSeq()) {
-				String desc = sequence.getPrintableSequencePaddedToNucleotide();
-				counter++;
-				AlignmentExplorer.this.printColoredSequence(
-					5,
-					textHeight * (counter - 1),
-					g,
-					desc,
-					color);
-			}
-		}
-
-		private void createImageForAlignment() {
-			Dimension dim = computeImageDimension();
-			Graphics2D g = createGraphics(dim);
-			ColoringStrategy color = this.getColorStrategy();
-			paintBackground(g);
-			AlignmentExplorer.this.hightlightedRegions.add(new AlignmentRegion(
-				5, 10, new Color(245,255,245))
-			);
-			paintHighlighting(g);
-			paintSequence(g, color);
-		}
-
-		private void paintHighlighting(Graphics2D g) {
-			AlignmentExplorer.this.hightlightedRegions.stream().forEach(
-				(region) -> {
-					g.setColor(region.getColor());
-					int charWidth = g.getFontMetrics().stringWidth(" ");
-					int charHeight = g.getFontMetrics().getHeight();
-					int height = AlignmentExplorer.this.alignment.getSeq().size() * charHeight-1;
-					g.fillRect(
-						(region.getStartPoint()) * charWidth + 5,
-						0,
-						(region.getEndPoint() - region.getStartPoint()) * charWidth,
-						height
-					);
-					g.setColor(new Color(200,200,200));
-					g.drawRect(
-						(region.getStartPoint()) * charWidth + 5,
-						0,
-						(region.getEndPoint() - region.getStartPoint()) * charWidth,
-						height
-					);
-					// Draw Arraw Shape
-					int[] xPoints = new int[]{
-						(region.getStartPoint()) * charWidth + 5,
-						(region.getEndPoint()-1) * charWidth + 5,
-						(region.getEndPoint()-1) * charWidth + 5,
-						(region.getEndPoint()) * charWidth + 5,
-						(region.getEndPoint()-1) * charWidth + 5,
-						(region.getEndPoint()-1) * charWidth + 5,
-						(region.getStartPoint()) * charWidth + 5
-					};
-					int[] yPointsBase = new int[]{
-						charHeight/3,
-						charHeight/3,
-						0,
-						charHeight/2,
-						charHeight,
-						2*charHeight/3,
-						2*charHeight/3
-					};
-					IntStream.range(0, AlignmentExplorer.this.alignment.getSeq().size()).forEach(
-						i -> {
-							int[] yPoints = new int[7];
-							for (int j = 0; j < yPoints.length; j++) {
-								yPoints[j] = i*charHeight + yPointsBase[j];
-							}
-							g.fillPolygon(xPoints, yPoints, 7);
-						}
-					);
-				}
-			);
-		}
-
-		private void createImageWhenNoAlignment() {
-			if (mainView != null) {
-				int w = mainView.getWidth();
-				int h = mainView.getHeight();
-				if (!(w > 0 && h > 0)) {
-					biMainView = null;
-					return;
-				}
-				biMainView = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-				Graphics2D g = (Graphics2D) biMainView.getGraphics();
-				g.setFont(new Font("Verdana", 0, 20));
-				String text = "No MSA data";
-				int textHeight = g.getFontMetrics().getHeight();
-				int textWidth = g.getFontMetrics().stringWidth(text);
-				g.setColor(new Color(1.0f, 1.0f, 1.0f));
-				g.fillRect(0, 0, w, h);
-				g.setColor(new Color(127, 127, 127));
-				g.drawString(text, (w - textWidth) / 2, (h - textHeight) / 2);
-			} else {
-				biMainView = null;
-			}
-		}
-
 		private void createImage() {
-			if (this.alignment.lenght() == 0) {
-				createImageWhenNoAlignment();
-				return;
+			boolean emptyAln = this.alignment.lenght() == 0;
+			AbstractMsaPainter painter = emptyAln?
+				new EmptyMsaPainter():
+				new MsaPainter();
+			Rectangle visible = this.getVisibleRect();
+			painter = painter
+				.withAlignment(this.alignment)
+				.withFont(AlignmentExplorer.this.getFont())
+				.defaultDimension(new Dimension(
+					visible.width, visible.height
+				));
+			biMainView = painter.paint();
+			if (biMainView != null) {
+				this.setPreferredSize(
+					new Dimension(
+						biMainView.getWidth(),
+						biMainView.getHeight()
+					)
+				);
+				hasMsaImage = !emptyAln;
 			}
-			createImageForAlignment();
-			this.setPreferredSize(
-				new Dimension(biMainView.getWidth(), biMainView.getHeight()));
-			hasMsaImage = true;
+			return;
 		}
 	}
 
