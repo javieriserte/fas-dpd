@@ -1,4 +1,4 @@
-package fasdpd.UI.v1;
+package fasdpd.UI.v1.alignmentExplorer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,7 +14,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,6 +35,7 @@ import sequences.dna.DNASeq;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
 import fasdpd.UI.v1.colors.ColoringStrategy;
+import fasdpd.UI.v1.colors.DefaultColoringStrategy;
 import fasdpd.UI.v1.colors.DnaColoringStrategy;
 import fasdpd.UI.v1.colors.ProteinColoringStrategy;
 import fastaIO.FastaMultipleReader;
@@ -44,6 +49,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	private Alignment alignment;
 	private GeneticCode geneticCode;
 	private Color backgroundColor = new Color(255, 255, 255);
+	private Set<AlignmentRegion> hightlightedRegions;
 	// Components
 	private JScrollPane mainScrollPane;
 	private MainView mainView;
@@ -55,6 +61,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		super();
 		this.alignment = alingment;
 		this.geneticCode = geneticCode;
+		this.hightlightedRegions = new HashSet<>();
 		this.createGUI();
 	}
 
@@ -65,13 +72,20 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		this.updateUI();
 	}
 
-
 	public void updateGeneticCode(GeneticCode code) {
 		this.geneticCode = code;
 	}
 
 	public boolean hasNonEmptyMsa() {
 		return alignment.lenght() > 0;
+	}
+
+	public boolean isMolTypeProtein() {
+		return this.alignment.getSeq().get(0).getClass() == ProtSeq.class;
+	}
+
+	public boolean isMolTypeDNA() {
+		return this.alignment.getSeq().get(0).getClass() == DNASeq.class;
 	}
 
 	/**
@@ -81,16 +95,20 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	 * @param from start of selected region
 	 * @param to   end of selected region
 	 */
-	public void highlight(Integer from, Integer to) {
-		// TODO Implement highlighting of selected regions.
+	public void highlight(int from, int to, Color color) {
+		AlignmentRegion e = new AlignmentRegion(from, to, color);
+		this.hightlightedRegions.add(e);
+		this.updateUI();
 	}
 
+	public void clearHighlightedRegions() {
+		this.hightlightedRegions.clear();
+		this.updateUI();
+	}
 
 	private JPanel createRowHeaderPanel() {
 		setUpDescriptions();
-
 		JPanel rowHeaderPanel = new JPanel();
-
 		rowHeaderPanel.setOpaque(true);
 		rowHeaderPanel.setVisible(true);
 		rowHeaderPanel.setBackground(Color.white);
@@ -141,11 +159,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 
 	private void addCornersToMainScrollPane(JScrollPane pane) {
-		String[] corners = new String[]{
-			ScrollPaneConstants.UPPER_RIGHT_CORNER,
+		String[] corners = new String[] { ScrollPaneConstants.UPPER_RIGHT_CORNER,
 			ScrollPaneConstants.LOWER_LEFT_CORNER,
-			ScrollPaneConstants.UPPER_LEFT_CORNER
-		};
+			ScrollPaneConstants.UPPER_LEFT_CORNER };
 		for (String c : corners) {
 			JLabel lb = new JLabel();
 			lb.setBackground(this.backgroundColor);
@@ -330,7 +346,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 					s = seq;
 				}
 			}
-			if (s!=null) {
+			if (s != null) {
 				return s.getDescription();
 			} else {
 				return "";
@@ -427,6 +443,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private Alignment alignment = null;
 		private BufferedImage biMainView = null;
 		private boolean hasMsaImage = false;
+		private int textHeight;
 
 		public MainView(Alignment alignment) {
 			super();
@@ -461,7 +478,16 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			return result.toString();
 		}
 
-		private void createImageForAlignment(){
+		private ColoringStrategy getColorStrategy() {
+			if (AlignmentExplorer.this.isMolTypeDNA()) {
+				return new DnaColoringStrategy();
+			} else if (AlignmentExplorer.this.isMolTypeProtein()) {
+				return new ProteinColoringStrategy();
+			}
+			return new DefaultColoringStrategy();
+		}
+
+		private Dimension computeImageDimension() {
 			List<Sequence> sequences = this.alignment.getSeq();
 			biMainView = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = (Graphics2D) biMainView.getGraphics();
@@ -469,51 +495,115 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			int textWidth = g.getFontMetrics()
 				.stringWidth(sequences.get(0).getSequence());
 			int textHeight = g.getFontMetrics().getHeight();
-			int imageWidth = textWidth + 10;
+			int imageWidth = textWidth * sequences.get(0).sizeInBases() + 10;
 			int imageHeight = textHeight * sequences.size();
-			int counter = 0;
-			ColoringStrategy color = null;
-			boolean isProtein = false;
-			if (this.alignment.getSeq().get(0).getClass() == DNASeq.class) {
-				color = new DnaColoringStrategy();
-			} else if (this.alignment.getSeq().get(0).getClass() == ProtSeq.class) {
-				color = new ProteinColoringStrategy();
-				imageWidth = imageWidth * 3;
-				isProtein = true;
-			}
+			return new Dimension(imageWidth, imageHeight);
+		}
+
+		private Graphics2D createGraphics(Dimension dim) {
 			biMainView = new BufferedImage(
-				imageWidth,
-				imageHeight,
-				BufferedImage.TYPE_INT_RGB);
-			g = (Graphics2D) biMainView.getGraphics();
+				dim.width,
+				dim.height,
+				BufferedImage.TYPE_INT_RGB
+			);
+			Graphics2D g = (Graphics2D) biMainView.getGraphics();
 			g.setFont(AlignmentExplorer.this.getFont());
+			return g;
+		}
+
+		private void paintBackground(Graphics2D g) {
 			g.setColor(Color.white);
-			g.fillRect(0, 0, imageWidth, imageHeight);
+			g.fillRect(0, 0, biMainView.getWidth(), biMainView.getHeight());
+		}
+
+		private void paintSequence(Graphics2D g, ColoringStrategy color) {
+			int counter = 0;
+			textHeight = g.getFontMetrics().getHeight();
 			for (Sequence sequence : this.alignment.getSeq()) {
-				String desc = sequence.getSequence();
+				String desc = sequence.getPrintableSequencePaddedToNucleotide();
 				counter++;
-				if (isProtein)
-					desc = this.expandProteinSequence(desc);
 				AlignmentExplorer.this.printColoredSequence(
 					5,
 					textHeight * (counter - 1),
-					(Graphics2D) g,
+					g,
 					desc,
 					color);
 			}
 		}
 
+		private void createImageForAlignment() {
+			Dimension dim = computeImageDimension();
+			Graphics2D g = createGraphics(dim);
+			ColoringStrategy color = this.getColorStrategy();
+			paintBackground(g);
+			AlignmentExplorer.this.hightlightedRegions.add(new AlignmentRegion(
+				5, 10, new Color(245,255,245))
+			);
+			paintHighlighting(g);
+			paintSequence(g, color);
+		}
+
+		private void paintHighlighting(Graphics2D g) {
+			AlignmentExplorer.this.hightlightedRegions.stream().forEach(
+				(region) -> {
+					g.setColor(region.getColor());
+					int charWidth = g.getFontMetrics().stringWidth(" ");
+					int charHeight = g.getFontMetrics().getHeight();
+					int height = AlignmentExplorer.this.alignment.getSeq().size() * charHeight-1;
+					g.fillRect(
+						(region.getStartPoint()) * charWidth + 5,
+						0,
+						(region.getEndPoint() - region.getStartPoint()) * charWidth,
+						height
+					);
+					g.setColor(new Color(200,200,200));
+					g.drawRect(
+						(region.getStartPoint()) * charWidth + 5,
+						0,
+						(region.getEndPoint() - region.getStartPoint()) * charWidth,
+						height
+					);
+					// Draw Arraw Shape
+					int[] xPoints = new int[]{
+						(region.getStartPoint()) * charWidth + 5,
+						(region.getEndPoint()-1) * charWidth + 5,
+						(region.getEndPoint()-1) * charWidth + 5,
+						(region.getEndPoint()) * charWidth + 5,
+						(region.getEndPoint()-1) * charWidth + 5,
+						(region.getEndPoint()-1) * charWidth + 5,
+						(region.getStartPoint()) * charWidth + 5
+					};
+					int[] yPointsBase = new int[]{
+						charHeight/3,
+						charHeight/3,
+						0,
+						charHeight/2,
+						charHeight,
+						2*charHeight/3,
+						2*charHeight/3
+					};
+					IntStream.range(0, AlignmentExplorer.this.alignment.getSeq().size()).forEach(
+						i -> {
+							int[] yPoints = new int[7];
+							for (int j = 0; j < yPoints.length; j++) {
+								yPoints[j] = i*charHeight + yPointsBase[j];
+							}
+							g.fillPolygon(xPoints, yPoints, 7);
+						}
+					);
+				}
+			);
+		}
+
 		private void createImageWhenNoAlignment() {
-			if (mainView!=null) {
+			if (mainView != null) {
 				int w = mainView.getWidth();
 				int h = mainView.getHeight();
-				if (!(w>0&&h>0)) {
+				if (!(w > 0 && h > 0)) {
 					biMainView = null;
 					return;
 				}
-				biMainView = new BufferedImage(w, h,
-					BufferedImage.TYPE_INT_RGB
-				);
+				biMainView = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 				Graphics2D g = (Graphics2D) biMainView.getGraphics();
 				g.setFont(new Font("Verdana", 0, 20));
 				String text = "No MSA data";
@@ -521,25 +611,21 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				int textWidth = g.getFontMetrics().stringWidth(text);
 				g.setColor(new Color(1.0f, 1.0f, 1.0f));
 				g.fillRect(0, 0, w, h);
-				g.setColor(new Color(127,127,127));
-				g.drawString(text, (w - textWidth)/2, (h-textHeight)/2);
+				g.setColor(new Color(127, 127, 127));
+				g.drawString(text, (w - textWidth) / 2, (h - textHeight) / 2);
 			} else {
 				biMainView = null;
 			}
 		}
 
 		private void createImage() {
-			if (this.alignment.lenght()==0) {
+			if (this.alignment.lenght() == 0) {
 				createImageWhenNoAlignment();
 				return;
 			}
 			createImageForAlignment();
 			this.setPreferredSize(
-				new Dimension(
-					biMainView.getWidth(),
-					biMainView.getHeight()
-				)
-			);
+				new Dimension(biMainView.getWidth(), biMainView.getHeight()));
 			hasMsaImage = true;
 		}
 	}
@@ -570,9 +656,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		frame.getContentPane().add(ae);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
-		ae.highlight(5, 10);
+		ae.highlight(5, 10, Color.red);
 		frame.setVisible(true);
 	}
-
 
 }

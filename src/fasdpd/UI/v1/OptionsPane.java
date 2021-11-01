@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import degeneration.GeneticCode;
 import fasdpd.PrimerPair;
+import fasdpd.UI.v1.alignmentExplorer.AlignmentExplorer;
 import sequences.alignment.Alignment;
 import sequences.dna.Primer;
 
