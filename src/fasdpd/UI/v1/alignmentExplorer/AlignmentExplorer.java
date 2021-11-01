@@ -50,7 +50,7 @@ import fastaIO.Pair;
 public class AlignmentExplorer extends javax.swing.JPanel {
 	private static final long serialVersionUID = 7978892495301236840L;
 	private Alignment alignment;
-	private GeneticCode geneticCode;
+	protected GeneticCode geneticCode;
 	private Color backgroundColor = new Color(255, 255, 255);
 	private Set<AlignmentRegion> hightlightedRegions;
 	// Components
@@ -214,7 +214,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 
 	private void setUpHeader() {
-		header = new Header(this.alignment);
+		header = new Header(this.alignment, this);
 		header.setFont(monoSpaceFont);
 		header.setBackground(this.backgroundColor);
 		header.setOpaque(true);
@@ -233,35 +233,15 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		setUpMainScrollPane();
 		this.setPreferredSize(new Dimension(400, 300));
 	}
-
-	private void printColoredSequence(
-		int x,
-		int y,
-		Graphics2D g,
-		String sequence,
-		ColoringStrategy color) {
-		int textHeight = g.getFontMetrics().getHeight();
-		int charWidth = g.getFontMetrics().stringWidth("A");
-		for (int i = 0; i < sequence.length(); i++) {
-			String charbase = sequence.substring(i, i + 1);
-			g.setColor(color.getColor(charbase.charAt(0)));
-			g.drawString(charbase, x + charWidth * i, y + textHeight);
-		}
-	}
-
 	//
 	@SuppressWarnings("unused")
 	private boolean isProtein() {
 		return this.alignment.getSeq().get(0).getClass() == ProtSeq.class;
 	}
 
-	////////////////////////////////////
-	// Auxiliary Classes
-
 	private class SplitBarMouseListener
 		implements MouseMotionListener, MouseListener {
 		private Integer x_i = null;
-
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			int dx = 0;
@@ -270,58 +250,37 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			} else {
 				x_i = e.getX();
 			}
-
-			AlignmentExplorer.this.descriptions.setPreferredSize(
+			descriptions.setPreferredSize(
 				new Dimension(
 					descriptions.getSize().width + dx,
 					descriptions.getSize().height));
 			descriptions.updateUI();
-
 		}
-
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			x_i = null;
 		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}
+		@Override public void mouseMoved(MouseEvent e) {}
+		@Override public void mouseClicked(MouseEvent e) { }
+		@Override public void mousePressed(MouseEvent e) { }
+		@Override public void mouseEntered(MouseEvent e) { }
+		@Override public void mouseExited(MouseEvent e) {}
 	}
 
 	private class Description extends JLabel {
 		private static final long serialVersionUID = 3066870404629353044L;
 		private Alignment alignment = null;
 		private BufferedImage biDescriptions = null;
-
 		public Description(Alignment alignment) {
 			super();
 			this.alignment = alignment;
 		}
-
 		public void paint(Graphics g) {
 			super.paint(g);
 			if (biDescriptions == null)
 				createImage();
 			g.drawImage((Image) this.biDescriptions, 0, 0, null);
 		}
-
 		private void createImage() {
 			List<Sequence> sequences = this.alignment.getSeq();
 			int size = sequences.size();
@@ -332,9 +291,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			g.setFont(AlignmentExplorer.this.getFont());
 			int textWidth = g.getFontMetrics().stringWidth(maxLengthDesc);
 			int textHeight = g.getFontMetrics().getHeight() * size;
-			// System.out.println("textWidth : " + textWidth);
-			// System.out.println("textHeight: " + textHeight);
-			//
 			biDescriptions = new BufferedImage(
 				textWidth + 10,
 				textHeight + 10,
@@ -351,11 +307,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				counter++;
 				g.drawString(desc, 5, textLineHeight * (counter));
 			}
-			// this.setPreferredSize(new Dimension(textWidth + 10, textHeight + 10));
 			this.setPreferredSize(new Dimension(150, textHeight + 10));
-
 		}
-
 		protected String getMaxLengthSequence(List<Sequence> sequences) {
 			int max = 0;
 			Sequence s = null;
@@ -373,73 +326,68 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		}
 	}
 
-	private class Header extends JLabel {
-		private static final long serialVersionUID = 1221448808240337613L;
-		private Alignment alignment;
-		private BufferedImage biHeader = null;
-		public Header(Alignment alignment) {
-			super();
-			this.alignment = alignment;
-			createImage();
-		}
-		public void paint(Graphics g) {
-			super.paint(g);
-			if (biHeader == null) {
-				createImage();
-			}
-			g.drawImage((Image) biHeader, 0, 0, null);
-			// this.setPreferredSize(new Dimension(w+10,textHeight*3+8));
-		}
-		private void createImage() {
-			this.biHeader = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g = (Graphics2D) this.biHeader.getGraphics();
-			g.setFont(AlignmentExplorer.this.getFont());
-			int textHeight = g.getFontMetrics().getHeight();
-			// int size =
-			// AlignmentExplorer.this.alignment.getSeq().get(0).getLength();
-			String s = null;
-			if (AlignmentExplorer.this.geneticCode != null) {
-				s = (alignment.pileUp(AlignmentExplorer.this.geneticCode))
-					.getSequence();
-			}
-			int size = s.length();
-			// int textwidth = g.getFontMetrics().stringWidth(s);
-			g.setFont(AlignmentExplorer.this.getFont());
-			int textwidth = g.getFontMetrics().stringWidth("A") * size * 2;
-			int imageHeight = 3 * textHeight + 8;
-			int imageWidth = textwidth + 10;
-			StringBuilder line1 = new StringBuilder();
-			StringBuilder line2 = new StringBuilder();
-			this.biHeader = new BufferedImage(
-				imageWidth,
-				imageHeight,
-				BufferedImage.TYPE_INT_RGB);
-			g = (Graphics2D) this.biHeader.getGraphics();
-			g.setFont(AlignmentExplorer.this.getFont());
-			g.setColor(Color.white);
-			String base = "''''|";
-			int nb = ((size - 1) / 5) + 1;
-			while (nb-- > 0) {
-				line1.append(base);
-			}
-			int d = ((size - 1) / 10) + 1;
-			int i = 1;
-			while (i++ < d) {
-				String n = String.valueOf((i - 1) * 10);
-				line2.append(("          " + n).substring(n.length()));
-			}
-			line1.delete(size, line1.length());
-			g.fillRect(0, 0, imageWidth, imageHeight);
-			g.setColor(Color.black);
-			g.drawString(line1.toString(), 5, textHeight);
-			g.drawString(line2.toString(), 5, 2 * textHeight);
-			ColoringStrategy color = new DnaColoringStrategy();
-			AlignmentExplorer.this
-				.printColoredSequence(5, 2 * textHeight, (Graphics2D) g, s, color);
-			this.setPreferredSize(new Dimension(imageWidth, imageHeight));
-		}
+	// private class Header extends JLabel {
+	// 	private static final long serialVersionUID = 1221448808240337613L;
+	// 	private Alignment alignment;
+	// 	private BufferedImage biHeader = null;
+	// 	public Header(Alignment alignment) {
+	// 		super();
+	// 		this.alignment = alignment;
+	// 		createImage();
+	// 	}
+	// 	public void paint(Graphics g) {
+	// 		super.paint(g);
+	// 		if (biHeader == null) {
+	// 			createImage();
+	// 		}
+	// 		g.drawImage((Image) biHeader, 0, 0, null);
+	// 	}
+	// 	private void createImage() {
+	// 		this.biHeader = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+	// 		Graphics2D g = (Graphics2D) this.biHeader.getGraphics();
+	// 		g.setFont(AlignmentExplorer.this.getFont());
+	// 		int textHeight = g.getFontMetrics().getHeight();
+	// 		String s = null;
+	// 		if (AlignmentExplorer.this.geneticCode != null) {
+	// 			s = (alignment.pileUp(AlignmentExplorer.this.geneticCode))
+	// 				.getSequence();
+	// 		}
+	// 		int size = s.length();
+	// 		g.setFont(AlignmentExplorer.this.getFont());
+	// 		int textwidth = g.getFontMetrics().stringWidth("A") * size * 2;
+	// 		int imageHeight = 3 * textHeight + 8;
+	// 		int imageWidth = textwidth + 10;
+	// 		StringBuilder line1 = new StringBuilder();
+	// 		StringBuilder line2 = new StringBuilder();
+	// 		this.biHeader = new BufferedImage(
+	// 			imageWidth,
+	// 			imageHeight,
+	// 			BufferedImage.TYPE_INT_RGB);
+	// 		g = (Graphics2D) this.biHeader.getGraphics();
+	// 		g.setFont(AlignmentExplorer.this.getFont());
+	// 		g.setColor(Color.white);
+	// 		String base = "''''|";
+	// 		int nb = ((size - 1) / 5) + 1;
+	// 		while (nb-- > 0) {
+	// 			line1.append(base);
+	// 		}
+	// 		int d = ((size - 1) / 10) + 1;
+	// 		int i = 1;
+	// 		while (i++ < d) {
+	// 			String n = String.valueOf((i - 1) * 10);
+	// 			line2.append(("          " + n).substring(n.length()));
+	// 		}
+	// 		line1.delete(size, line1.length());
+	// 		g.fillRect(0, 0, imageWidth, imageHeight);
+	// 		g.setColor(Color.black);
+	// 		g.drawString(line1.toString(), 5, textHeight);
+	// 		g.drawString(line2.toString(), 5, 2 * textHeight);
+	// 		ColoringStrategy color = new DnaColoringStrategy();
+	// 		ColoredSequencePrinter.print(5, 2 * textHeight, (Graphics2D) g, s, color);
+	// 		this.setPreferredSize(new Dimension(imageWidth, imageHeight));
+	// 	}
 
-	};
+	// };
 
 	private class MainView extends JLabel {
 		private static final long serialVersionUID = -3012075092592318198L;
@@ -454,12 +402,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		}
 		public void paint(Graphics g) {
 			super.paint(g);
-			if (biMainView == null) {
+			if (biMainView == null || !hasMsaImage) {
 				createImage();
-			}
-			if (!hasMsaImage) {
-				createImage();
-				// g.drawImage((Image) biMainView, 0, 0, null);
 			}
 			g.drawImage((Image) biMainView, 0, 0, null);
 		}
@@ -492,35 +436,4 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			return;
 		}
 	}
-
-	//////////////////////////////////
-	// Executable Main. DO NOT USE IT.
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		List<Pair<String, String>> l = null;
-		FastaMultipleReader mfr = new FastaMultipleReader();
-		GeneticCode geneticCode = null;
-		Alignment alin1 = new Alignment();
-		try {
-			geneticCode = new GeneticCode("StandardCode");
-			l = mfr.readFile(
-				"C:\\JAvier\\DropBox\\My Dropbox\\Investigacion\\Sandra\\Filogenia SLEV - Mayo 2011\\Datos de Partida\\slev.fas");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		if (l != null) {
-			for (Pair<String, String> pair : l) {
-				alin1.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
-			}
-		} else {
-			return;
-		}
-		AlignmentExplorer ae = new AlignmentExplorer(alin1, geneticCode);
-		frame.getContentPane().add(ae);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		ae.highlight(5, 10, Color.red);
-		frame.setVisible(true);
-	}
-
 }
