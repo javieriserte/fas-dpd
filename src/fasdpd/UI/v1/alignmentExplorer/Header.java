@@ -4,6 +4,7 @@ import javax.swing.JLabel;
 
 import fasdpd.UI.v1.colors.ColoringStrategy;
 import fasdpd.UI.v1.colors.DnaColoringStrategy;
+import fasdpd.UI.v1.colors.RulerColorStrategy;
 
 import java.awt.image.BufferedImage;
 import java.awt.Color;
@@ -85,7 +86,7 @@ class Header extends JLabel {
     private Dimension computeImageDimension(int sequenceLength) {
         computeTextMetrics();
         int imageHeight = 3 * getTextHeight() + 8;
-        int imageWidth = getTextWidth() * sequenceLength;
+        int imageWidth = getTextWidth() * sequenceLength+10;
         return new Dimension(imageWidth, imageHeight);
     }
 
@@ -103,7 +104,8 @@ class Header extends JLabel {
         Graphics2D g = (Graphics2D) biHeader.getGraphics();
         g.setFont(parent.getFont());
         g.setColor(Color.white);
-        String base = "''''|";
+        String base = "····|";
+        base = base.translateEscapes();
         int nb = ((rulerLength - 1) / 5) + 1;
         while (nb-- > 0) {
             line.append(base);
@@ -111,7 +113,13 @@ class Header extends JLabel {
         line.delete(rulerLength, line.length());
         g.setFont(parent.getFont());
         g.setColor(Color.black);
-        g.drawString(line.toString(), 5, getTextHeight());
+        ColoredSequencePrinter.print(
+            5,
+            0,
+            g,
+            line.toString(),
+            new RulerColorStrategy()
+        );
     }
 
     private void printRulerSecondLine(int rulerLength) {

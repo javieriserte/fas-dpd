@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.event.ListSelectionListener;
 
 import sequences.dna.Primer;
 import fasdpd.PrimerListExporter;
@@ -22,19 +23,15 @@ import fasdpd.PrimerOrPrimerPair;
 import fasdpd.PrimerPair;
 
 public class ResultViewer extends JPanel {
-
 	private static final long serialVersionUID = -5492613920686356173L;
 	private JButton jbSaveList;
 	private JButton jbExportFilters;
 	private ResultTable resultTable;
-	private List<PrimerOrPrimerPair> primerData;
-	
+	protected List<PrimerOrPrimerPair> primerData;
 	public ResultViewer() {
 		super();
 		this.createGUI();
 	}
-	
-  
 	public void setdata(List<Primer> primers) {
 		resultTable.setData(primers);
 		this.primerData = new ArrayList<PrimerOrPrimerPair>();
@@ -43,7 +40,6 @@ public class ResultViewer extends JPanel {
 		}
 		this.resultTable.updateUI();
 	}
-
 	public void setPairdata(List<PrimerPair> primers) {
 		resultTable.setPairData(primers);
 		this.primerData = new ArrayList<PrimerOrPrimerPair>();
@@ -51,6 +47,13 @@ public class ResultViewer extends JPanel {
 			this.primerData.add(new PrimerOrPrimerPair(p));
 		}
 		this.resultTable.updateUI();
+	}
+
+	public void addSelectionListener(ListSelectionListener listener) {
+		this.resultTable
+			.table
+			.getSelectionModel()
+			.addListSelectionListener(listener);
 	}
 
 	private void createGUI() {
@@ -63,7 +66,6 @@ public class ResultViewer extends JPanel {
 		this.setLayout(thisLayout);
 		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
-
 		resultTable = new ResultTable(null, null);
 		resultTable.setOpaque(true);
 		resultTable.setPreferredSize(new Dimension(200, 200));
@@ -89,11 +91,11 @@ public class ResultViewer extends JPanel {
     c.gridx = 0;
     c.gridy = 1;
     this.add(jbExportFilters, c);
-		
+
 	}
-	
+
 	public void addExportFiltersActionListener(ActionListener listener) {
-	  jbExportFilters.addActionListener(listener);
+		jbExportFilters.addActionListener(listener);
 	}
 
 	private class SaveListActionListener implements ActionListener {
@@ -101,7 +103,6 @@ public class ResultViewer extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser iFile = setUpFileChooser();
-		
 			try {
 				PrimerListExporter.exportPrimersToFile(
 					iFile.getSelectedFile(),
@@ -123,5 +124,4 @@ public class ResultViewer extends JPanel {
 			return iFile;
 		}
 	}
-	
 }

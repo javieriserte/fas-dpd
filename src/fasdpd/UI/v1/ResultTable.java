@@ -12,7 +12,7 @@ import java.util.List;
 public class ResultTable extends JPanel {
 
 	private AbstractTableModel model;
-	private JTable table;
+	protected JTable table;
 	private JScrollPane scrollPane;
 	private static final long serialVersionUID = 1L;
 

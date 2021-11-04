@@ -6,10 +6,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import degeneration.GeneticCode;
+import fasdpd.PrimerOrPrimerPair;
 import fasdpd.PrimerPair;
 import fasdpd.UI.v1.alignmentExplorer.AlignmentExplorer;
 import sequences.alignment.Alignment;
@@ -73,6 +78,7 @@ public class OptionsPane extends JPanel {
 
 		resultViewer = new ResultViewer();
 		resultViewer.setOpaque(true);
+		resultViewer.addSelectionListener(new ResultViewerSelectionListener());
 
 		c.insets = new Insets(5, 5, 5, 5);
 		c.fill = GridBagConstraints.BOTH;
@@ -97,8 +103,75 @@ public class OptionsPane extends JPanel {
 		resultViewer.setdata(primers);
 		this.updateUI();
 	}
-	
+
 	public void addExportFiltersActionListener(ActionListener listener) {
 	  resultViewer.addExportFiltersActionListener(listener);
+	}
+
+	private class ResultViewerSelectionListener implements ListSelectionListener {
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			Optional<Integer> selectedIndex = getSelectedIndex(e);
+			selectedIndex.ifPresent(
+				index -> {
+					PrimerOrPrimerPair selected = resultViewer.primerData.get(index);
+					if (selected.isPrimer()) {
+						Primer p = selected.getPrimer();
+						alignmentExplorer.clearHighlightedRegions();
+						alignmentExplorer.highlightArrow(
+							p.isDirectStrand()?p.getStart():p.getEnd(),
+							p.isDirectStrand()?p.getEnd():p.getStart(),
+							new Color(200,255,190),
+							p.isDirectStrand());
+						alignmentExplorer.highlightMsaBox(
+							p.isDirectStrand()?p.getStart():p.getEnd(),
+							p.isDirectStrand()?p.getEnd():p.getStart(),
+							new Color(250,250,200)
+						);
+						alignmentExplorer.focusOnMsaRegion(
+							p.getStart(),
+							p.getEnd()
+						);
+					} else {
+						PrimerPair p = selected.getPrimerPair();
+						alignmentExplorer.clearHighlightedRegions();
+						alignmentExplorer.highlightArrow(
+							p.getForward().getStart(),
+							p.getForward().getEnd(),
+							new Color(200,255,190),
+							true
+						);
+						alignmentExplorer.highlightArrow(
+							p.getReverse().getEnd(),
+							p.getReverse().getStart(),
+							new Color(200,255,190),
+							false
+						);
+						alignmentExplorer.highlightMsaBox(
+							p.getForward().getStart(),
+							p.getForward().getEnd(),
+							new Color(250,250,200)
+						);
+						alignmentExplorer.highlightMsaBox(
+							p.getReverse().getEnd(),
+							p.getReverse().getStart(),
+							new Color(250,250,200)
+						);
+						alignmentExplorer.focusOnMsaRegion(
+							p.getForward().getStart(),
+							p.getForward().getEnd()
+						);
+					}
+				}
+			);
+		}
+		private Optional<Integer> getSelectedIndex(ListSelectionEvent e) {
+			ListSelectionModel model = (ListSelectionModel) e.getSource();
+			int[] indexes = model.getSelectedIndices();
+			if (indexes.length==0) {
+				return Optional.empty();
+			}
+			return Optional.of(indexes[0]);
+		}
 	}
 }

@@ -10,7 +10,7 @@ public interface AbstractMsaPainter {
     public AbstractMsaPainter withFont(Font font);
     public AbstractMsaPainter withAlignment(Alignment aln);
     public AbstractMsaPainter withHightlightedRegions(
-        Set<AlignmentRegion> hightlightedRegions);
+        Set<ShapePainter> hightlightedRegions);
     public AbstractMsaPainter defaultDimension(Dimension dim);
     public BufferedImage paint();
 }

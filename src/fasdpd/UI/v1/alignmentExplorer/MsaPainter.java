@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import fasdpd.UI.v1.colors.ColoringStrategy;
 import fasdpd.UI.v1.colors.DefaultColoringStrategy;
@@ -23,7 +22,8 @@ public class MsaPainter implements AbstractMsaPainter {
 
     private Alignment alignment;
     private Font font;
-    private Set<AlignmentRegion> hightlightedRegions = new HashSet<AlignmentRegion>();
+    private Set<ShapePainter> highlights = new HashSet<ShapePainter>();
+    private static final int Y_OFFSET = 20;
 
     @Override
     public AbstractMsaPainter withAlignment(Alignment aln) {
@@ -43,9 +43,20 @@ public class MsaPainter implements AbstractMsaPainter {
         Graphics2D g = createGraphics(image);
         ColoringStrategy color = this.getColorStrategy();
         paintBackground(g, dim);
-        hightlightedRegions.add(new AlignmentRegion(
-            5, 10, new Color(245,255,245))
-        );
+        // highlights.add(
+        //     new BoxPainter()
+        //         .setColor(new Color(235,235,255))
+        //         .setStart(5)
+        //         .setEnd(15)
+        //         .setOnTopBar(false)
+        // );
+        // highlights.add(
+        //     new ArrowPainter(false)
+        //         .setColor(new Color(220,225,235))
+        //         .setStart(5)
+        //         .setEnd(35)
+        //         .setOnTopBar(true)
+        // );
         paintHighlighting(g);
         paintSequence(g, color);
         return image;
@@ -61,7 +72,7 @@ public class MsaPainter implements AbstractMsaPainter {
             .stringWidth(sequences.get(0).getSequence());
         int textHeight = g.getFontMetrics().getHeight();
         int imageWidth = textWidth * sequences.get(0).sizeInBases() + 10;
-        int imageHeight = textHeight * sequences.size();
+        int imageHeight = textHeight * sequences.size() + Y_OFFSET;
         return new Dimension(imageWidth, imageHeight);
     }
 
@@ -89,7 +100,6 @@ public class MsaPainter implements AbstractMsaPainter {
         return new DefaultColoringStrategy();
     }
 
-
 	public boolean isMolTypeProtein() {
 		return this.alignment
             .getSeq()
@@ -110,53 +120,12 @@ public class MsaPainter implements AbstractMsaPainter {
     }
 
     private void paintHighlighting(Graphics2D g) {
-        hightlightedRegions.stream().forEach(
+        int charHeight = g.getFontMetrics().getHeight();
+        int height = alignment.getSeq().size() * charHeight-1;
+        highlights.stream().forEach(
             (region) -> {
-                g.setColor(region.getColor());
-                int charWidth = g.getFontMetrics().stringWidth(" ");
-                int charHeight = g.getFontMetrics().getHeight();
-                int height = alignment.getSeq().size() * charHeight-1;
-                g.fillRect(
-                    (region.getStartPoint()) * charWidth + 5,
-                    0,
-                    (region.getEndPoint() - region.getStartPoint()) * charWidth,
-                    height
-                );
-                g.setColor(new Color(200,200,200));
-                g.drawRect(
-                    (region.getStartPoint()) * charWidth + 5,
-                    0,
-                    (region.getEndPoint() - region.getStartPoint()) * charWidth,
-                    height
-                );
-                // Draw Arraw Shape
-                int[] xPoints = new int[]{
-                    (region.getStartPoint()) * charWidth + 5,
-                    (region.getEndPoint()-1) * charWidth + 5,
-                    (region.getEndPoint()-1) * charWidth + 5,
-                    (region.getEndPoint()) * charWidth + 5,
-                    (region.getEndPoint()-1) * charWidth + 5,
-                    (region.getEndPoint()-1) * charWidth + 5,
-                    (region.getStartPoint()) * charWidth + 5
-                };
-                int[] yPointsBase = new int[]{
-                    charHeight/3,
-                    charHeight/3,
-                    0,
-                    charHeight/2,
-                    charHeight,
-                    2*charHeight/3,
-                    2*charHeight/3
-                };
-                IntStream.range(0, alignment.getSeq().size()).forEach(
-                    i -> {
-                        int[] yPoints = new int[7];
-                        for (int j = 0; j < yPoints.length; j++) {
-                            yPoints[j] = i*charHeight + yPointsBase[j];
-                        }
-                        g.fillPolygon(xPoints, yPoints, 7);
-                    }
-                );
+                int offset = region.isOnTopBar()?0:Y_OFFSET;
+                region.paintShape(g, 5, offset, height);
             }
         );
     }
@@ -171,7 +140,7 @@ public class MsaPainter implements AbstractMsaPainter {
             counter++;
             ColoredSequencePrinter.print(
                 5,
-                textHeight * (counter - 1),
+                Y_OFFSET + textHeight * (counter - 1),
                 g,
                 desc,
                 color
@@ -186,9 +155,9 @@ public class MsaPainter implements AbstractMsaPainter {
     }
 
     @Override
-    public AbstractMsaPainter withHightlightedRegions(Set<AlignmentRegion> hightlightedRegions) {
-        this.hightlightedRegions.clear();
-        this.hightlightedRegions.addAll(hightlightedRegions);
+    public AbstractMsaPainter withHightlightedRegions(Set<ShapePainter> hightlightedRegions) {
+        this.highlights.clear();
+        this.highlights.addAll(hightlightedRegions);
         return this;
     }
 }

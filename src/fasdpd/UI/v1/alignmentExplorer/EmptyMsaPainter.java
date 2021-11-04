@@ -63,7 +63,7 @@ public class EmptyMsaPainter implements AbstractMsaPainter {
     }
 
     @Override
-    public AbstractMsaPainter withHightlightedRegions(Set<AlignmentRegion> hightlightedRegions) {
+    public AbstractMsaPainter withHightlightedRegions(Set<ShapePainter> hightlightedRegions) {
         return this;
     }
 }
