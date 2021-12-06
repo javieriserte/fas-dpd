@@ -1,71 +1,93 @@
 package tests.degenaration;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import degeneration.GeneticCode;
 
 public class GeneticCode2Test {
-  
+
   @Test
   void shouldPileUpTwoIdenticalSequences() {
-    GeneticCode gc = new GeneticCode("StandardCode");
-    Assertions.assertEquals(
-        gc.pileUp(
-          "ACTGACTGACTGACTG",
+    try {
+      GeneticCode gc = new GeneticCode("StandardCode");
+      Assertions.assertEquals(
+          gc.pileUp(
+            "ACTGACTGACTGACTG",
+            "ACTGACTGACTGACTG"
+          ),
           "ACTGACTGACTGACTG"
-        ),
-        "ACTGACTGACTGACTG"
-    );
+      );
+    } catch (IOException e) {
+      fail(e.getLocalizedMessage());
+    }
   }
 
   @Test
   void shouldPileUpTwoNonDegeneratedSequences() {
-    GeneticCode gc = new GeneticCode("StandardCode");
-    Assertions.assertEquals(
+    try {
+      GeneticCode gc = new GeneticCode("StandardCode");
+      Assertions.assertEquals(
         gc.pileUp(
           "AAAACCCCGGGGTTTT",
           "ACTGACTGACTGACTG"
         ),
           "AMWRMCYSRSKGWYTK"
-    );
+      );
+    } catch (IOException e) {
+      fail(e.getLocalizedMessage());
+    }
   }
 
   @Test
   void shouldPileUpTwoDegeneratedSequences() {
-    GeneticCode gc = new GeneticCode("StandardCode");
-    Assertions.assertEquals(
-        gc.pileUp(
-          "MMMMKKKKWWWWSSSSYYYYRRRR",
-          "BDHVBDHVBDHVBDHVBDHVBDHV"
-        ),
-          "NNHVBDNNNDHNBNNVBNHNNDNV"
-    );
+    try {
+      GeneticCode gc = new GeneticCode("StandardCode");
+      Assertions.assertEquals(
+          gc.pileUp(
+            "MMMMKKKKWWWWSSSSYYYYRRRR",
+            "BDHVBDHVBDHVBDHVBDHVBDHV"
+          ),
+            "NNHVBDNNNDHNBNNVBNHNNDNV"
+      );
+    } catch (IOException e) {
+      fail(e.getLocalizedMessage());
+    }
   }
 
   @Test
   void shouldPileUpTwoSequencesWithGaps() {
-    GeneticCode gc = new GeneticCode("StandardCode");
-    Assertions.assertEquals(
-        gc.pileUp(
-          "ACTG",
-          "----"
-        ),
-          "NNNN"
-    );
+    try {
+      GeneticCode gc = new GeneticCode("StandardCode");
+      Assertions.assertEquals(
+          gc.pileUp(
+            "ACTG",
+            "----"
+          ),
+            "NNNN"
+      );
+    } catch (IOException e) {
+      fail(e.getLocalizedMessage());
+    }
   }
-  
+
   @Test
   void shouldPileUpTwoSequenceIgnoringTerminalGaps() {
-    GeneticCode gc = new GeneticCode("StandardCode");
-    Assertions.assertEquals(
-        gc.pileUpIgnoreTerminalGaps(
-          "ACGTG",
-          "--C--"
-        ),
-          "ACSTG"
-    );
-    
+    try {
+      GeneticCode gc = new GeneticCode("StandardCode");
+      Assertions.assertEquals(
+          gc.pileUpIgnoreTerminalGaps(
+            "ACGTG",
+            "--C--"
+          ),
+            "ACSTG"
+      );
+    } catch (IOException e) {
+      fail(e.getLocalizedMessage());
+    }
   }
-  
 }

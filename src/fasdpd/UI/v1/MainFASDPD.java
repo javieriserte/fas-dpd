@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Vector;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -98,7 +99,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 	this.setIconImage(icon.getImage());
 	}
 
-	public void doSearch() {
+	public void doSearch() throws IOException {
 		FilterValidatorBuilder fb = new FilterValidatorBuilder()
 			.add(filterCreators);
 		searchParameter.setFilter(fb.getSinglePrimerValidator());
@@ -206,7 +207,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 
-	protected void loadOptionsPane() {
+	protected void loadOptionsPane() throws IOException {
 		GeneticCode gc = new GeneticCode("StandardCode");
 		this.searchParameter.setGCfile("StandardCode");
 		op = new OptionsPane(getAlignment(), gc, MainFASDPD.this);
@@ -483,47 +484,52 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private class jbDoSearchAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			doSearch();
+			try {
+				doSearch();
+			} catch (IOException exc) {
+				System.err.println("Action Canceled:");
+				System.err.println(exc.getLocalizedMessage());
+			};
 		}
 	}
-	
+
 	private class ExportFiltersActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      JFileChooser fc = createFileChooser();
-      int dialogResponse = fc.showOpenDialog(MainFASDPD.this);
-      processResponse(fc, dialogResponse);
+		JFileChooser fc = createFileChooser();
+		int dialogResponse = fc.showOpenDialog(MainFASDPD.this);
+		processResponse(fc, dialogResponse);
     }
 
     private void processResponse(JFileChooser fc, int dialogResponse) {
-      if (dialogResponse != JFileChooser.APPROVE_OPTION) {
-        return;
-      }
-      File selected = fc.getSelectedFile();
-      try {
-        PrintWriter writer = new PrintWriter(selected, "UTF-8");
-        for (FilterCreator f: filterCreators) {
-          writer.println(f);
-        }
-        writer.close();
-      } catch (FileNotFoundException e1) {
-        e1.printStackTrace();
-      } catch (UnsupportedEncodingException e1) {
-        e1.printStackTrace();
-      }
-    }
-    
-    private JFileChooser createFileChooser() {
-      FileFilter fastaFilter = getFileFilter();
-      JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
-      iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
-      iFile.setMultiSelectionEnabled(false);
-      iFile.setDialogTitle("Save Filter Data");
-      iFile.setDialogType(JFileChooser.SAVE_DIALOG);
-      iFile.setCurrentDirectory(new java.io.File("."));
-      iFile.setFileFilter(fastaFilter);
-      return iFile;
-    }
-  }
+		if (dialogResponse != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
+		File selected = fc.getSelectedFile();
+		try {
+			PrintWriter writer = new PrintWriter(selected, "UTF-8");
+			for (FilterCreator f: filterCreators) {
+			writer.println(f);
+			}
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		}
+
+		private JFileChooser createFileChooser() {
+		FileFilter fastaFilter = getFileFilter();
+		JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
+		iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		iFile.setMultiSelectionEnabled(false);
+		iFile.setDialogTitle("Save Filter Data");
+		iFile.setDialogType(JFileChooser.SAVE_DIALOG);
+		iFile.setCurrentDirectory(new java.io.File("."));
+		iFile.setFileFilter(fastaFilter);
+		return iFile;
+		}
+	}
 }

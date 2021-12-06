@@ -1,8 +1,6 @@
 package sequences.protein;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import sequences.Sequence;
 import sequences.alignment.Apilable;

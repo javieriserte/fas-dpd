@@ -7,9 +7,9 @@ import degeneration.GeneticCode;
 import junit.framework.TestCase;
 /**
  * Test Case.
- * 
+ *
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * 
+ *
  */
 public class DNASeqTest extends TestCase {
 	private DNASeq myDNASeq = null;
@@ -27,7 +27,7 @@ public class DNASeqTest extends TestCase {
 		myDNASeq = new DNASeq("AAAAAAAAAAAAAAAAAAAAGCAGCAGCAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Secuencia de prueba de 60 nt");
 		myDNASeq2 = new DNASeq("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", "Secuencia de prueba de 60 nt");
 		myProtSeq = new ProtSeq("AAAAAAAAAAAAAAAAAAAA", "test sequence 20 aa");
-		myGC = new GeneticCode("standardcode");
+		myGC = new GeneticCode("StandardCode");
 	}
 
 	protected void tearDown() throws Exception {
@@ -56,8 +56,14 @@ public class DNASeqTest extends TestCase {
 	}
 
 	public void testApilarConProtseq() {
-
-		assertEquals("RMNRMNRMNRMNRMNRMNRMNSMNSMNSMNRMNRMNRMNRMNRMNRMNRMNRMNRMNRMN",myDNASeq.pileUpWithProtseq(myProtSeq, myGC).getSequence());
+		DNASeq a = myDNASeq.pileUpWith(myProtSeq, myGC);
+		System.out.println(a);
+		assertEquals(
+			"RMNRMNRMNRMNRMNRMNRMNSMNSMNSMNRMNRMNRMNRMNRMNRMNRMNRMNRMNRMN",
+			myDNASeq
+				.pileUpWithProtseq(myProtSeq, myGC)
+				.getSequence()
+		);
 	}
 
 	public void testDesignPrimer() {

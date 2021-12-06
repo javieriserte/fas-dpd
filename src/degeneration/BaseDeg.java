@@ -229,16 +229,13 @@ public class BaseDeg {
 	 * @return the degeneration value for a sequence.
 	 */
 	static public int getDegValueFromString(String seq){
-		
 		int result=1;
-
 		for (char c : seq.toUpperCase().toCharArray()) {
 			result = result * BaseDeg.getDegValueFromChar(c);
 		}
 		return result;
 	}
 
-	
 	/**
 	 * Given a nondegenerated base represented as a integer and a second degenerated base represented as a char, 
 	 * this method returns true if the second one contains the first.

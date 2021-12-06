@@ -3,7 +3,6 @@ import cmdGA.exceptions.IncorrectParameterTypeException;
 import cmdGA.parameterType.IntegerParameter;
 import cmdGA.parameterType.ParameterType;
 import filters.Filter;
-import filters.primerpair.FilterAmpliconSize;
 import filters.primerpair.FilterMinimumAmpliconSize;
 
 public class FilterMinimumAmpliconSizeCreator extends FilterCreator{
