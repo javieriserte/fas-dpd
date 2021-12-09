@@ -1,40 +1,28 @@
 package tests.sequences;
 
 import junit.framework.TestCase;
+import sequences.dna.Primer;
+import sequences.util.tmcalculator.SantaluciaTmEstimator;
 
 public class SantaLuciaEnergeticsTest extends TestCase {
 
-	// TODO Implemeted test for SantaLuciaEnergetics
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	public void testGetDuplexStability() {
-		fail("Not yet implemented");
+	public void testCalculatePolyAPrimer() {
+		SantaluciaTmEstimator tme = new SantaluciaTmEstimator();
+		Primer primer = new Primer("AAAAAAAAAAAAAAAAAAAA", "polyA", 0, 0, true);
+		tme.calculateTM(primer);
+		var tm = tme.mean();
+		assertEquals(tm, 37.78, 0.05);
 	}
 
-	public void testGetDuplexStabilityWithEndPenalties() {
-		fail("Not yet implemented");
+	public void testCalculatePolyGPrimer() {
+		SantaluciaTmEstimator tme = new SantaluciaTmEstimator();
+		Primer primer = new Primer("GGGGGGGGGGGGGGGGGGGG", "polyA", 0, 0, true);
+		tme.calculateTM(primer);
+		var tm = tme.mean();
+		assertEquals(tm, 73.39, 0.05);
 	}
-
-	public void testGetEndPenalty() {
-		fail("Not yet implemented");
-	}
-
-	public void testGet5EndPenalty() {
-		fail("Not yet implemented");
-	}
-
-	public void testGet3EndPenalty() {
-		fail("Not yet implemented");
-	}
-
-	public void testGetNearestNeighbor() {
-		fail("Not yet implemented");
-	}
-
-	public void testSaltCorrection() {
-		fail("Not yet implemented");
-	}
-
 }

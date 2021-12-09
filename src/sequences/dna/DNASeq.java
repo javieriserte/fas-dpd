@@ -7,7 +7,6 @@ import degeneration.GeneticCode;
 /**
  * Class to represent a sequence of DNA. (or RNA)
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * 
  */
 public class DNASeq extends Sequence {
 	public DNASeq(String sequence, String description) {
@@ -19,13 +18,12 @@ public class DNASeq extends Sequence {
 	}
 	/**
 	 * This method translate a DNA sequence into a amino acid sequence, according to a genetic Code.
-	 * 
 	 * Precondition: The sequence length is multiple of three.
 	 * @param myGc a genetic code.
 	 * @return a Protein sequence
 	 */
 	public ProtSeq translate(GeneticCode myGc) {
-		StringBuilder result= new StringBuilder(this.getLength()/3);		
+		StringBuilder result= new StringBuilder(this.getLength()/3);
 		for (int x=0;x<this.getLength();x=x+3) {
 			result.append(myGc.translate(this.getSequence().substring(x, x+3)));
 		}
@@ -208,5 +206,15 @@ public class DNASeq extends Sequence {
 	@Override
 	public Sequence toProtein() {
 		return new ProtSeq(this.getSequence(), this.getDescription());
+	}
+
+	@Override
+	public int sizeInBases() {
+		return 1;
+	}
+
+	@Override
+	public String getPrintableSequencePaddedToNucleotide() {
+		return this.getSequence();
 	}
 }

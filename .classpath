@@ -7,6 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/cmdGetArg_2.1.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="lib/junit-platform-console-standalone-1.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

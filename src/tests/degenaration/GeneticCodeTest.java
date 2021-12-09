@@ -1,6 +1,7 @@
 
 package tests.degenaration;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
@@ -11,10 +12,14 @@ import junit.framework.TestCase;
 public class GeneticCodeTest extends TestCase {
 
 	public void testGetRetroCodon() {
-		GeneticCode gc = new GeneticCode("StandardCode");
-		assertEquals("GCN", gc.getRetroCodon("A"));
-		assertEquals("YTN", gc.getRetroCodon("L"));
-		assertEquals("TRR", gc.getRetroCodon("*"));
+		try {
+			GeneticCode gc = new GeneticCode("StandardCode");
+			assertEquals("GCN", gc.getRetroCodon("A"));
+			assertEquals("YTN", gc.getRetroCodon("L"));
+			assertEquals("TRR", gc.getRetroCodon("*"));
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	public void testAddCodons(){
@@ -59,27 +64,39 @@ public class GeneticCodeTest extends TestCase {
 		assertTrue(cc.contains("GCG"));
 	}
 	public void testGetCodonArray() {
-		GeneticCode gc = new GeneticCode("StandardCode");
-		List<String> cc= gc.getCodonArray("A");
-		assertEquals(4,cc.size());
-		assertTrue(cc.contains("GCT"));
-		assertTrue(cc.contains("GCC"));
-		assertTrue(cc.contains("GCA"));
-		assertTrue(cc.contains("GCG"));
+		try {
+			GeneticCode gc = new GeneticCode("StandardCode");
+			List<String> cc= gc.getCodonArray("A");
+			assertEquals(4,cc.size());
+			assertTrue(cc.contains("GCT"));
+			assertTrue(cc.contains("GCC"));
+			assertTrue(cc.contains("GCA"));
+			assertTrue(cc.contains("GCG"));
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	public void testTranslate() {
-		GeneticCode gc = new GeneticCode("StandardCode");
+		try {
+			GeneticCode gc = new GeneticCode("StandardCode");
 		assertTrue(gc.translate("GCT").equals("A"));
 		assertTrue(gc.translate("GCC").equals("A"));
 		assertTrue(gc.translate("GCA").equals("A"));
 		assertTrue(gc.translate("GCG").equals("A"));
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
 	}
 
 	public void testPileUp() {
-		GeneticCode gc = new GeneticCode("StandardCode");
-		assertEquals(gc.pileUp("ACTGACTGACTGACTG", "AAAACCCCTTTTGGGG"), "AMWRMCYSWYTKRSKG");
-		assertEquals(gc.pileUp("ACTGACTGACTGACTGACTGACTG", "MMMMWWWWRRRRYYYYKKKKSSSS"), "MMHVWHWDRVDRHYYBDBKKVSBS");
-		assertEquals(gc.pileUp("ACTGACTGACTGACTG", "BBBBDDDDHHHHVVVV"),"NBBBDNDDHHHNVVNV" );
+		try {
+			GeneticCode gc = new GeneticCode("StandardCode");
+			assertEquals(gc.pileUp("ACTGACTGACTGACTG", "AAAACCCCTTTTGGGG"), "AMWRMCYSWYTKRSKG");
+			assertEquals(gc.pileUp("ACTGACTGACTGACTGACTGACTG", "MMMMWWWWRRRRYYYYKKKKSSSS"), "MMHVWHWDRVDRHYYBDBKKVSBS");
+			assertEquals(gc.pileUp("ACTGACTGACTGACTG", "BBBBDDDDHHHHVVVV"),"NBBBDNDDHHHNVVNV" );
+		} catch (IOException e) {
+			fail(e.getLocalizedMessage());
+		}
 	}
 }

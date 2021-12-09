@@ -6,9 +6,7 @@ import junit.framework.TestCase;
 
 /**
  * Test case.
- * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * 
  */
 public class BaseDegTest extends TestCase {
 
@@ -29,10 +27,11 @@ public class BaseDegTest extends TestCase {
 		assertEquals(BaseDeg.getIntFromChar('D'),13);
 		assertEquals(BaseDeg.getIntFromChar('B'),14);
 		assertEquals(BaseDeg.getIntFromChar('N'),15);
+		assertEquals(BaseDeg.getIntFromChar('.'),0);
 	}
 
 	public void testGetCharbaseFromInt() {
-		assertEquals(BaseDeg.getCharFromInt(0),'-');
+		assertEquals(BaseDeg.getCharFromInt(0),'.');
 		assertEquals(BaseDeg.getCharFromInt(1),'A');
 		assertEquals(BaseDeg.getCharFromInt(2),'C');
 		assertEquals(BaseDeg.getCharFromInt(3),'M');
@@ -55,40 +54,50 @@ public class BaseDegTest extends TestCase {
 		assertEquals('C',BaseDeg.pileUpBase('C', 'C'));
 		assertEquals('T',BaseDeg.pileUpBase('T', 'T'));
 		assertEquals('G',BaseDeg.pileUpBase('G', 'G'));
-		
 		assertEquals('W',BaseDeg.pileUpBase('A', 'T'));
 		assertEquals('S',BaseDeg.pileUpBase('C', 'G'));
 		assertEquals('M',BaseDeg.pileUpBase('A', 'C'));
 		assertEquals('K',BaseDeg.pileUpBase('G', 'T'));
 		assertEquals('R',BaseDeg.pileUpBase('A', 'G'));
 		assertEquals('Y',BaseDeg.pileUpBase('C', 'T'));
-		
+
 		assertEquals('N',BaseDeg.pileUpBase('W', 'S'));
 		assertEquals('N',BaseDeg.pileUpBase('R', 'Y'));
 		assertEquals('N',BaseDeg.pileUpBase('M', 'K'));
+
+		assertEquals('N',BaseDeg.pileUpBase('A', '-'));
+		assertEquals('N',BaseDeg.pileUpBase('-', 'A'));
+
+		assertEquals('A',BaseDeg.pileUpBase('.', 'A'));
+		assertEquals('A',BaseDeg.pileUpBase('A', '.'));
+
+		assertEquals('N',BaseDeg.pileUpBase('.', '-'));
+		assertEquals('N',BaseDeg.pileUpBase('-', '.'));
+
+		assertEquals('.',BaseDeg.pileUpBase('.', '.'));
+
 	}
-	
+
 	public void testCalculateDegValue() {
-		
 		assertEquals(1, BaseDeg.getDegValueFromChar('A'));
 		assertEquals(1, BaseDeg.getDegValueFromChar('C'));
 		assertEquals(1, BaseDeg.getDegValueFromChar('T'));
 		assertEquals(1, BaseDeg.getDegValueFromChar('G'));
 		assertEquals(2, BaseDeg.getDegValueFromChar('M'));
 		assertEquals(2, BaseDeg.getDegValueFromChar('R'));
-		assertEquals(2, BaseDeg.getDegValueFromChar('W'));		
+		assertEquals(2, BaseDeg.getDegValueFromChar('W'));
 		assertEquals(2, BaseDeg.getDegValueFromChar('S'));
 		assertEquals(2, BaseDeg.getDegValueFromChar('Y'));
-		assertEquals(2, BaseDeg.getDegValueFromChar('K'));		
+		assertEquals(2, BaseDeg.getDegValueFromChar('K'));
 		assertEquals(3, BaseDeg.getDegValueFromChar('B'));
 		assertEquals(3, BaseDeg.getDegValueFromChar('H'));
-		assertEquals(3, BaseDeg.getDegValueFromChar('V'));		
-		assertEquals(4, BaseDeg.getDegValueFromChar('N'));		
-		
+		assertEquals(3, BaseDeg.getDegValueFromChar('V'));
+		assertEquals(4, BaseDeg.getDegValueFromChar('N'));
+		assertEquals(4, BaseDeg.getDegValueFromChar('-'));
+		assertEquals(0, BaseDeg.getDegValueFromChar('.'));
 	}
 
 	public void testcontainsBaseInt() {
-		
 		// A
 		assertTrue(BaseDeg.containsBaseIntInChar(0,'A'));
 		assertFalse(BaseDeg.containsBaseIntInChar(0,'C'));
@@ -96,14 +105,14 @@ public class BaseDegTest extends TestCase {
 		assertFalse(BaseDeg.containsBaseIntInChar(0,'G'));
 		assertTrue(BaseDeg.containsBaseIntInChar(0,'M'));
 		assertTrue(BaseDeg.containsBaseIntInChar(0,'R'));
-		assertTrue(BaseDeg.containsBaseIntInChar(0,'W'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(0,'W'));
 		assertFalse(BaseDeg.containsBaseIntInChar(0,'S'));
 		assertFalse(BaseDeg.containsBaseIntInChar(0,'Y'));
-		assertFalse(BaseDeg.containsBaseIntInChar(0,'K'));		
+		assertFalse(BaseDeg.containsBaseIntInChar(0,'K'));
 		assertFalse(BaseDeg.containsBaseIntInChar(0,'B'));
 		assertTrue(BaseDeg.containsBaseIntInChar(0,'H'));
-		assertTrue(BaseDeg.containsBaseIntInChar(0,'V'));		
-		assertTrue(BaseDeg.containsBaseIntInChar(0,'N'));	
+		assertTrue(BaseDeg.containsBaseIntInChar(0,'V'));
+		assertTrue(BaseDeg.containsBaseIntInChar(0,'N'));
 
 		// C
 		assertFalse(BaseDeg.containsBaseIntInChar(1,'A'));
@@ -112,16 +121,15 @@ public class BaseDegTest extends TestCase {
 		assertFalse(BaseDeg.containsBaseIntInChar(1,'G'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'M'));
 		assertFalse(BaseDeg.containsBaseIntInChar(1,'R'));
-		assertFalse(BaseDeg.containsBaseIntInChar(1,'W'));		
+		assertFalse(BaseDeg.containsBaseIntInChar(1,'W'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'S'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'Y'));
-		assertFalse(BaseDeg.containsBaseIntInChar(1,'K'));		
+		assertFalse(BaseDeg.containsBaseIntInChar(1,'K'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'B'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'H'));
-		assertTrue(BaseDeg.containsBaseIntInChar(1,'V'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(1,'V'));
 		assertTrue(BaseDeg.containsBaseIntInChar(1,'N'));
-//		
-//		
+
 		// T
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'A'));
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'C'));
@@ -129,31 +137,29 @@ public class BaseDegTest extends TestCase {
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'G'));
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'M'));
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'R'));
-		assertTrue(BaseDeg.containsBaseIntInChar(2,'W'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(2,'W'));
 		assertFalse(BaseDeg.containsBaseIntInChar(2,'S'));
 		assertTrue(BaseDeg.containsBaseIntInChar(2,'Y'));
-		assertTrue(BaseDeg.containsBaseIntInChar(2,'K'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(2,'K'));
 		assertTrue(BaseDeg.containsBaseIntInChar(2,'B'));
 		assertTrue(BaseDeg.containsBaseIntInChar(2,'H'));
-		assertFalse(BaseDeg.containsBaseIntInChar(2,'V'));		
+		assertFalse(BaseDeg.containsBaseIntInChar(2,'V'));
 		assertTrue(BaseDeg.containsBaseIntInChar(2,'N'));
-//		
-//		// G
+
+		// G
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'A'));
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'C'));
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'T'));
 		assertTrue(BaseDeg.containsBaseIntInChar(3,'G'));
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'M'));
 		assertTrue(BaseDeg.containsBaseIntInChar(3,'R'));
-		assertFalse(BaseDeg.containsBaseIntInChar(3,'W'));		
+		assertFalse(BaseDeg.containsBaseIntInChar(3,'W'));
 		assertTrue(BaseDeg.containsBaseIntInChar(3,'S'));
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'Y'));
-		assertTrue(BaseDeg.containsBaseIntInChar(3,'K'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(3,'K'));
 		assertTrue(BaseDeg.containsBaseIntInChar(3,'B'));
 		assertFalse(BaseDeg.containsBaseIntInChar(3,'H'));
-		assertTrue(BaseDeg.containsBaseIntInChar(3,'V'));		
+		assertTrue(BaseDeg.containsBaseIntInChar(3,'V'));
 		assertTrue(BaseDeg.containsBaseIntInChar(3,'N'));
-		
 	}
-	
 }

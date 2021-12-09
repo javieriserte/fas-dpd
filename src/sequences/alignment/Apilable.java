@@ -56,6 +56,6 @@ import degeneration.GeneticCode;
  */
 public interface Apilable {
 	public DNASeq pileUpWith(Apilable anotherApilable, GeneticCode myGC);
-	public DNASeq pileUpWithDNAseq(DNASeq anotherSeq, GeneticCode myGC); 
+	public DNASeq pileUpWithDNAseq(DNASeq anotherSeq, GeneticCode myGC);
 	public DNASeq pileUpWithProtseq(ProtSeq anotherSeq, GeneticCode myGC);
 }
