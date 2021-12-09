@@ -16,17 +16,32 @@ public class DNASeqTest extends TestCase {
 	private DNASeq myDNASeq2 = null;
 	private ProtSeq myProtSeq = null;
 	private GeneticCode myGC = null;
-	
+	private DNASeq gappedDNASeq = null;
+	private DNASeq unGappedDNASeq;
+
 	public DNASeqTest(String name) {
 		super(name);
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		myDNASeq = new DNASeq("AAAAAAAAAAAAAAAAAAAAGCAGCAGCAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Secuencia de prueba de 60 nt");
-		myDNASeq2 = new DNASeq("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT", "Secuencia de prueba de 60 nt");
-		myProtSeq = new ProtSeq("AAAAAAAAAAAAAAAAAAAA", "test sequence 20 aa");
+		myDNASeq = new DNASeq(
+			"AAAAAAAAAAAAAAAAAAAAGCAGCAGCAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+			"Secuencia de prueba de 60 nt");
+		myDNASeq2 = new DNASeq(
+			"TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+			"Secuencia de prueba de 60 nt");
+		myProtSeq = new ProtSeq(
+			"AAAAAAAAAAAAAAAAAAAA",
+			"test sequence 20 aa"
+		);
+		gappedDNASeq = new DNASeq(
+			"-ACGT.",
+			"Sequence with gaps");
+		unGappedDNASeq = new DNASeq(
+			"TACGTT",
+			"Sequence with gaps");
+
 		myGC = new GeneticCode("StandardCode");
 	}
 
@@ -48,7 +63,21 @@ public class DNASeqTest extends TestCase {
 	}
 
 	public void testApilarCon() {
-		assertEquals("WWWWWWWWWWWWWWWWWWWWKYWKYWKYWKWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",myDNASeq.pileUpWith(myDNASeq2, myGC).getSequence());
+		assertEquals(
+			"WWWWWWWWWWWWWWWWWWWWKYWKYWKYWKWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+			myDNASeq
+				.pileUpWith(myDNASeq2, myGC)
+				.getSequence()
+			);
+	}
+
+	public void testPileUpWithGaps() {
+		assertEquals(
+			"NACGTT",
+			gappedDNASeq
+				.pileUpWith(unGappedDNASeq, myGC)
+				.getSequence()
+			);
 	}
 
 	public void testApilarConDNAseq() {
