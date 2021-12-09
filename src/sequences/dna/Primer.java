@@ -7,21 +7,18 @@ import sequences.util.compare.SequenceComparator;
  * Class to represent a Oligonucleotide that is Primer for PCR.
  * Extend of DNAseq.
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * 
  */
 public class Primer extends DNASeq implements Comparable<Primer>{
-	// INSTANCE VARIABLES
 	private float score;
 	private int start;
 	private int end;
 	private boolean directStrand;
 
-	// CONSTRUCTOR	
 	/**
 	 * Creates a new primer from a sequence and a description.
-	 * Also requires a start, end and directStrand values that 
+	 * Also requires a start, end and directStrand values that
 	 * references to the sequence from where the primer was designed.
-	 * 
+	 *
 	 */
 	public Primer(String sequence, String description,int start,int end, boolean directStrand) {
 		super(sequence,description);
@@ -30,8 +27,6 @@ public class Primer extends DNASeq implements Comparable<Primer>{
 		this.setDirectStrand(directStrand);
 	}
 
-
-	// INSTANCE METHODS 
 	/**
 	 * Implementation of comparable interface.
 	 * Primers are comparable by a score.
@@ -40,7 +35,6 @@ public class Primer extends DNASeq implements Comparable<Primer>{
 	public int compareTo(Primer anotherPrimer) {
 		return ((Float) this.getScore()).compareTo(anotherPrimer.getScore());
 	}
-	
 
 	public static void main(String[] arg) {
 		Primer p1 = new Primer("CACAAAAAAAAAAAAAAA", "primer1", 1, 10, true);
@@ -70,7 +64,6 @@ public class Primer extends DNASeq implements Comparable<Primer>{
 
 
 	}
-	
 	// GETTERS & SETTERS
 	public float getScore() {
 		return score;
