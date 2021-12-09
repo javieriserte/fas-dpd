@@ -1,7 +1,7 @@
 FAS-DPD:
 Family Specific Degenerate Primer Design program: 
 
-Version 1.4.1
+Version 1.4.2
 
 FAS-DPD is a command line software that designs degenerated oligonucleotides to use in PCR in order to amplify new members of a family of sequences.
 FAS-DPD is written in Java, so you will need a Java Virtual Machine to run it.

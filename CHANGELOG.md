@@ -1,0 +1,12 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+
+## 1.4.2 2021-12-09.
+- Add CHANGELOG.md file.
+- Added icons.
+- Updated test to JUnit 5.
+- Added highlights to alignment explorer.
+- Fixed charset of source code files.
+- All filter can be added with a single button now.
+- Updated version of cmdGetArg to 2.1.2.
