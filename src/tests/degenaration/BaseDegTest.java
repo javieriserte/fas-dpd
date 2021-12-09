@@ -6,9 +6,7 @@ import junit.framework.TestCase;
 
 /**
  * Test case.
- * 
  * @author Javier Iserte <jiserte@unq.edu.ar>
- * 
  */
 public class BaseDegTest extends TestCase {
 
@@ -29,10 +27,11 @@ public class BaseDegTest extends TestCase {
 		assertEquals(BaseDeg.getIntFromChar('D'),13);
 		assertEquals(BaseDeg.getIntFromChar('B'),14);
 		assertEquals(BaseDeg.getIntFromChar('N'),15);
+		assertEquals(BaseDeg.getIntFromChar('.'),0);
 	}
 
 	public void testGetCharbaseFromInt() {
-		assertEquals(BaseDeg.getCharFromInt(0),'-');
+		assertEquals(BaseDeg.getCharFromInt(0),'.');
 		assertEquals(BaseDeg.getCharFromInt(1),'A');
 		assertEquals(BaseDeg.getCharFromInt(2),'C');
 		assertEquals(BaseDeg.getCharFromInt(3),'M');
@@ -65,6 +64,18 @@ public class BaseDegTest extends TestCase {
 		assertEquals('N',BaseDeg.pileUpBase('W', 'S'));
 		assertEquals('N',BaseDeg.pileUpBase('R', 'Y'));
 		assertEquals('N',BaseDeg.pileUpBase('M', 'K'));
+
+		assertEquals('N',BaseDeg.pileUpBase('A', '-'));
+		assertEquals('N',BaseDeg.pileUpBase('-', 'A'));
+
+		assertEquals('A',BaseDeg.pileUpBase('.', 'A'));
+		assertEquals('A',BaseDeg.pileUpBase('A', '.'));
+
+		assertEquals('N',BaseDeg.pileUpBase('.', '-'));
+		assertEquals('N',BaseDeg.pileUpBase('-', '.'));
+
+		assertEquals('.',BaseDeg.pileUpBase('.', '.'));
+
 	}
 
 	public void testCalculateDegValue() {
@@ -82,7 +93,8 @@ public class BaseDegTest extends TestCase {
 		assertEquals(3, BaseDeg.getDegValueFromChar('H'));
 		assertEquals(3, BaseDeg.getDegValueFromChar('V'));
 		assertEquals(4, BaseDeg.getDegValueFromChar('N'));
-
+		assertEquals(4, BaseDeg.getDegValueFromChar('-'));
+		assertEquals(0, BaseDeg.getDegValueFromChar('.'));
 	}
 
 	public void testcontainsBaseInt() {
