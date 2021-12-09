@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [#2] 2021-12-09 
+- Updated javadoc documentation.
+
+## [#5] 2021-12-09 
+- Use dots for gaps corresponding to unknown sequences.
+
 ## 1.4.2 2021-12-09.
 - Add CHANGELOG.md file.
 - Added icons.
