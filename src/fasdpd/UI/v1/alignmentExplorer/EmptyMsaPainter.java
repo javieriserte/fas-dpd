@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.util.Optional;
 import java.util.Set;
 
 import sequences.alignment.Alignment;
@@ -64,6 +65,11 @@ public class EmptyMsaPainter implements AbstractMsaPainter {
 
     @Override
     public AbstractMsaPainter withHightlightedRegions(Set<ShapePainter> hightlightedRegions) {
+        return this;
+    }
+
+    @Override
+    public AbstractMsaPainter withSelectedRow(Optional<Integer> selectedRow) {
         return this;
     }
 }
