@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [#2] 2021-12-122 
+- Show selected rows in msa explorer.
+
 ## [#2] 2021-12-09 
 - Updated javadoc documentation.
 

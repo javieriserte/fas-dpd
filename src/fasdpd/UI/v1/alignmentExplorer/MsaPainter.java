@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import fasdpd.UI.v1.colors.ColoringStrategy;
@@ -19,11 +20,12 @@ import sequences.dna.DNASeq;
 import sequences.protein.ProtSeq;
 
 public class MsaPainter implements AbstractMsaPainter {
-
+    private static final int Y_OFFSET = 20;
     private Alignment alignment;
     private Font font;
     private Set<ShapePainter> highlights = new HashSet<ShapePainter>();
-    private static final int Y_OFFSET = 20;
+    private Optional<Integer> selectedRow = Optional.empty();
+    private Dimension imageDimension;
 
     @Override
     public AbstractMsaPainter withAlignment(Alignment aln) {
@@ -39,29 +41,29 @@ public class MsaPainter implements AbstractMsaPainter {
     @Override
     public BufferedImage paint() {
         Dimension dim = computeImageDimension();
+        imageDimension = dim;
         BufferedImage image = createEmptyImage(dim);
         Graphics2D g = createGraphics(image);
         ColoringStrategy color = this.getColorStrategy();
         paintBackground(g, dim);
-        // highlights.add(
-        //     new BoxPainter()
-        //         .setColor(new Color(235,235,255))
-        //         .setStart(5)
-        //         .setEnd(15)
-        //         .setOnTopBar(false)
-        // );
-        // highlights.add(
-        //     new ArrowPainter(false)
-        //         .setColor(new Color(220,225,235))
-        //         .setStart(5)
-        //         .setEnd(35)
-        //         .setOnTopBar(true)
-        // );
+        paintSelectedRow(g, selectedRow);
         paintHighlighting(g);
         paintSequence(g, color);
         return image;
     }
 
+
+    private void paintSelectedRow(
+            Graphics2D g,
+            Optional<Integer> selectedRow) {
+        if (!selectedRow.isPresent()) {
+            return;
+        }
+        g.setColor(new Color(212, 235, 245));
+        int index = selectedRow.get();
+        int textHeight = g.getFontMetrics().getHeight();
+        g.fillRect(0, Y_OFFSET + textHeight*index, imageDimension.width, textHeight);
+    }
 
     private Dimension computeImageDimension() {
         List<Sequence> sequences = this.alignment.getSeq();
@@ -158,6 +160,12 @@ public class MsaPainter implements AbstractMsaPainter {
     public AbstractMsaPainter withHightlightedRegions(Set<ShapePainter> hightlightedRegions) {
         this.highlights.clear();
         this.highlights.addAll(hightlightedRegions);
+        return this;
+    }
+
+    @Override
+    public AbstractMsaPainter withSelectedRow(Optional<Integer> selectedRow) {
+        this.selectedRow = selectedRow;
         return this;
     }
 }

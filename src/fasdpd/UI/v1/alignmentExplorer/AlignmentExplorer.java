@@ -11,15 +11,22 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.awt.GradientPaint;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -49,8 +56,11 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	private JLabel header;
 	private Description descriptions;
 	private Font monoSpaceFont;
+	private PropertyChangeSupport properties = new PropertyChangeSupport(this);
 
-	public AlignmentExplorer(Alignment alingment, GeneticCode geneticCode) {
+	public AlignmentExplorer(
+			Alignment alingment,
+			GeneticCode geneticCode) {
 		super();
 		this.alignment = alingment;
 		this.geneticCode = geneticCode;
@@ -195,7 +205,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		String[] fontNames = new String[]{
 			"Courier New",
 			"FreeMono",
-			"Arial"
+			"Arial",
 		};
 		GraphicsEnvironment env = GraphicsEnvironment
 			.getLocalGraphicsEnvironment();
@@ -227,7 +237,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 
 	private void setUpMainScrollPane() {
 		mainScrollPane = new JScrollPane();
-		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		mainScrollPane.setBorder(
+			new EmptyBorder(0, 0, 0, 0)
+		);
 		setUpMainView();
 		mainScrollPane.setViewportView(mainView);
 		setUpHeader();
@@ -260,6 +272,18 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		mainView.setFont(monoSpaceFont);
 		mainView.setOpaque(true);
 		mainView.setBackground(this.backgroundColor);
+		AlignmentExplorer.this.properties.addPropertyChangeListener(
+			"selectedRow",
+			new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				mainView.setSelectedRow(
+					(Optional<Integer>) evt.getNewValue()
+				);
+				mainView.updateImage();
+				mainView.updateUI();
+			}
+		});
 	}
 
 	private void createGUI() {
@@ -304,47 +328,147 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 
 	private class Description extends JLabel {
 		private static final long serialVersionUID = 3066870404629353044L;
+		private static final int Y_OFFSET = 20;
+		private int charHeight = 0;
 		private Alignment alignment = null;
 		private BufferedImage biDescriptions = null;
-		private static final int Y_OFFSET = 20;
+		private int numberOfSequences;
+		protected Optional<Integer> selectedRow = Optional.empty();
+		protected boolean requiresImageUpdate = true;
+
 		public Description(Alignment alignment) {
 			super();
 			this.alignment = alignment;
+			properties.addPropertyChangeListener(
+				"selectedRow",
+				new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					requiresImageUpdate = true;
+					updateUI();
+				}
+			});
+			this.addComponentListener(new ComponentListener() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					requiresImageUpdate = true;
+					Description.this.updateUI();
+				}
+				@Override
+				public void componentMoved(ComponentEvent e) {}
+				@Override
+				public void componentShown(ComponentEvent e) {}
+				@Override
+				public void componentHidden(ComponentEvent e) {}
+			});
+			this.addMouseListener(
+				new MouseListener() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (MouseEvent.BUTTON1 == e.getButton()) {
+							var y = e.getY();
+							var index = (y - Y_OFFSET) / charHeight;
+							var old = selectedRow;
+							selectedRow = Optional.of(
+								Math.min(index, numberOfSequences-1)
+							);
+							properties.firePropertyChange(
+								"selectedRow",
+								old,
+								selectedRow
+							);
+						}
+					}
+					@Override
+					public void mousePressed(MouseEvent e) {}
+					@Override
+					public void mouseReleased(MouseEvent e) {}
+					@Override
+					public void mouseEntered(MouseEvent e) {}
+					@Override
+					public void mouseExited(MouseEvent e) {}
+				}
+			);
 		}
 		public void paint(Graphics g) {
 			super.paint(g);
-			if (biDescriptions == null)
+			if (requiresImageUpdate) {
 				createImage();
+				requiresImageUpdate = false;
+			}
 			g.drawImage((Image) this.biDescriptions, 0, 0, null);
 		}
-		private void createImage() {
-			List<Sequence> sequences = this.alignment.getSeq();
-			int size = sequences.size();
-			String maxLengthDesc = "";
-			maxLengthDesc = getMaxLengthSequence(sequences);
-			biDescriptions = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
+
+		private Dimension computeImageMetrics() {
+			var tmpImage  = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = (Graphics2D) tmpImage.getGraphics();
 			g.setFont(AlignmentExplorer.this.getFont());
-			int textWidth = g.getFontMetrics().stringWidth(maxLengthDesc);
-			int textHeight = g.getFontMetrics().getHeight() * size;
+			var sequences = alignment.getSeq();
+			numberOfSequences = sequences.size();
+			String maxLengthDesc = getMaxLengthSequence(sequences);
+			var textAreaWidth = g.getFontMetrics().stringWidth(maxLengthDesc);
+			charHeight = g.getFontMetrics().getHeight();
+			var textAreaHeight = charHeight * numberOfSequences;
+			return new Dimension(textAreaWidth, textAreaHeight);
+		}
+
+		private Dimension initiliazesEmptyImage() {
+			Dimension imageDimension = computeImageMetrics();
 			biDescriptions = new BufferedImage(
-				textWidth + 10,
-				Y_OFFSET + textHeight + 10,
-				BufferedImage.TYPE_INT_RGB);
-			g = (Graphics2D) biDescriptions.getGraphics();
+				this.getWidth(),
+				Y_OFFSET + imageDimension.height + 10,
+				BufferedImage.TYPE_INT_RGB
+			);
+			return imageDimension;
+		}
+
+		private void paintBackground(Dimension imageDimension) {
+			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
 			g.setColor(Color.white);
-			g.fillRect(0, 0, textWidth + 10, Y_OFFSET + textHeight + 10);
+			g.fillRect(
+				0,
+				0,
+				this.getWidth(),
+				Y_OFFSET + imageDimension.height + 10
+			);
+		}
+
+		private void paintText() {
+			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
 			g.setColor(Color.black);
 			g.setFont(AlignmentExplorer.this.getFont());
-			int textLineHeight = g.getFontMetrics().getHeight();
+			int descent = g.getFontMetrics().getDescent();
 			int counter = 0;
 			for (Sequence sequence : this.alignment.getSeq()) {
 				String desc = sequence.getDescription();
 				counter++;
-				g.drawString(desc, 5, Y_OFFSET + textLineHeight * (counter));
+				g.drawString(desc, 5, Y_OFFSET + charHeight * (counter) - descent);
 			}
-			this.setPreferredSize(new Dimension(150, Y_OFFSET + textHeight + 10));
 		}
+
+		private void paintSelection(Dimension imageDimension) {
+			if (selectedRow.isEmpty()) {
+				return;
+			}
+			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
+			var gradient = new GradientPaint(
+				0, 0, new Color(212, 235, 245),
+				75, 0, new Color(212, 235, 245)
+			);
+			g.setPaint(gradient);
+			int row = selectedRow.get();
+			g.fillRect(
+				0, row*charHeight+Y_OFFSET, biDescriptions.getWidth(), charHeight
+			);
+		}
+
+		private void createImage() {
+			var imageDimension = initiliazesEmptyImage();
+			paintBackground(imageDimension);
+			paintSelection(imageDimension);
+			paintText();
+		}
+
 		protected String getMaxLengthSequence(List<Sequence> sequences) {
 			int max = 0;
 			Sequence s = null;
@@ -367,6 +491,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private Alignment alignment = null;
 		private BufferedImage biMainView = null;
 		private boolean hasMsaImage = false;
+		private Optional<Integer> selectedRow = Optional.empty();
 
 		public MainView(Alignment alignment) {
 			super();
@@ -399,6 +524,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 				.withAlignment(this.alignment)
 				.withFont(AlignmentExplorer.this.getFont())
 				.withHightlightedRegions(hightlightedRegions)
+				.withSelectedRow(selectedRow)
 				.defaultDimension(new Dimension(
 					visible.width, visible.height
 				));
@@ -414,5 +540,10 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			}
 			return;
 		}
+
+		public void setSelectedRow(Optional<Integer> selectedRow) {
+			this.selectedRow = selectedRow;
+		}
 	}
 }
+
