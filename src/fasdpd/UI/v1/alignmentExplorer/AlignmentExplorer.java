@@ -72,7 +72,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		int maxScroll = mainScrollPane
 			.getHorizontalScrollBar()
 			.getMaximum();
-		int alnLength = alignment.lenght() * alignment.getSeq().get(0).sizeInBases();
+		int alnLength = alignment
+			.lenght() * alignment.getSeq().get(0).sizeInBases();
 		int viewportSize = mainScrollPane
 			.getViewport()
 			.getWidth();
@@ -223,7 +224,8 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 	}
 
 	private void addCornersToMainScrollPane(JScrollPane pane) {
-		String[] corners = new String[] { ScrollPaneConstants.UPPER_RIGHT_CORNER,
+		String[] corners = new String[] {
+			ScrollPaneConstants.UPPER_RIGHT_CORNER,
 			ScrollPaneConstants.LOWER_LEFT_CORNER,
 			ScrollPaneConstants.UPPER_LEFT_CORNER };
 		for (String c : corners) {
@@ -492,7 +494,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private BufferedImage biMainView = null;
 		private boolean hasMsaImage = false;
 		private Optional<Integer> selectedRow = Optional.empty();
-
 		public MainView(Alignment alignment) {
 			super();
 			this.alignment = alignment;
@@ -509,11 +510,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			this.alignment = aln;
 			createImage();
 		}
-
 		public void updateImage() {
 			hasMsaImage = false;
 		}
-
 		private void createImage() {
 			boolean emptyAln = this.alignment.lenght() == 0;
 			AbstractMsaPainter painter = emptyAln?
@@ -540,7 +539,6 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			}
 			return;
 		}
-
 		public void setSelectedRow(Optional<Integer> selectedRow) {
 			this.selectedRow = selectedRow;
 		}
