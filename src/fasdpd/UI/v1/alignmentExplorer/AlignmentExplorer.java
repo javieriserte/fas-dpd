@@ -277,9 +277,9 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 			new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				mainView.setSelectedRow(
-					(Optional<Integer>) evt.getNewValue()
-				);
+				@SuppressWarnings("unchecked")
+				var newValue = (Optional<Integer>) evt.getNewValue();
+				mainView.setSelectedRow(newValue);
 				mainView.updateImage();
 				mainView.updateUI();
 			}
