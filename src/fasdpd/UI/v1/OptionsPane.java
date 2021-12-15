@@ -105,7 +105,7 @@ public class OptionsPane extends JPanel {
 	}
 
 	public void addExportFiltersActionListener(ActionListener listener) {
-	  resultViewer.addExportFiltersActionListener(listener);
+		resultViewer.addExportFiltersActionListener(listener);
 	}
 
 	private class ResultViewerSelectionListener implements ListSelectionListener {
@@ -126,7 +126,7 @@ public class OptionsPane extends JPanel {
 						alignmentExplorer.highlightMsaBox(
 							p.isDirectStrand()?p.getStart():p.getEnd(),
 							p.isDirectStrand()?p.getEnd():p.getStart(),
-							new Color(250,250,200)
+							new Color(250,250,200,100)
 						);
 						alignmentExplorer.focusOnMsaRegion(
 							p.getStart(),
@@ -150,12 +150,12 @@ public class OptionsPane extends JPanel {
 						alignmentExplorer.highlightMsaBox(
 							p.getForward().getStart(),
 							p.getForward().getEnd(),
-							new Color(250,250,200)
+							new Color(250,250,200, 100)
 						);
 						alignmentExplorer.highlightMsaBox(
 							p.getReverse().getEnd(),
 							p.getReverse().getStart(),
-							new Color(250,250,200)
+							new Color(250,250,200, 100)
 						);
 						alignmentExplorer.focusOnMsaRegion(
 							p.getForward().getStart(),
