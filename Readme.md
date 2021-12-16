@@ -1,5 +1,5 @@
 
-# FAS-DPD - Family Specific Degenerate Primer Design tool Version 1.4.1
+# FAS-DPD - Family Specific Degenerate Primer Design tool Version 1.4.3
 
 Date: Oct 15th, 2021.
 
