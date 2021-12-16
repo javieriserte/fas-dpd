@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## [#18] 2021-12-16
+- Help is shown correctly.
 
 ## [#14] 2021-12-16
 - Launcher files in examples updated.
