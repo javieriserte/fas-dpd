@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [#14] 2021-12-16
+- Launcher files in examples updated.
+
 ## [#15] 2021-12-16
 - Check that StandardCode file exists.
 
@@ -25,3 +29,24 @@ All notable changes to this project will be documented in this file.
 - Fixed charset of source code files.
 - All filter can be added with a single button now.
 - Updated version of cmdGetArg to 2.1.2.
+
+## 1.4.1 2021-10-15
+ - Updated to Java JRE 15.
+ - Updated GUI.
+
+## 1.2.2 2013-01-20
+ - Corrected a bug while performing back-translation. (Thanks to Dr. Hokei
+   Nakamura).
+ - Corrected the message error management in command line.
+   Added documentation of filters.
+
+## 1.2.1 2011-08-16
+ - Include several Filters for search primers.
+ - Search Primer Pairs.
+ - Added Swing based GUI.
+
+## 1.1.2 Alpha 2010-09-22
+ - Some modifications to FastaIO package.
+
+## 1.1.1 Alpha 2010-09-19
+ - First Versioned Release.
