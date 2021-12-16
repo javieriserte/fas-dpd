@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [#15] 2021-12-16
+- Check that StandardCode file exists.
+
 ## [#10] 2021-12-15
 - Highlighted regions are semitransparent
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -188,9 +189,19 @@ public class MainFASDPD extends javax.swing.JFrame {
 		if (seqPairs != null) {
 			for (Pair<String, String> pair : seqPairs) {
 				if (this.getSearchParameter().isDNA()) {
-					aln.addSequence(new DNASeq(pair.getSecond(), pair.getFirst()));
+					aln.addSequence(
+						new DNASeq(
+							pair.getSecond(),
+							pair.getFirst()
+						)
+					);
 				} else {
-					aln.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
+					aln.addSequence(
+						new ProtSeq(
+							pair.getSecond(),
+							pair.getFirst()
+						)
+					);
 				}
 			}
 		}
@@ -207,9 +218,27 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 
+	private void validateStandardCodeExists(String gcfile) {
+		File gcf = new File(
+			Paths
+				.get(gcfile)
+				.toAbsolutePath()
+				.normalize()
+				.toString()
+		);
+		if (!gcf.exists()) {
+			System.err.println(
+				gcf.getAbsolutePath() + " file not found."
+			);
+			System.exit(1);
+		}
+	}
+
 	protected void loadOptionsPane() throws IOException {
-		GeneticCode gc = new GeneticCode("StandardCode");
-		this.searchParameter.setGCfile("StandardCode");
+		String gcfile = "StandardCode";
+		validateStandardCodeExists(gcfile);
+		GeneticCode gc = new GeneticCode(gcfile);
+		this.searchParameter.setGCfile(gcfile);
 		op = new OptionsPane(getAlignment(), gc, MainFASDPD.this);
 		op.setOpaque(true);
 		op.addExportFiltersActionListener(new ExportFiltersActionListener());
@@ -238,13 +267,13 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	private void setTextValueForDnaButton(JButton b) {
-    if (isDNA) {
-      b.setIcon(getIconFromResource("icons/dna.png"));
-      b.setToolTipText("DNA MSA");
-    } else {
-      b.setIcon(getIconFromResource("icons/protein.png"));
-      b.setToolTipText("Protein MSA");
-    }
+		if (isDNA) {
+			b.setIcon(getIconFromResource("icons/dna.png"));
+			b.setToolTipText("DNA MSA");
+		} else {
+			b.setIcon(getIconFromResource("icons/protein.png"));
+			b.setToolTipText("Protein MSA");
+		}
 	}
 
 	private void setTextValueForSearchTypeButton(JButton b) {
@@ -270,12 +299,15 @@ public class MainFASDPD extends javax.swing.JFrame {
 		final JButton b = new JButton();
 		setTextValueForSearchTypeButton(b);
 		searchTypeProp
-			.addPropertyChangeListener("search-type", new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					setTextValueForSearchTypeButton(b);
+			.addPropertyChangeListener(
+				"search-type",
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						setTextValueForSearchTypeButton(b);
+					}
 				}
-			});
+			);
 		b.addActionListener(new toggleSearchTypeAction());
 		return b;
 	}
@@ -452,7 +484,9 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 		private JFileChooser createFileChooser() {
 			FileFilter fastaFilter = getFileFilter();
-			JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
+			JFileChooser iFile = new JFileChooser(
+				System.getProperty("user.dir")
+			);
 			iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			iFile.setMultiSelectionEnabled(false);
 			iFile.setDialogTitle("Select Fasta Alignment");
@@ -522,7 +556,9 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 		private JFileChooser createFileChooser() {
 		FileFilter fastaFilter = getFileFilter();
-		JFileChooser iFile = new JFileChooser(System.getProperty("user.dir"));
+		JFileChooser iFile = new JFileChooser(
+			System.getProperty("user.dir")
+		);
 		iFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		iFile.setMultiSelectionEnabled(false);
 		iFile.setDialogTitle("Save Filter Data");
