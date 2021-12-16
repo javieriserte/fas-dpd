@@ -2,25 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [#18] 2021-12-16
+## 1.4.3 2021-12-16.
+- Updated manual.
 - Help is shown correctly.
-
-## [#14] 2021-12-16
 - Launcher files in examples updated.
-
-## [#15] 2021-12-16
 - Check that StandardCode file exists.
-
-## [#10] 2021-12-15
 - Highlighted regions are semitransparent
-
-## [#4] 2021-12-12
 - Show selected rows in msa explorer.
-
-## [#2] 2021-12-09
 - Updated javadoc documentation.
-
-## [#5] 2021-12-09
 - Use dots for gaps corresponding to unknown sequences.
 
 ## 1.4.2 2021-12-09.
