@@ -1,7 +1,6 @@
-
 # FAS-DPD - Family Specific Degenerate Primer Design tool Version 1.4.3
 
-Date: Oct 15th, 2021.
+Date: 2021-12-17
 
 Released under the terms of the General Public License Version 3 (GPL v3)
 See the file LICENCE for details.
@@ -60,14 +59,14 @@ Manual with instructions to use FAS-DPD are in file: 'MANUAL'
     /src/         : Code source files.
     /examples/    : Example showing how to use FAS-DPD.
     /doc/         : API documentation.
-    /lib/         : Contains cmdGetArg_2.1.2.jar - Library for command line parsing.
+    /lib/         : Contains cmdGetArg_2.1.2.jar - Library for command line
+                    parsing.
     StandardCode  : File containing the standard genetic code used in FAS-DPD.
     LICENCE       : GPL v3 license terms.
-    CHANGES       : Log with version modifications.
-    TO_DO         : Modifications of future versions of FAS-DPD.
-    VERSION       : Version Log.
-    MANUAL        : FAS-DPD manual.
-    README        : This file.
+    CHANGELOG     : Log with version modifications.
+    VERSION       : Version.
+    MANUAL.md     : FAS-DPD manual.
+    Readme.md     : This file.
 
 ## Bug report
 

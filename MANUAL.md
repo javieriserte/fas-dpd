@@ -1,4 +1,4 @@
-# FAS-DPD - Family Specific Degenerate Primer Design program:
+# FAS-DPD - Family Specific Degenerate Primer Design program
 Version 1.4.3
 
 FAS-DPD is a command line software that designs degenerated oligonucleotides to
@@ -7,7 +7,7 @@ FAS-DPD is written in Java, so you will need a Java Virtual Machine to run it.
 
 ## Usage
 
-    java -jar fasdpd.1.4.3.cli.jar fasdpd.FASDPD 'Commands'
+    java -jar fasdpd.1.4.3.cli.jar fasdpd.FASDPD Commands
 
 ## Commands
 

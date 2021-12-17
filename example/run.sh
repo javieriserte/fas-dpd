@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-java -jar fasdpd.x.y.z.cli.jar \
+java -jar fasdpd.1.4.3.cli.jar \
     /infile:"Cyto_c_ox.fas" \
     /OUTFILE:"Cyto_c_ox.fas.primers" \
     /gcfile:"StandardCode" \
