@@ -11,9 +11,12 @@ add_files_to_release_gui() {
     cp bin/* releases/gui/jar -R
     cp StandardCode releases/gui/
     cp VERSION releases/gui/
+    cp MANUAL.md releases/gui/
     cp LICENSE releases/gui/
     cp Readme.md releases/gui/
-    unzip lib/cmdGetArg_2.1.2.jar "cmdGA2/**/*" "cmdGA/**/*" -d releases/gui/jar
+    unzip lib/cmdGetArg_2.1.2.jar "cmdGA2/*" "cmdGA/*" "cmdGA2/**/*" "cmdGA/**/*" -d releases/gui/jar
+    echo "java -jar fasdpd.$ver.gui.jar ""$""@" > releases/gui/launch.sh
+    echo "java -jar fasdpd.$ver.gui.jar %*" > releases/gui/launch.bat
 }
 
 add_files_to_release_cli() {
@@ -21,9 +24,12 @@ add_files_to_release_cli() {
     cp example releases/cli/ -R
     cp StandardCode releases/cli/
     cp VERSION releases/cli/
+    cp MANUAL.md releases/cli/
     cp LICENSE releases/cli/
     cp Readme.md releases/cli/
-    unzip lib/cmdGetArg_2.1.2.jar "cmdGA2/**/*" "cmdGA/**/*" -d releases/cli/jar
+    unzip lib/cmdGetArg_2.1.2.jar "cmdGA2/*" "cmdGA/*" "cmdGA2/**/*" "cmdGA/**/*" -d releases/cli/jar
+    echo "java -jar fasdpd.$ver.cli.jar ""$""@" > releases/cli/launch.sh
+    echo "java -jar fasdpd.$ver.cli.jar %*" > releases/cli/launch.bat
 }
 
 build_gui_release() {
@@ -33,6 +39,8 @@ build_gui_release() {
         releases/gui/StandardCode \
         releases/gui/VERSION \
         releases/gui/LICENSE \
+        releases/gui/launch.sh \
+        releases/gui/launch.bat \
         releases/gui/Readme.md
     mv releases/gui/fasdpd.$ver.gui.zip .
 }
@@ -47,6 +55,8 @@ build_cli_release() {
         releases/cli/LICENSE \
         releases/cli/MANUAL.md \
         releases/cli/Readme.md \
+        releases/cli/launch.sh \
+        releases/cli/launch.bat \
         releases/cli/example.zip
     mv releases/cli/fasdpd.$ver.cli.zip .
 }
