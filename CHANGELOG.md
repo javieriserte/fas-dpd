@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Fix the format of some code files.
+- Deprecate AlignmentHTMLProducer and related classes.
+
 ## 1.4.3 2021-12-16.
 - Updated manual.
 - Help is shown correctly.

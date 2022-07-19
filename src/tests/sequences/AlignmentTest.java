@@ -1,16 +1,15 @@
 package tests.sequences;
 
-import java.awt.Color;
+// import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
-import sequences.Sequence;
-import sequences.alignment.Alignment;
-import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
-import sequences.dna.DNASeq;
-
 import degeneration.GeneticCode;
 import junit.framework.TestCase;
+import sequences.Sequence;
+import sequences.alignment.Alignment;
+// import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
+import sequences.dna.DNASeq;
 /**
  * Test Case
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
@@ -78,17 +77,18 @@ public class AlignmentTest extends TestCase {
 		}
 	}
 
-	public void testExportHTML_highlated() {
-		alin1.addSequence(ds1);
-		alin1.addSequence(ds2);
-		alin1.addSequence(ds3);
-		String r =(new AlignmentHTMLProducer()).produceHTML(
-			alin1,
-			null,
-			null,
-			new Color(255, 0, 255)
-		);
-		System.out.println(r);
-	}
+	// @Deprecated
+	// public void testExportHTML_highlated() {
+	// 	alin1.addSequence(ds1);
+	// 	alin1.addSequence(ds2);
+	// 	alin1.addSequence(ds3);
+	// 	String r =(new AlignmentHTMLProducer()).produceHTML(
+	// 		alin1,
+	// 		null,
+	// 		null,
+	// 		new Color(255, 0, 255)
+	// 	);
+	// 	System.out.println(r);
+	// }
 
 }
