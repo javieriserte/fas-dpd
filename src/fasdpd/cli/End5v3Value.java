@@ -1,4 +1,4 @@
-package fasdpd;
+package fasdpd.cli;
 
 import cmdGA2.returnvalues.ReturnValueParser;
 

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactoring of the CLI interface.
 - Fix the format of some code files.
 - Deprecate AlignmentHTMLProducer and related classes.
 

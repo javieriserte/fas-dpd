@@ -157,10 +157,10 @@ public class GeneticCode {
 		} else
 		if (gapsS1[x] && gapsS2[x]) {
 			sb.append("-");
-		} else 
+		} else
 		if (gapsS1[x]) {
 			sb.append(DNAseq2.charAt(x));
-		} else 
+		} else
 		sb.append(DNAseq1.charAt(x));
 		}
 		return sb.toString();

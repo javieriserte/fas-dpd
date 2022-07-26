@@ -31,12 +31,11 @@ import sequences.dna.DNASeq;
 import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
-
-import fasdpd.FASDPD;
 import fasdpd.PrimerSearchType;
 import fasdpd.SearchParameter;
 import fasdpd.StrandSearchDirection;
 import fasdpd.UI.v1.filterCreators.FilterCreator;
+import fasdpd.cli.FASDPD;
 import fastaIO.FastaFilter;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
