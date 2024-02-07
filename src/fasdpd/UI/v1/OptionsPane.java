@@ -114,7 +114,11 @@ public class OptionsPane extends JPanel {
 			Optional<Integer> selectedIndex = getSelectedIndex(e);
 			selectedIndex.ifPresent(
 				index -> {
-					PrimerOrPrimerPair selected = resultViewer.primerData.get(index);
+					List<PrimerOrPrimerPair> primerData = resultViewer.primerData;
+					if (primerData == null) {
+						return;
+					};
+					PrimerOrPrimerPair selected = primerData.get(index);
 					if (selected.isPrimer()) {
 						Primer p = selected.getPrimer();
 						alignmentExplorer.clearHighlightedRegions();

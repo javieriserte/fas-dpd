@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Fixed Changelog file format.
+- Fixed a bug where clicking an empty result list throws an error.
 - Refactoring of the CLI interface.
 - Fix the format of some code files.
 - Deprecate AlignmentHTMLProducer and related classes.
 
-## 1.4.3 2021-12-16.
+## 1.4.3 2021-12-16
+
 - Updated manual.
 - Help is shown correctly.
 - Launcher files in examples updated.
@@ -18,7 +21,8 @@ All notable changes to this project will be documented in this file.
 - Updated javadoc documentation.
 - Use dots for gaps corresponding to unknown sequences.
 
-## 1.4.2 2021-12-09.
+## 1.4.2 2021-12-09
+
 - Add CHANGELOG.md file.
 - Added icons.
 - Updated test to JUnit 5.
@@ -28,22 +32,27 @@ All notable changes to this project will be documented in this file.
 - Updated version of cmdGetArg to 2.1.2.
 
 ## 1.4.1 2021-10-15
- - Updated to Java JRE 15.
- - Updated GUI.
+
+- Updated to Java JRE 15.
+- Updated GUI.
 
 ## 1.2.2 2013-01-20
- - Corrected a bug while performing back-translation. (Thanks to Dr. Hokei
-   Nakamura).
- - Corrected the message error management in command line.
-   Added documentation of filters.
+
+- Corrected a bug while performing back-translation. (Thanks to Dr. Hokei
+  Nakamura).
+- Corrected the message error management in command line.
+- Added documentation of filters.
 
 ## 1.2.1 2011-08-16
- - Include several Filters for search primers.
- - Search Primer Pairs.
- - Added Swing based GUI.
+
+- Include several Filters for search primers.
+- Search Primer Pairs.
+- Added Swing based GUI.
 
 ## 1.1.2 Alpha 2010-09-22
- - Some modifications to FastaIO package.
+
+- Some modifications to FastaIO package.
 
 ## 1.1.1 Alpha 2010-09-19
- - First Versioned Release.
+
+- First Versioned Release.
