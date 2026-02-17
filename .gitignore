@@ -9,3 +9,6 @@ lib/junit-*.jar
 
 # Random files
 E6E7*
+
+# Releases
+/releases/*
