@@ -90,12 +90,16 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	private ImageIcon getIconFromResource(String resourcePath) {
-		URL iconURL = getClass().getResource(resourcePath);
+		String path = resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath;
+		URL iconURL = getClass().getResource(path);
+		if (iconURL == null) {
+			throw new IllegalStateException("Missing resource: " + path);
+		}
 		return new ImageIcon(iconURL);
 	}
 
 	private void setIcon() {
-		ImageIcon icon = getIconFromResource("icons/fasdpd.png");
+		ImageIcon icon = getIconFromResource("fasdpd.png");
 	this.setIconImage(icon.getImage());
 	}
 
@@ -267,21 +271,21 @@ public class MainFASDPD extends javax.swing.JFrame {
 
 	private void setTextValueForDnaButton(JButton b) {
 		if (isDNA) {
-			b.setIcon(getIconFromResource("icons/dna.png"));
+			b.setIcon(getIconFromResource("dna.png"));
 			b.setToolTipText("DNA MSA");
 		} else {
-			b.setIcon(getIconFromResource("icons/protein.png"));
+			b.setIcon(getIconFromResource("protein.png"));
 			b.setToolTipText("Protein MSA");
 		}
 	}
 
 	private void setTextValueForSearchTypeButton(JButton b) {
 		if (searchType.equals(PrimerSearchType.SingleEnd)) {
-			b.setIcon(getIconFromResource("icons/single-primer.png"));
+			b.setIcon(getIconFromResource("single-primer.png"));
 			b.setToolTipText("Single Primer");
 		}
 		if (searchType.equals(PrimerSearchType.DoubleEnd)) {
-			b.setIcon(getIconFromResource("icons/pair_primer.png"));
+			b.setIcon(getIconFromResource("pair_primer.png"));
 			b.setToolTipText("Primer Pair");
 		}
 	}
@@ -290,7 +294,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		JButton b = new JButton();
 		b.setToolTipText("Open MSA");
 		b.addActionListener(new jbOpenFileAction());
-		b.setIcon(getIconFromResource("icons/open.png"));
+		b.setIcon(getIconFromResource("open.png"));
 		return b;
 	}
 
@@ -329,7 +333,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private JButton createSearchParametersButton() {
 		final JButton b = new JButton();
 		b.setToolTipText("Parameters");
-		b.setIcon(getIconFromResource("icons/parameters.png"));
+		b.setIcon(getIconFromResource("parameters.png"));
 		b.addActionListener(new showParametersAction());
 		return b;
 	}
@@ -337,7 +341,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private JButton createPerformSearchButton() {
 		JButton b = new JButton();
 		b.setToolTipText("Search");
-		b.setIcon(getIconFromResource("icons/doSearch.png"));
+		b.setIcon(getIconFromResource("doSearch.png"));
 		b.addActionListener(new jbDoSearchAction());
 		return b;
 	}
@@ -345,7 +349,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 	private JButton createFiltersButton() {
 		JButton b = new JButton();
 		b.setToolTipText("Filters");
-		b.setIcon(getIconFromResource("icons/filters.png"));
+		b.setIcon(getIconFromResource("filters.png"));
 		b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
