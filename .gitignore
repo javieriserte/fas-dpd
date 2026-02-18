@@ -11,4 +11,7 @@ lib/junit-*.jar
 E6E7*
 
 # Releases
-/releases/*
+/releases/
+
+# Build for testing
+/bin-test/
