@@ -87,3 +87,12 @@ There are two dependencies required for this project.
 - cmdGetArg library: It comes included within the source code.
 - Junit 5: You can download junit-platform-console-standalone-1.8.2.jar from
     maven central and put it in the lib folder. Then update .classpath file.
+
+## Build with Gradle
+
+This project now includes Gradle build files.
+
+- Build classes: `gradle build`
+- Run tests: `gradle test`
+- Run CLI app: `gradle run`
+- Run GUI app: `gradle runGui`

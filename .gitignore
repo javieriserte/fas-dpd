@@ -15,3 +15,7 @@ E6E7*
 
 # Build for testing
 /bin-test/
+
+# Gradle
+.gradle/
+build/

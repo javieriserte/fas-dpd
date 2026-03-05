@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            exclude 'tests/**'
+        }
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/tests']
+        }
+    }
+}
+
+dependencies {
+    implementation files('lib/cmdGetArg_2.1.2.jar')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+}
+
+application {
+    mainClass = 'fasdpd.cli.FASDPD'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.register('runGui', JavaExec) {
+    group = 'application'
+    description = 'Runs the Swing GUI.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'fasdpd.UI.v1.MainFASDPD'
+}
