@@ -221,7 +221,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 
-	private void validateStandardCodeExists(String gcfile) {
+	private boolean validateStandardCodeExists(String gcfile) {
 		File gcf = new File(
 			Paths
 				.get(gcfile)
@@ -229,19 +229,19 @@ public class MainFASDPD extends javax.swing.JFrame {
 				.normalize()
 				.toString()
 		);
-		if (!gcf.exists()) {
-			System.err.println(
-				gcf.getAbsolutePath() + " file not found."
-			);
-			System.exit(1);
-		}
+		return gcf.exists();
 	}
 
 	protected void loadOptionsPane() throws IOException {
 		String gcfile = "StandardCode";
-		validateStandardCodeExists(gcfile);
-		GeneticCode gc = new GeneticCode(gcfile);
-		this.searchParameter.setGCfile(gcfile);
+		GeneticCode gc = null;
+    if (validateStandardCodeExists(gcfile)) {
+		  gc = new GeneticCode(gcfile);
+    } else {
+      gc = GeneticCode.standard();
+    }
+
+		this.searchParameter.setGC(gc);
 		op = new OptionsPane(getAlignment(), gc, MainFASDPD.this);
 		op.setOpaque(true);
 		op.addExportFiltersActionListener(new ExportFiltersActionListener());

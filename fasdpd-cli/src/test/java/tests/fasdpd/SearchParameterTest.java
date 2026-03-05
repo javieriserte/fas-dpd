@@ -1,6 +1,8 @@
 
 package tests.fasdpd;
 
+import java.io.IOException;
+
 import cmdGA2.exceptions.IncorrectCommandLineException;
 import fasdpd.SearchParameter;
 import fasdpd.cli.FASDPDCommandLine;
@@ -16,18 +18,19 @@ public class SearchParameterTest extends TestCase {
 	}
 
 	public void testSearchParameter() {
-		String[]  cl ="/Q:30 /FDEG /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
+		String[]  cl ="/Q:30 /FDEG /INFILE: \"c:\\javier\\archivo.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
 		SearchParameter s = null;
 
 		try {
 			var cmd = FASDPDCommandLine.create_default();
 			cmd.parse(cl);
 			s = SearchParameterBuilder.getSearchParameter(cmd);
-		} catch (IncorrectCommandLineException e) {e.printStackTrace(); fail(); }
+		} catch (Exception e) {
+      e.printStackTrace(); fail();
+    }
 
 		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile().get().strip());
 		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile().strip());
-		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile().strip());
 		assertEquals(1f,s.getNx());
 		assertEquals(1f,s.getNy());
 		assertEquals(0f,s.getpA());
@@ -56,7 +59,7 @@ public class SearchParameterTest extends TestCase {
 
 		System.out.println(s.getFilter());
 		System.out.println(s.getFilterpair());
-		cl ="/PAIR /Q:30 /NOBASERUNS /NOSIZE /FDEG /LENMIN:18 /LENMAX:35 /INFILE: \"c:\\javier\\archivo.txt\" /GCFILE:\"c:\\javier\\gc.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
+		cl ="/PAIR /Q:30 /NOBASERUNS /NOSIZE /FDEG /LENMIN:18 /LENMAX:35 /INFILE: \"c:\\javier\\archivo.txt\" /OUTFILE: \"c:\\javier\\archivo2.txt\"".split(" ");
 		s = new SearchParameter();
 			var cmd = FASDPDCommandLine.create_default();
 			try {
@@ -65,10 +68,13 @@ public class SearchParameterTest extends TestCase {
 				e.printStackTrace();
 				fail();
 			}
-		s = SearchParameterBuilder.getSearchParameter(cmd);
+		try {
+      s = SearchParameterBuilder.getSearchParameter(cmd);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 		assertEquals("\"c:\\javier\\archivo.txt\"", s.getInfile().get().strip());
 		assertEquals("\"c:\\javier\\archivo2.txt\"", s.getOutfile().strip());
-		assertEquals("\"c:\\javier\\gc.txt\"", s.getGCfile().strip());
 		assertEquals(1f,s.getNx());
 		assertEquals(1f,s.getNy());
 		assertEquals(0f,s.getpA());

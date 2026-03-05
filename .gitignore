@@ -1,4 +1,3 @@
-
 # Java files
 bin/
 .vscode/
@@ -19,3 +18,23 @@ E6E7*
 # Gradle
 .gradle/
 build/
+
+# IDE (Eclipse/VSCode/IntelliJ)
+.classpath
+.project
+.settings/
+*.back
+.idea/
+*.iml
+
+# Build artifacts (root and submodules)
+**/.gradle/
+**/build/
+**/bin/
+**/out/
+
+# OS / temporary logs
+.DS_Store
+*.log
+*.tmp
+*.swp

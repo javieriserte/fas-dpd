@@ -157,11 +157,11 @@ public class FASDPDCommandLine {
    * @throws InvalidCommandLineException
    */
   public boolean validate() throws InvalidCommandLineException{
-		if (! (infile.isPresent()&&outfile.isPresent()&&gcfile.isPresent())) {
+		if (! (infile.isPresent()&&outfile.isPresent())) {
 			// infile, outfile and gcfile are required!
 			// if one of them is not present then the command line is not well formed.
 			throw new InvalidCommandLineException(
-				"Infile, Outfile and GCfile are required arguments"
+				"Infile, Outfile are required arguments"
 			);
 		}
 

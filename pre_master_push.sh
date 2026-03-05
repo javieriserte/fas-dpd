@@ -11,8 +11,8 @@ update_help() {
         } else {
             print $0
         }
-    }' src/fasdpd/help > src/fasdpd/help.tmp
-    mv src/fasdpd/help.tmp src/fasdpd/help
+    }' fasdpd-cli/src/main/resources/help > fasdpd-cli/src/main/resources/help.tmp
+    mv fasdpd-cli/src/main/resources/help.tmp fasdpd-cli/src/main/resources/help
 }
 
 update_readme() {

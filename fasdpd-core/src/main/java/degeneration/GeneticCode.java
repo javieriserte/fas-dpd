@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 /**
  * This class represents a Genetic Code.
  * It is a table linking amino acids to nucleotide triplets
@@ -203,6 +205,58 @@ public class GeneticCode {
 	public int calculateDegValue(char base){
 		return BaseDeg.getDegValueFromChar(base);
 	}
+
+  /**
+   * Creates a default genetic Code
+   */
+  public static GeneticCode standard() {
+    GeneticCode code = new GeneticCode();
+    code.getAminoToCodonList()
+        .put("A", List.of("GCT", "GCC", "GCA", "GCG"));
+    code.getAminoToCodonList()
+        .put("C", List.of("TGT", "TGC"));
+    code.getAminoToCodonList()
+        .put("D", List.of("GAT", "GAC"));
+    code.getAminoToCodonList()
+        .put("E", List.of("GAA", "GAG"));
+    code.getAminoToCodonList()
+        .put("F", List.of("TTT", "TTC"));
+    code.getAminoToCodonList()
+        .put("G", List.of("GGT", "GGC", "GGA", "GGG"));
+    code.getAminoToCodonList()
+        .put("H", List.of("CAT", "CAC"));
+    code.getAminoToCodonList()
+        .put("I", List.of("ATT", "ATC", "ATA"));
+    code.getAminoToCodonList()
+        .put("K", List.of("AAA", "AAG"));
+    code.getAminoToCodonList()
+        .put("L", List.of("TTA", "TTG", "CTT", "CTC", "CTA", "CTG"));
+    code.getAminoToCodonList()
+        .put("M", List.of("ATG"));
+    code.getAminoToCodonList()
+        .put("N", List.of("AAT", "AAC"));
+    code.getAminoToCodonList()
+        .put("P", List.of("CCT", "CCC", "CCA", "CCG"));
+    code.getAminoToCodonList()
+        .put("Q", List.of("CAA", "CAG"));
+    code.getAminoToCodonList()
+        .put("R", List.of("CGT", "CGC", "CGA", "CGG", "AGA", "AGG"));
+    code.getAminoToCodonList()
+        .put("S", List.of("TCT", "TCC", "TCA", "TCG", "AGT", "AGC"));
+    code.getAminoToCodonList()
+        .put("T", List.of("ACT", "ACC", "ACA", "ACG"));
+    code.getAminoToCodonList()
+        .put("V", List.of("GTT", "GTC", "GTA", "GTG"));
+    code.getAminoToCodonList()
+        .put("W", List.of("TGG"));
+    code.getAminoToCodonList()
+        .put("Y", List.of("TAT", "TAC"));
+    code.getAminoToCodonList()
+        .put("*", List.of("TAA", "TGA", "TAG"));
+    code.process();
+    return code;
+  }
+
 
 	/**
 	 * Reads a genetic code from a file.

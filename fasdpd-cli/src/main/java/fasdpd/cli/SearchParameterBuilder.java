@@ -1,8 +1,10 @@
 package fasdpd.cli;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import degeneration.GeneticCode;
 import fasdpd.SearchParameter;
 import filters.primerpair.FilterAmpliconSize;
 import filters.primerpair.FilterGCCompatibility;
@@ -17,7 +19,7 @@ import filters.singlePrimer.FilterCGContent;
 import filters.singlePrimer.FilterDegeneratedEnd;
 import filters.singlePrimer.FilterHomoDimer;
 import filters.singlePrimer.FilterHomoDimerFixed3;
-import filters.singlePrimer.FilterMeltingPointTemperature;
+import filters.singlePrimer.FilterMeltingPointTemperature   ;
 import filters.singlePrimer.FilterPrimerScore;
 import filters.singlePrimer.FilterRepeatedEnd;
 import filters.validator.ValidateAlways;
@@ -31,13 +33,14 @@ import sequences.util.tmcalculator.SimpleTmEstimator;
 import sequences.util.tmcalculator.TmEstimator;
 
 public class SearchParameterBuilder {
-	public static SearchParameter getSearchParameter(FASDPDCommandLine cmd) {
+	public static SearchParameter getSearchParameter(FASDPDCommandLine cmd) throws IOException {
 		var sp = new SearchParameter();
 
 		// SET VALUES
 		if (cmd.infile.isPresent()) sp.setInfile((String)cmd.infile.getValue());
 		if (cmd.outfile.isPresent()) sp.setOutfile((String)cmd.outfile.getValue());
 		if (cmd.gcfile.isPresent()) sp.setGCfile((String)cmd.gcfile.getValue());
+    if (!cmd.gcfile.isPresent()) sp.setGC(GeneticCode.standard());
 
 		// pass the options of infile, outfile and gcfile
 		sp.setProfile((String)cmd.profile.getValue());

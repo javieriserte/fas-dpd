@@ -1,0 +1,12 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':fasdpd-core')
+    implementation files("${rootDir}/lib/cmdGetArg_2.1.2.jar")
+}
+
+application {
+    mainClass = 'fasdpd.cli.FASDPD'
+}

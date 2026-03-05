@@ -1,65 +1,60 @@
 plugins {
-    id 'java'
-    id 'application'
+    id 'base'
 }
 
-repositories {
-    mavenCentral()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_15
-    targetCompatibility = JavaVersion.VERSION_15
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-            exclude 'tests/**'
-        }
-        resources {
-            srcDirs = ['src/resources']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['src/tests']
-        }
+allprojects {
+    repositories {
+        mavenCentral()
     }
 }
 
-repositories {
-    mavenCentral()
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_15
+        targetCompatibility = JavaVersion.VERSION_15
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 15
+    }
+
+    dependencies {
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation platform('org.junit:junit-bom:5.8.2')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.withType(Test).configureEach {
+        workingDir = rootProject.projectDir
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "failed", "skipped"
+            exceptionFormat "short"
+            showExceptions true
+            showCauses true
+            showStackTraces false
+        }
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                println "Test summary: ${result.testCount} run, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped"
+            }
+        }
+    }
 }
 
-dependencies {
-    implementation files('lib/cmdGetArg_2.1.2.jar')
-
-    testImplementation 'junit:junit:4.13.2'
-
-    testImplementation platform('org.junit:junit-bom:5.8.2')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-application {
-    mainClass = 'fasdpd.cli.FASDPD'
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    options.release = 15
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-tasks.register('runGui', JavaExec) {
+tasks.register('run') {
     group = 'application'
-    description = 'Runs the Swing GUI.'
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'fasdpd.UI.v1.MainFASDPD'
+    description = 'Runs the CLI application.'
+    dependsOn ':fasdpd-cli:run'
+}
+
+tasks.register('runGui') {
+    group = 'application'
+    description = 'Runs the Swing GUI application.'
+    dependsOn ':fasdpd-gui:run'
 }

@@ -51,7 +51,7 @@ public class FASDPD {
 				al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
 			}
 		}
-		GeneticCode myGC = new GeneticCode(mySp.getGCfile());;
+		GeneticCode myGC = mySp.getGC();
 		// Creates a genetic Code
 		DNASeq consense = al.pileUp(myGC);
 		// Generates the degenerated consensus
@@ -146,7 +146,7 @@ public class FASDPD {
 				al.addSequence(new ProtSeq(pair.getSecond(), pair.getFirst()));
 			}
 		}
-		GeneticCode myGC = new GeneticCode(mySp.getGCfile());
+		GeneticCode myGC = mySp.getGC();
 		// Creates a genetic Code
 		DNASeq consense = al.pileUp(myGC);
 		// Generates the degenerated consensus
@@ -328,7 +328,15 @@ public class FASDPD {
 			return;
 		}
 
-		SearchParameter sp = SearchParameterBuilder.getSearchParameter(cmd);
+		SearchParameter sp = null;
+    try {
+      sp = SearchParameterBuilder.getSearchParameter(cmd);
+    } catch (IOException e) {
+			System.err.println(
+				"There was an error reading the genetic code file:"
+			);
+      System.exit(1);
+    }
 		// sp will store all the parameters for the search
 		try {
 			myProgram.doSearchAndExportResults(sp);

@@ -1,9 +1,11 @@
 package fasdpd;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import degeneration.GeneticCode;
 import filters.validator.ValidateAlways;
 import filters.validator.Validator;
 
@@ -29,6 +31,7 @@ public class SearchParameter {
 	private Set<StrandSearchDirection> strands;
 	private boolean searchPair=false;
 	private boolean useSantaLuciaToEstimateTm = true;
+  private GeneticCode gc;
 
 	public SearchParameter() {
 		super();
@@ -61,12 +64,15 @@ public class SearchParameter {
 	public void setOutfile(String outfile) {
 		this.outfile = outfile;
 	}
-	public String getGCfile() {
-		return gcfile;
+  public GeneticCode getGC() {
+    return this.gc;
+  }
+	public void setGCfile(String gcfile) throws IOException {
+    this.gc = new GeneticCode(gcfile);
 	}
-	public void setGCfile(String gcfile) {
-		this.gcfile = gcfile;
-	}
+  public void setGC(GeneticCode code) {
+    this.gc = code;
+  }
 	public Validator getFilter() {
 		return filter;
 	}

@@ -1,1 +1,2 @@
 rootProject.name = 'fas-dpd'
+include 'fasdpd-core', 'fasdpd-cli', 'fasdpd-gui'
