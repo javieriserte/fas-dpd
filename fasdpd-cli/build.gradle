@@ -4,9 +4,10 @@ plugins {
 
 dependencies {
     implementation project(':fasdpd-core')
-    implementation files("${rootDir}/lib/cmdGetArg_2.1.2.jar")
+    implementation files("${rootDir}/lib/cmdGetArg-2.1.2-mod.jar")
 }
 
 application {
-    mainClass = 'fasdpd.cli.FASDPD'
+    mainModule = 'fasdpd.cli'
+    mainClass = 'fasdpd.cli.FASDPDCli'
 }

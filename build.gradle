@@ -14,6 +14,7 @@ subprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_15
         targetCompatibility = JavaVersion.VERSION_15
+        modularity.inferModulePath = true
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -56,5 +57,5 @@ tasks.register('run') {
 tasks.register('runGui') {
     group = 'application'
     description = 'Runs the Swing GUI application.'
-    dependsOn ':fasdpd-gui:run'
+    dependsOn ':fasdpd-gui:runGui'
 }

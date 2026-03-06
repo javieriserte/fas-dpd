@@ -4,10 +4,22 @@ plugins {
 
 dependencies {
     implementation project(':fasdpd-core')
-    implementation project(':fasdpd-cli')
-    implementation files("${rootDir}/lib/cmdGetArg_2.1.2.jar")
+    implementation files("${rootDir}/lib/cmdGetArg-2.1.2-mod.jar")
 }
 
 application {
+    mainModule = 'fasdpd.gui'
+    mainClass = 'fasdpd.UI.v1.MainFASDPD'
+}
+
+tasks.named('run') {
+    enabled = false
+}
+
+tasks.register('runGui', JavaExec) {
+    group = 'application'
+    description = 'Runs the Swing GUI application.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainModule = 'fasdpd.gui'
     mainClass = 'fasdpd.UI.v1.MainFASDPD'
 }

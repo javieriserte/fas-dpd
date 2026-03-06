@@ -34,8 +34,8 @@ import degeneration.GeneticCode;
 import fasdpd.PrimerSearchType;
 import fasdpd.SearchParameter;
 import fasdpd.StrandSearchDirection;
+import fasdpd.FASDPDController;
 import fasdpd.UI.v1.filterCreators.FilterCreator;
-import fasdpd.cli.FASDPD;
 import fastaIO.FastaFilter;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
@@ -43,7 +43,7 @@ import fastaIO.Pair;
 public class MainFASDPD extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -3916944172322638197L;
-	private FASDPD control;
+	private FASDPDController control;
 	private SearchParameter searchParameter;
 	private OptionsPane op;
 	private List<SelectFileListener> selectFileListeners;
@@ -62,7 +62,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				MainFASDPD inst = new MainFASDPD();
-				inst.setControl(new FASDPD());
+				inst.setControl(new FASDPDController());
 				inst.setSearchParameter(new SearchParameter());
 				inst.setTitle("FAS - DPD");
 				inst.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -108,7 +108,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 			.add(filterCreators);
 		searchParameter.setFilter(fb.getSinglePrimerValidator());
 		searchParameter.setFilterpair(fb.getPrimerPairValidator());
-		FASDPD.ResultOfSearch results = null;
+		FASDPDController.ResultOfSearch results = null;
 		if (searchParameter.isSearchPair()) {
 			results = control.doSearch(searchParameter);
 			op.setPairData(results.primerPairs);
@@ -438,11 +438,11 @@ public class MainFASDPD extends javax.swing.JFrame {
 		return searchParameter;
 	}
 
-	public void setControl(FASDPD control) {
+	public void setControl(FASDPDController control) {
 		this.control = control;
 	}
 
-	public FASDPD getControl() {
+	public FASDPDController getControl() {
 		return control;
 	}
 

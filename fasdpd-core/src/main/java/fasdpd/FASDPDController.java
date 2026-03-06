@@ -1,21 +1,14 @@
-package fasdpd.cli;
+package fasdpd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import cmdGA2.exceptions.IncorrectCommandLineException;
+// import cmdGA2.exceptions.IncorrectCommandLineException;
 import degeneration.GeneticCode;
-import fasdpd.Analyzer;
-import fasdpd.PrimerListExporter;
-import fasdpd.PrimerOrPrimerPair;
-import fasdpd.PrimerPair;
-import fasdpd.PriorityList;
-import fasdpd.SearchParameter;
 import fastaIO.FastaMultipleReader;
 import fastaIO.Pair;
 import sequences.alignment.Alignment;
@@ -26,7 +19,7 @@ import sequences.protein.ProtSeq;
 /**
  * Executable Class For Command line FAS-DPD program.
  */
-public class FASDPD {
+public class FASDPDController {
 	/**
 	 * Performs the search of degenerated primers. The results are sent to a file.
 	 * The file name and path are defined in <code>mySp</code>.
@@ -287,78 +280,6 @@ public class FASDPD {
 		}
 		return pos;
 	}
-	/**
-	 * Gets the the text of help.
-	 */
-	public static String getHelp() {
-		try {
-			var is = FASDPD
-				.class
-				.getClassLoader()
-				.getResourceAsStream("fasdpd/help");
-			String text = new String(
-				is.readAllBytes(),
-				StandardCharsets.UTF_8
-			);
-			return text;
-		} catch (IOException e) {
-			System.err.println("Cannot read help file");
-			return "";
-		}
-	}
-
-	// Executable Main
-	/**
-	 * Executable main method for console interface of FAS-DPD.
-	 */
-	public static void main(String[] arg) {
-
-		FASDPD myProgram = new FASDPD();
-		FASDPDCommandLine cmd = FASDPDCommandLine.create_default();
-		try {
-			cmd.validate();
-			cmd.parse(arg);
-		} catch (IncorrectCommandLineException e) {
-			System.out.println(e.getLocalizedMessage());
-			System.out.println(FASDPD.getHelp());
-			return;
-		} catch (InvalidCommandLineException e) {
-			System.out.println(e.getLocalizedMessage());
-			System.out.println(FASDPD.getHelp());
-			return;
-		}
-
-		SearchParameter sp = null;
-    try {
-      sp = SearchParameterBuilder.getSearchParameter(cmd);
-    } catch (IOException e) {
-			System.err.println(
-				"There was an error reading the genetic code file:"
-			);
-      System.exit(1);
-    }
-		// sp will store all the parameters for the search
-		try {
-			myProgram.doSearchAndExportResults(sp);
-		} catch (FileNotFoundException e) {
-			System.err.println("FASDPD exit with errors");
-			System.err.println("Input file not found");
-			System.err.println(e.getLocalizedMessage());
-			System.out.println(FASDPD.getHelp());
-			System.exit(1);
-		} catch (IOException e) {
-			System.err.println(
-				"There was an error reading the genetic code file:"
-			);
-			System.err.println(
-				e.getLocalizedMessage()
-			);
-			System.out.println(FASDPD.getHelp());
-			System.exit(1);
-		}
-		// start the search of primers
-	}
-
 	// Auxiliary Classes
 	/**
 	 * ResultOfSearch object are used to store the results of the search of primers.
