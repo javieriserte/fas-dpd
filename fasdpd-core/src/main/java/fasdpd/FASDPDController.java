@@ -23,6 +23,10 @@ import sequences.protein.ProtSeq;
  * Executable Class For Command line FAS-DPD program.
  */
 public class FASDPDController {
+	private static final System.Logger LOGGER = System.getLogger(
+		FASDPDController.class.getName()
+	);
+
 	/**
 	 * Performs the search of degenerated primers. The results are sent to a file.
 	 * The file name and path are defined in <code>mySp</code>.
@@ -109,7 +113,11 @@ public class FASDPDController {
 				exportData
 			);
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not export primers to output file: " + mySp.getOutfile(),
+				e
+			);
 		}
 	}
 
@@ -236,7 +244,11 @@ public class FASDPDController {
 			}
 
 		} catch (IOException e) {
-			System.out.println("There was an error in the file. No Profile file was generated.");
+			LOGGER.log(
+				System.Logger.Level.WARNING,
+				"There was an error writing profile file: " + outfile,
+				e
+			);
 		}
 
 		try {
@@ -260,7 +272,11 @@ public class FASDPDController {
 				writer.write("replot");
 			}
 		} catch (IOException e) {
-			System.out.println("There was an error in the file. No Profile file was generated.");
+			LOGGER.log(
+				System.Logger.Level.WARNING,
+				"There was an error writing profile plotting script: " + outfile + ".plt",
+				e
+			);
 		}
 	}
 

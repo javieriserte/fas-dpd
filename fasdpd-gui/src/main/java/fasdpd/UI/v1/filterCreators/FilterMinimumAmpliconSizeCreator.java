@@ -18,7 +18,7 @@ public class FilterMinimumAmpliconSizeCreator extends FilterCreator{
 		Integer p0=null;
 		try {
 			p0 = (Integer) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 		return new FilterMinimumAmpliconSize(p0);
 	}
 	@Override public String toString() {

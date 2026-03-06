@@ -9,6 +9,9 @@ import cmdGA.parameterType.ParameterType;
 import filters.Filter;
 
 public abstract class FilterCreator {
+	private static final System.Logger LOGGER = System.getLogger(
+		FilterCreator.class.getName()
+	);
 	String[] parametersComments = null;
 	ParameterType[] parametersTypes = null;
 	String[] parametersValues = null;
@@ -57,11 +60,25 @@ public abstract class FilterCreator {
 				}
 			}
 		}
-		catch (InstantiationException e) { e.printStackTrace(); }
-		catch (IllegalAccessException e) { e.printStackTrace(); }
-		catch (Exception e) { e.printStackTrace(); }
+		catch (ReflectiveOperationException e) {
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not duplicate filter creator: "
+					+ this.getClass().getSimpleName(),
+				e
+			);
+		}
 		return fc;
 	}
+
+	protected void logParameterParseError(Exception e) {
+		LOGGER.log(
+			System.Logger.Level.WARNING,
+			"Invalid parameter values for " + this.getClass().getSimpleName(),
+			e
+		);
+	}
+
 	private JPanel option(int index) {
 		String comment;
 		String value;

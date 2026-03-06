@@ -2,35 +2,34 @@ package fasdpd.cli;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import cmdGA2.exceptions.IncorrectCommandLineException;
 import fasdpd.SearchParameter;
 import fasdpd.FASDPDController;
+import fasdpd.ResourceLoader;
 
 
 /**
  * Executable Class For Command line FAS-DPD program.
  */
 public class FASDPDCli {
+	private static final System.Logger LOGGER = System.getLogger(
+		FASDPDCli.class.getName()
+	);
+
 	/**
 	 * Gets the the text of help.
 	 */
 	public static String getHelp() {
-		var stream = FASDPDCli.class.getResourceAsStream("/help");
-		if (stream == null) {
-			stream = FASDPDCli.class.getClassLoader().getResourceAsStream("help");
+		var helpText = ResourceLoader.readUtf8Resource(FASDPDCli.class, "help");
+		if (helpText.isPresent()) {
+			return helpText.get();
 		}
-		try (var is = stream) {
-			if (is == null) {
-				System.err.println("Cannot find help file in classpath/module-path");
-				return "";
-			}
-			return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.err.println("Cannot read help file");
-			return "";
-		}
+		LOGGER.log(
+			System.Logger.Level.ERROR,
+			"Cannot load help resource from classpath/module-path."
+		);
+		return "";
 	}
 
 	// Executable Main

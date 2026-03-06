@@ -15,7 +15,7 @@ public class FilterBaseRunsCreator extends FilterCreator{
 		Integer p0=null;
 		try {
 			p0 = (Integer) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 		return new FilterBaseRuns(p0);
 	}
 	@Override public String toString() { return "Single Primer - Remove Primers With Tandem Repeats Larger Than "+ this.parametersValues[0] + " bases"; }

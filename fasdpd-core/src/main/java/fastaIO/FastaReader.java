@@ -14,6 +14,9 @@ import java.nio.file.Path;
  *
  */
 public class FastaReader {
+	private static final System.Logger LOGGER = System.getLogger(
+		FastaReader.class.getName()
+	);
 
 	/**
 	 * Reads a fasta file from a filepath 
@@ -42,7 +45,11 @@ public class FastaReader {
 				return this.readBuffer(reader);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not read FASTA file: " + path,
+				e
+			);
 		}
 		return null;
 	}
@@ -79,7 +86,11 @@ public class FastaReader {
 			
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not parse FASTA content from buffer.",
+				e
+			);
 		}
 		return null;
 	}

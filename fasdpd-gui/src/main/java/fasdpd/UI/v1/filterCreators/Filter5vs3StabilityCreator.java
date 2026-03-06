@@ -38,7 +38,7 @@ public class Filter5vs3StabilityCreator extends FilterCreator{
 			p2 = (Integer) parametersTypes[2].parseParameter(parametersValues[2]);
 			p3 = (Double) parametersTypes[3].parseParameter(parametersValues[3]);
 		} catch (IncorrectParameterTypeException e) {
-			e.printStackTrace();
+			logParameterParseError(e);
 		}
 		return new Filter5vs3Stability(p0,p1,p3,p2);
 	}

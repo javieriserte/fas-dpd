@@ -30,6 +30,9 @@ import fasdpd.StrandSearchDirection;
 
 public class ParametersPane extends JPanel {
 	private static final long serialVersionUID = -5923205806932143474L;
+	private static final System.Logger LOGGER = System.getLogger(
+		ParametersPane.class.getName()
+	);
 
 	private List<ParameterSetChangeListener> listeners;
 	private JTextField quantity;
@@ -336,8 +339,12 @@ public class ParametersPane extends JPanel {
 
 			setUpCloseButton();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (RuntimeException e) {
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Failed to create parameters pane components.",
+				e
+			);
 		}
 	}
 

@@ -4,6 +4,9 @@ import sequences.dna.DNASeq;
 import degeneration.BaseDeg;
 
 public class DegeneratedDNAMatchingStrategy implements MatchingStrategy {
+	private static final System.Logger LOGGER = System.getLogger(
+		DegeneratedDNAMatchingStrategy.class.getName()
+	);
 
 	static private double[][] matchingValues = DegeneratedDNAMatchingStrategy.getMatchingMatrix();
 
@@ -39,7 +42,7 @@ public class DegeneratedDNAMatchingStrategy implements MatchingStrategy {
 			line.append("\r\n");
 		}
 		
-		System.out.println(line);
+		LOGGER.log(System.Logger.Level.DEBUG, line.toString());
 		
 	}
 	

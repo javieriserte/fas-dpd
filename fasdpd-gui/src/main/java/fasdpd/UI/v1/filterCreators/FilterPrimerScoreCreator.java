@@ -16,7 +16,7 @@ public class FilterPrimerScoreCreator extends FilterCreator{
 		Double p0=null;
 		try {
 			p0 = (Double) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); }
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); }
 		return new FilterPrimerScore(p0);
 	}
 	@Override public String toString() { return "Single Primer - Remove Primers With A Score Less Than "+ this.parametersValues[0];}	

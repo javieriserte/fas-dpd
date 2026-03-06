@@ -19,7 +19,7 @@ public 	 class FilterCGContentCreator extends FilterCreator{
 		try {
 			p0 = (Float) parametersTypes[0].parseParameter(parametersValues[0]);
 			p1 = (Float) parametersTypes[1].parseParameter(parametersValues[1]);				
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 
 		return new FilterCGContent(p0,p1);
 	}

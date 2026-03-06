@@ -21,7 +21,7 @@ public class FilterMeltingTempCompatibilityCreator extends FilterCreator{
 			p0 = (Double) parametersTypes[0]
 				.parseParameter(parametersValues[0]);
 		} catch (IncorrectParameterTypeException e) {
-			e.printStackTrace();
+			logParameterParseError(e);
 		}
 		return new FilterMeltingTempCompatibility(
 			p0,

@@ -15,7 +15,7 @@ public class FilterAmpliconSizeCreator extends FilterCreator{
 		Integer p0=null;
 		try {
 			p0 = (Integer) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 		return new FilterAmpliconSize(p0);
 	}
 	@Override public String toString() { return "Primer Pair - Remove Primers With An Amplicon Size Larger Than "+ this.parametersValues[0] + " bp."; }

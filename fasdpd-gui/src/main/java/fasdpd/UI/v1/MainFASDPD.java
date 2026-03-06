@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -17,10 +18,9 @@ import java.util.Optional;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -31,6 +31,7 @@ import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
 import fasdpd.PrimerSearchType;
+import fasdpd.ResourceLoader;
 import fasdpd.SearchParameter;
 import fasdpd.StrandSearchDirection;
 import fasdpd.FASDPDController;
@@ -42,6 +43,9 @@ import fastaIO.Pair;
 public class MainFASDPD extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -3916944172322638197L;
+	private static final System.Logger LOGGER = System.getLogger(
+		MainFASDPD.class.getName()
+	);
 	private FASDPDController control;
 	private SearchParameter searchParameter;
 	private OptionsPane op;
@@ -89,12 +93,20 @@ public class MainFASDPD extends javax.swing.JFrame {
 	}
 
 	private ImageIcon getIconFromResource(String resourcePath) {
-		String path = resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath;
-		URL iconURL = getClass().getResource(path);
-		if (iconURL == null) {
-			throw new IllegalStateException("Missing resource: " + path);
+		var iconUrl = ResourceLoader.findResourceUrl(getClass(), resourcePath);
+		if (iconUrl.isPresent()) {
+			return new ImageIcon(iconUrl.get());
 		}
-		return new ImageIcon(iconURL);
+		LOGGER.log(
+			System.Logger.Level.WARNING,
+			"Missing icon resource: " + resourcePath
+		);
+		BufferedImage emptyImage = new BufferedImage(
+			1,
+			1,
+			BufferedImage.TYPE_INT_ARGB
+		);
+		return new ImageIcon(emptyImage);
 	}
 
 	private void setIcon() {
@@ -133,8 +145,25 @@ public class MainFASDPD extends javax.swing.JFrame {
 			setPreferredSize(new Dimension(1200, 700));
 			createParametersPane();
 			loadOptionsPane();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (
+			ClassNotFoundException
+			| InstantiationException
+			| IllegalAccessException
+			| UnsupportedLookAndFeelException
+			| IOException
+			| RuntimeException e
+		) {
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Failed to initialize GUI.",
+				e
+			);
+			JOptionPane.showMessageDialog(
+				this,
+				"No se pudo inicializar la interfaz.",
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		}
 	}
 
@@ -186,7 +215,11 @@ public class MainFASDPD extends javax.swing.JFrame {
 				seqPairs = new ArrayList<>();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(
+				System.Logger.Level.WARNING,
+				"Could not read alignment input file.",
+				e
+			);
 		}
 		if (seqPairs != null) {
 			for (Pair<String, String> pair : seqPairs) {
@@ -220,25 +253,40 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 	}
 
-	private boolean validateStandardCodeExists(String gcfile) {
-		File gcf = new File(
-			Paths
-				.get(gcfile)
-				.toAbsolutePath()
-				.normalize()
-				.toString()
+	private GeneticCode loadDefaultGeneticCode() throws IOException {
+		try {
+			var filesystemCodePath = ResourceLoader.resolveReadablePath("StandardCode");
+			if (filesystemCodePath.isPresent()) {
+				return new GeneticCode(filesystemCodePath.get().toString());
+			}
+
+			var classpathCodePath = ResourceLoader.materializeResourceToTempFile(
+				MainFASDPD.class,
+				"StandardCode",
+				"fasdpd-standard-code-",
+				".txt"
+			);
+			if (classpathCodePath.isPresent()) {
+				Path tempPath = classpathCodePath.get();
+				return new GeneticCode(tempPath.toString());
+			}
+		} catch (RuntimeException e) {
+			LOGGER.log(
+				System.Logger.Level.WARNING,
+				"Unexpected error loading StandardCode. Falling back to default code.",
+				e
+			);
+		}
+
+		LOGGER.log(
+			System.Logger.Level.INFO,
+			"StandardCode not available. Using default in-memory genetic code."
 		);
-		return gcf.exists();
+		return GeneticCode.standard();
 	}
 
 	protected void loadOptionsPane() throws IOException {
-		String gcfile = "StandardCode";
-		GeneticCode gc = null;
-    if (validateStandardCodeExists(gcfile)) {
-		  gc = new GeneticCode(gcfile);
-    } else {
-      gc = GeneticCode.standard();
-    }
+		GeneticCode gc = loadDefaultGeneticCode();
 
 		this.searchParameter.setGC(gc);
 		op = new OptionsPane(getAlignment(), gc, MainFASDPD.this);
@@ -523,8 +571,18 @@ public class MainFASDPD extends javax.swing.JFrame {
 			try {
 				doSearch();
 			} catch (IOException exc) {
-				System.err.println("Action Canceled:");
-				System.err.println(exc.getLocalizedMessage());
+				LOGGER.log(
+					System.Logger.Level.ERROR,
+					"Search action failed.",
+					exc
+				);
+				JOptionPane.showMessageDialog(
+					MainFASDPD.this,
+					"No se pudo ejecutar la busqueda: "
+						+ exc.getLocalizedMessage(),
+					"Error",
+					JOptionPane.ERROR_MESSAGE
+				);
 			};
 		}
 	}
@@ -554,7 +612,17 @@ public class MainFASDPD extends javax.swing.JFrame {
 				}
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not export filters to file: " + selected,
+				e1
+			);
+			JOptionPane.showMessageDialog(
+				MainFASDPD.this,
+				"No se pudieron exportar los filtros.",
+				"Error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		}
 		}
 

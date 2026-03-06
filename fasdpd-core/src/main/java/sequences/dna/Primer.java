@@ -9,6 +9,9 @@ import sequences.util.compare.SequenceComparator;
  * @author Javier Iserte <jiserte@unq.edu.ar>
  */
 public class Primer extends DNASeq implements Comparable<Primer>{
+	private static final System.Logger LOGGER = System.getLogger(
+		Primer.class.getName()
+	);
 	private float score;
 	private int start;
 	private int end;
@@ -40,27 +43,77 @@ public class Primer extends DNASeq implements Comparable<Primer>{
 		Primer p1 = new Primer("CACAAAAAAAAAAAAAAA", "primer1", 1, 10, true);
 		Primer p2 = new Primer("TTGTGCCCCCCCCCCCCC", "primer2", 1, 10, true);
 
-		System.out.println(SequenceComparator.getListOfNonGappedComplementaryRegions(p1.getSequence(),p2.getSequence(), 4, new DegeneratedDNAMatchingStrategy()));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			String.valueOf(
+				SequenceComparator.getListOfNonGappedComplementaryRegions(
+					p1.getSequence(),
+					p2.getSequence(),
+					4,
+					new DegeneratedDNAMatchingStrategy()
+				)
+			)
+		);
 		
 		p1 = new Primer("AAAAAAAAAAAAACACAA", "primer1", 1, 10, true);
 		p2 = new Primer("TTGTGCCCCCCCCCCCCC", "primer2", 1, 10, true);
 
-		System.out.println(SequenceComparator.getListOfNonGappedComplementaryRegions(p1.getSequence(),p2.getSequence(), 4, new DegeneratedDNAMatchingStrategy()));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			String.valueOf(
+				SequenceComparator.getListOfNonGappedComplementaryRegions(
+					p1.getSequence(),
+					p2.getSequence(),
+					4,
+					new DegeneratedDNAMatchingStrategy()
+				)
+			)
+		);
 		
 		p1 = new Primer("AAAAAAAAAAAAACACAA", "primer1", 1, 10, true);
 		p2 = new Primer("CCCCCCCCCCCCCTTGTG", "primer2", 1, 10, true);
 
-		System.out.println(SequenceComparator.getListOfNonGappedComplementaryRegions(p1.getSequence(),p2.getSequence(), 4, new DegeneratedDNAMatchingStrategy()));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			String.valueOf(
+				SequenceComparator.getListOfNonGappedComplementaryRegions(
+					p1.getSequence(),
+					p2.getSequence(),
+					4,
+					new DegeneratedDNAMatchingStrategy()
+				)
+			)
+		);
 		
 		p1 = new Primer("CACAAAAAAAAAAAAAAA", "primer1", 1, 10, true);
 		p2 = new Primer("CCCCCCCCCCCCCTTGTG", "primer2", 1, 10, true);
 
-		System.out.println(SequenceComparator.getListOfNonGappedComplementaryRegions(p1.getSequence(),p2.getSequence(), 4, new DegeneratedDNAMatchingStrategy()));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			String.valueOf(
+				SequenceComparator.getListOfNonGappedComplementaryRegions(
+					p1.getSequence(),
+					p2.getSequence(),
+					4,
+					new DegeneratedDNAMatchingStrategy()
+				)
+			)
+		);
 
 		p1 = new Primer("AACACAAAAAAAAAAAAA", "primer1", 1, 10, true);
 		p2 = new Primer("CCCCCCTTGTGCCCCCCC", "primer2", 1, 10, true);
 
-		System.out.println(SequenceComparator.getListOfNonGappedComplementaryRegions(p1.getSequence(),p2.getSequence(), 4, new DegeneratedDNAMatchingStrategy()));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			String.valueOf(
+				SequenceComparator.getListOfNonGappedComplementaryRegions(
+					p1.getSequence(),
+					p2.getSequence(),
+					4,
+					new DegeneratedDNAMatchingStrategy()
+				)
+			)
+		);
 
 
 	}

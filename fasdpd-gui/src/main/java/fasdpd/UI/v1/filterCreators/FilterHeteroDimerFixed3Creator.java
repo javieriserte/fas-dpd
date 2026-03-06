@@ -16,7 +16,7 @@ public class FilterHeteroDimerFixed3Creator extends FilterCreator{
 		Integer p0=null;
 		try {
 			p0 = (Integer) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 		return new FilterHeteroDimerFixed3(p0,new DegeneratedDNAMatchingStrategy());
 	}
 	@Override public String toString() { return "Primer Pair - Remove Primers That Form Heterodimeric Structures That Includes 3' End And Are Larger Than " + this.parametersValues[0] + " Bases.";}	

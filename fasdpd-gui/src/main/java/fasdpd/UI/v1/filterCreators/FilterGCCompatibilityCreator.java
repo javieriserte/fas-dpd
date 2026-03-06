@@ -16,7 +16,7 @@ public class FilterGCCompatibilityCreator extends FilterCreator{
 
 		try {
 			p0 = (Double) parametersTypes[0].parseParameter(parametersValues[0]);
-		} catch (IncorrectParameterTypeException e) { e.printStackTrace(); } 
+		} catch (IncorrectParameterTypeException e) { logParameterParseError(e); } 
 		return new FilterGCCompatibility(p0);
 	}
 	@Override public String toString() { return "Primer Pair - Keep Primer Pairs Whose Difference In G+C Content Is Less Than "+ this.parametersValues[0]+"%";}	

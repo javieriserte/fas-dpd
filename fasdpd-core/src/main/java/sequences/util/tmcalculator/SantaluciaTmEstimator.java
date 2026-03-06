@@ -7,6 +7,9 @@ import sequences.dna.DegeneratedPrimerIterator;
 import sequences.dna.Primer;
 
 public class SantaluciaTmEstimator implements TmEstimator {
+	private static final System.Logger LOGGER = System.getLogger(
+		SantaluciaTmEstimator.class.getName()
+	);
 	private double min;
 	private double max;
 	private double mean;
@@ -386,13 +389,16 @@ public class SantaluciaTmEstimator implements TmEstimator {
 			counter++;
 		}
 
-		System.out.println(mean / counter);
-		System.out.println(counter);
+		LOGGER.log(System.Logger.Level.DEBUG, "Mean: " + (mean / counter));
+		LOGGER.log(System.Logger.Level.DEBUG, "Counter: " + counter);
 
-		System.out.println(ste.calculateDeg("NNNNNNNNNAAAAAAAAA"));
+		LOGGER.log(
+			System.Logger.Level.DEBUG,
+			"calculateDeg result: " + ste.calculateDeg("NNNNNNNNNAAAAAAAAA")
+		);
 
 		ste.calculateTM(new Primer("NNNNNNNAAAAAAAAAAA", "x", 1, 20, true));
-		System.out.println(ste.mean());
+		LOGGER.log(System.Logger.Level.DEBUG, "Tm mean: " + ste.mean());
 
 	}
 }

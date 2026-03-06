@@ -27,7 +27,7 @@ public class FilterMeltingPointTemperatureCreator extends FilterCreator {
 			p0 = (Double) parametersTypes[0].parseParameter(parametersValues[0]);
 			p1 = (Double) parametersTypes[1].parseParameter(parametersValues[1]);
 		} catch (IncorrectParameterTypeException e) {
-			e.printStackTrace();
+			logParameterParseError(e);
 		}
 		return new FilterMeltingPointTemperature(
 			p0, p1, new SantaluciaTmEstimator()

@@ -14,6 +14,9 @@ import java.util.List;
  *
  */
 public class FastaMultipleReader {
+	private static final System.Logger LOGGER = System.getLogger(
+		FastaMultipleReader.class.getName()
+	);
 
 	public List<Pair<String, String>> readFile(
 			String filepath)
@@ -75,7 +78,11 @@ public class FastaMultipleReader {
 			} while (textconsumer.ready());
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.log(
+				System.Logger.Level.ERROR,
+				"Could not parse multi-FASTA content from buffer.",
+				e
+			);
 		}
 		return result;
 	}

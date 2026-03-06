@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionListener;
 
@@ -24,6 +25,9 @@ import fasdpd.PrimerPair;
 
 public class ResultViewer extends JPanel {
 	private static final long serialVersionUID = -5492613920686356173L;
+	private static final System.Logger LOGGER = System.getLogger(
+		ResultViewer.class.getName()
+	);
 	private JButton jbSaveList;
 	private JButton jbExportFilters;
 	private ResultTable resultTable;
@@ -109,7 +113,17 @@ public class ResultViewer extends JPanel {
 					primerData
 				);
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				LOGGER.log(
+					System.Logger.Level.ERROR,
+					"Could not export primer list to file.",
+					e1
+				);
+				JOptionPane.showMessageDialog(
+					ResultViewer.this,
+					"No se pudo guardar la lista de primers.",
+					"Error",
+					JOptionPane.ERROR_MESSAGE
+				);
 			}
 		}
 
