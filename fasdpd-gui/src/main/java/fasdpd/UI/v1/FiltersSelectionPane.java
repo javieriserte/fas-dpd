@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -73,7 +72,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		super(owner, true);
 		this.currentFilters = currentFilters;
 		this.includePairFilters = includePair;
-		this.selectedFilters = new Vector<FilterCreator>(currentFilters);
+		this.selectedFilters = new ArrayList<FilterCreator>(currentFilters);
 		this.onSaveRunable = new ArrayList<Runnable>();
 		this.setTitle("Select Primer Filters");
 		this.createGUI();
@@ -93,7 +92,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	}
 
 	private List<FilterCreator> getAvailableFilters() {
-		List<FilterCreator> filters = new Vector<FilterCreator>();
+		List<FilterCreator> filters = new ArrayList<FilterCreator>();
 		filters.add(new Filter5vs3StabilityCreator());
 		filters.add(new FilterBaseRunsCreator());
 		filters.add(new FilterCGContentCreator());
@@ -118,7 +117,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private void createFilterCreatorsToChooseComboBox() {
 		availableFilters = this.getAvailableFilters();
 		filterModel = new DefaultComboBoxModel<FilterCreator>(
-			(Vector<FilterCreator>) availableFilters
+			availableFilters.toArray(new FilterCreator[0])
 		);
 		this.cbAvailableFilters = new JComboBox<FilterCreator>(filterModel);
 		cbAvailableFilters.setEditable(false);
@@ -201,7 +200,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			);
 		jlSelectedFilters.setModel(
 			new DefaultComboBoxModel<FilterCreator>(
-				(Vector<FilterCreator>) this.selectedFilters
+				this.selectedFilters.toArray(new FilterCreator[0])
 			)
 		);
 		jlSelectedFilters.setCellRenderer(new FilterCreatorRendered());
@@ -380,7 +379,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		Vector<FilterCreator> result2 = new Vector<FilterCreator>();
+		ArrayList<FilterCreator> result2 = new ArrayList<FilterCreator>();
 		@SuppressWarnings("unused")
 		FiltersSelectionPane comp = new FiltersSelectionPane(frame, result2, true);
 	}

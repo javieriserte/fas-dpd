@@ -1,7 +1,7 @@
 package fasdpd;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * PriorityList is a kind of list that stores values until a maximum quantity.
@@ -25,7 +25,7 @@ public class PriorityList<T> {
    */
   public PriorityList(int size) {
     this.setMin(null);
-    this.setPriority(new Vector<Comparable<T>>(size));
+    this.setPriority(new ArrayList<Comparable<T>>(size));
     this.setCapacity(size);
     this.setCurrentFilled(0);
   }
@@ -61,7 +61,7 @@ public class PriorityList<T> {
    */
   @SuppressWarnings("unchecked")
   public List<T> ExtractSortedList() {
-    List<T> result = new Vector<T>(this.getCurrentFilled());
+    List<T> result = new ArrayList<T>(this.getCurrentFilled());
     for (int x = 0; x < this.getCurrentFilled(); x++) {
       result.add(null);
     }

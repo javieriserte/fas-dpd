@@ -1,3 +1,7 @@
+import org.gradle.api.tasks.testing.TestDescriptor
+import org.gradle.api.tasks.testing.TestListener
+import org.gradle.api.tasks.testing.TestResult
+
 plugins {
     id 'base'
 }
@@ -36,16 +40,28 @@ subprojects {
         useJUnitPlatform()
         testLogging {
             events "passed", "failed", "skipped"
-            exceptionFormat "short"
-            showExceptions true
-            showCauses true
-            showStackTraces false
+            exceptionFormat = "short"
+            showExceptions = true
+            showCauses = true
+            showStackTraces = false
         }
-        afterSuite { desc, result ->
-            if (!desc.parent) {
-                println "Test summary: ${result.testCount} run, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped"
+        addTestListener(new TestListener() {
+            @Override
+            void beforeSuite(TestDescriptor suite) {}
+
+            @Override
+            void afterSuite(TestDescriptor suite, TestResult result) {
+                if (!suite.parent) {
+                    println "Test summary: ${result.testCount} run, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped"
+                }
             }
-        }
+
+            @Override
+            void beforeTest(TestDescriptor testDescriptor) {}
+
+            @Override
+            void afterTest(TestDescriptor testDescriptor, TestResult result) {}
+        })
     }
 }
 

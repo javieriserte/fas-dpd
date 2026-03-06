@@ -1,7 +1,7 @@
 package sequences.util.compare;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import sequences.dna.DNASeq;
 
@@ -101,7 +101,7 @@ public class SequenceComparator {
 	 * @return a list of String repreting each one an alignment.
 	 */
 	private static List<String> analizeMatrixAndRetrieveList(char[] seq1, char[] seq2, int largerthan, double[][] ds) {
-		List<String> result = new Vector<String>();
+		List<String> result = new ArrayList<String>();
 		
 		for(int i=seq1.length;i>0;i--) {
 			for(int j=seq2.length;j>0;j--) {
@@ -149,7 +149,7 @@ public class SequenceComparator {
 	 * @return  a list of String repreting each one an alignment.
 	 */
 	private static List<String> analizeMatrixWithFixed3EndAndRetrieveList(char[] seq1, char[] seq2, int largerthan, double[][] ds) {
-		List<String> result = new Vector<String>();
+		List<String> result = new ArrayList<String>();
 		
 		// look from 3' of first sequence
 

@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -113,7 +112,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 			results = control.doSearch(searchParameter);
 			op.setPairData(results.primerPairs);
 		} else {
-			List<Primer> partialResult = new Vector<Primer>();
+				List<Primer> partialResult = new ArrayList<Primer>();
 			for (StrandSearchDirection strand : searchParameter.getStrands()) {
 				searchParameter
 					.setDirectStrand(strand.equals(StrandSearchDirection.Forward));

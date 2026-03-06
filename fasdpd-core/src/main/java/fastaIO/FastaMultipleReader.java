@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 /**
  * This class is used to read a Fasta file containing multiple sequences.
  *
@@ -50,7 +50,7 @@ public class FastaMultipleReader {
 		String d="";
 		String s="";
 		
-		List<Pair<String, String>> result = new Vector<Pair<String, String>>(); 
+		List<Pair<String, String>> result = new ArrayList<Pair<String, String>>(); 
 		
 		TextConsumer textconsumer = new TextConsumer();
 		textconsumer.buffer = buffer;

@@ -1,7 +1,7 @@
 package sequences.alignment;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import sequences.Sequence;
 import sequences.dna.DNASeq;
@@ -30,7 +30,7 @@ public class Alignment {
    */
   public Alignment() {
     super();
-    this.setSeq(new Vector<Sequence>());
+    this.setSeq(new ArrayList<Sequence>());
   }
 
   public void addSequence(Sequence seq) {
@@ -44,7 +44,7 @@ public class Alignment {
    * @param Description is a String to identify a sequence.
    */
   public void removeSequence(String Description) {
-    List<Sequence> l = new Vector<Sequence>();
+    List<Sequence> l = new ArrayList<Sequence>();
     l.addAll(this.getSeq());
     for (Sequence seq : this.getSeq()) {
       if (seq.getDescription().equals(Description)) {

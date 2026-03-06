@@ -1,8 +1,8 @@
 package fasdpd.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import degeneration.GeneticCode;
 import fasdpd.SearchParameter;
@@ -73,7 +73,7 @@ public class SearchParameterBuilder {
 		// SET VALUES FOR FILTERS
 		Validator vf = new ValidateAlways();
 		List<ValidateForFilterSinglePrimer> vffsp =
-			new Vector<ValidateForFilterSinglePrimer>();
+			new ArrayList<ValidateForFilterSinglePrimer>();
 		if (cmd.filterRep.getValue()) vffsp.add(
 			new ValidateForFilterSinglePrimer(
 				new FilterRepeatedEnd()));
@@ -120,7 +120,7 @@ public class SearchParameterBuilder {
 		// SET VALUES FOR FILTERS OF PRIMER PAIRS
 		if ( cmd.pair.isPresent()) {
 			List<ValidateForFilterPrimerPair> vffpp =
-				new Vector<ValidateForFilterPrimerPair>();
+				new ArrayList<ValidateForFilterPrimerPair>();
 			Validator vfp = new ValidateAlways();
 			vffpp.add(new ValidateForFilterPrimerPair(new FilterOverlapping()));
 			if (! cmd.noampsize.isPresent()) vffpp.add(

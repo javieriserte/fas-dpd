@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,7 +59,7 @@ public class GeneticCode {
 	 */
 	public void addCodons(String amino,List<String> codons) {
 
-		List<String> codonl = new Vector<String>();
+		List<String> codonl = new ArrayList<String>();
 		for (int i=0;i<codons.size();i++) {
 			codonl.add(codons.get(i).trim());
 			this.getCodonToAmino().put(codons.get(i).trim(), amino);

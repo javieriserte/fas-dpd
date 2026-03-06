@@ -1,7 +1,7 @@
 package fasdpd;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import degeneration.GeneticCode;
 import filters.validator.PrimerPairValidable;
@@ -137,7 +137,7 @@ public class Analyzer {
 		List<Primer> forward,
 		List<Primer> reverse,
 		Validator filter) {
-		List<PrimerPair> result = new Vector<PrimerPair>();
+		List<PrimerPair> result = new ArrayList<PrimerPair>();
 		for (Primer primerf : forward) {
 			for (Primer primerr : reverse) {
 				PrimerPairValidable ppv = new PrimerPairValidable(primerf, primerr);
