@@ -160,7 +160,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		JPanel rowHeaderPanel = new JPanel();
 		rowHeaderPanel.setOpaque(true);
 		rowHeaderPanel.setVisible(true);
-		rowHeaderPanel.setBackground(Color.white);
+		rowHeaderPanel.setBackground(Color.black);
 
 		GridBagLayout rhpL = new GridBagLayout();
 		rowHeaderPanel.setLayout(rhpL);
@@ -426,7 +426,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 
 		private void paintBackground(Dimension imageDimension) {
 			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
-			g.setColor(Color.white);
+			g.setColor(Color.gray);
 			g.fillRect(
 				0,
 				0,
@@ -438,6 +438,7 @@ public class AlignmentExplorer extends javax.swing.JPanel {
 		private void paintText() {
 			Graphics2D g = (Graphics2D) biDescriptions.getGraphics();
 			g.setColor(Color.black);
+      g.setBackground(Color.red);
 			g.setFont(AlignmentExplorer.this.getFont());
 			int descent = g.getFontMetrics().getDescent();
 			int counter = 0;

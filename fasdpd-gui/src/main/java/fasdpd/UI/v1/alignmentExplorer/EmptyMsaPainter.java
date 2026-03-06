@@ -38,11 +38,11 @@ public class EmptyMsaPainter implements AbstractMsaPainter {
         int textHeight = g.getFontMetrics().getHeight();
         int textWidth = g.getFontMetrics().stringWidth(text);
         g.setColor(
-            new Color(1.0f, 1.0f, 1.0f)
+            new Color(0.0f, 0.0f, 0.0f)
         );
         g.fillRect(0, 0, w, h);
         g.setColor(
-            new Color(127, 127, 127)
+            new Color(255, 255, 255)
         );
         g.drawString(
             text,

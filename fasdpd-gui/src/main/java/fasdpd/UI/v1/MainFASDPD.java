@@ -591,9 +591,9 @@ public class MainFASDPD extends javax.swing.JFrame {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-		JFileChooser fc = createFileChooser();
-		int dialogResponse = fc.showOpenDialog(MainFASDPD.this);
-		processResponse(fc, dialogResponse);
+      JFileChooser fc = createFileChooser();
+      int dialogResponse = fc.showOpenDialog(MainFASDPD.this);
+      processResponse(fc, dialogResponse);
     }
 
     private void processResponse(JFileChooser fc, int dialogResponse) {
@@ -601,6 +601,10 @@ public class MainFASDPD extends javax.swing.JFrame {
 			return;
 		}
 		File selected = fc.getSelectedFile();
+    LOGGER.log(
+        System.Logger.Level.DEBUG,
+        "Exporting to file:" + selected.toPath()
+    );
 		try {
 			try (BufferedWriter writer = Files.newBufferedWriter(
 				selected.toPath(),

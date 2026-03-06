@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -60,6 +61,7 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 	private JButton saveButton;
 	private JComboBox<FilterCreator> cbAvailableFilters;
 	private DefaultComboBoxModel<FilterCreator> filterModel;
+	private DefaultListModel<FilterCreator> selectedFiltersModel;
 	private FilterCreator currentSelectedFilterCreator;
 	private JScrollPane jspFilters;
 	private JScrollPane jspOptions;
@@ -198,11 +200,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			.addListSelectionListener(
 				new jlFilterCreatorsAddedSelectionChanged()
 			);
-		jlSelectedFilters.setModel(
-			new DefaultComboBoxModel<FilterCreator>(
-				this.selectedFilters.toArray(new FilterCreator[0])
-			)
-		);
+		selectedFiltersModel = new DefaultListModel<FilterCreator>();
+		for (FilterCreator filter : this.selectedFilters) {
+			selectedFiltersModel.addElement(filter);
+		}
+		jlSelectedFilters.setModel(selectedFiltersModel);
 		jlSelectedFilters.setCellRenderer(new FilterCreatorRendered());
 	}
 
@@ -254,26 +256,28 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			selectedFilters.clear();
+			selectedFiltersModel.clear();
 			for (FilterCreator f : availableFilters) {
 				selectedFilters.add(f);
+				selectedFiltersModel.addElement(f);
 			}
-			jlSelectedFilters.updateUI();
 		}
 	}
 
 	private class jbAddAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			FiltersSelectionPane.this.selectedFilters.add(
+			FilterCreator filterToAdd =
 				FiltersSelectionPane.this.currentSelectedFilterCreator
-					.duplicateWithGUIvalues());
+					.duplicateWithGUIvalues();
+			FiltersSelectionPane.this.selectedFilters.add(filterToAdd);
+			FiltersSelectionPane.this.selectedFiltersModel.addElement(filterToAdd);
 			int index = FiltersSelectionPane.this.jlSelectedFilters
 				.getSelectedIndex();
 			boolean canSelect = (index >= 0
 				&& index < selectedFilters.size());
 			FiltersSelectionPane.this.setButton.setEnabled(canSelect);
 			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
-			FiltersSelectionPane.this.jlSelectedFilters.updateUI();
 		}
 	}
 
@@ -282,12 +286,15 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		public void actionPerformed(ActionEvent e) {
 			int index = FiltersSelectionPane.this.jlSelectedFilters
 				.getSelectedIndex();
+			if (index < 0 || index >= selectedFilters.size()) {
+				return;
+			}
 			FiltersSelectionPane.this.selectedFilters.remove(index);
-			boolean canSelect = (index >= 0
-				&& index < selectedFilters.size());
+			FiltersSelectionPane.this.selectedFiltersModel.remove(index);
+			boolean canSelect = (FiltersSelectionPane.this.jlSelectedFilters
+				.getSelectedIndex() >= 0);
 			FiltersSelectionPane.this.setButton.setEnabled(false);
 			FiltersSelectionPane.this.remButton.setEnabled(canSelect);
-			FiltersSelectionPane.this.jlSelectedFilters.updateUI();
 		}
 	}
 
@@ -297,15 +304,15 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 			int index = FiltersSelectionPane.this.jlSelectedFilters
 				.getSelectedIndex();
 			if (index >= 0) {
-				FiltersSelectionPane.this.selectedFilters.set(
-					index,
+				FilterCreator updatedFilter =
 					FiltersSelectionPane.this.currentSelectedFilterCreator
-						.duplicateWithGUIvalues());
+						.duplicateWithGUIvalues();
+				FiltersSelectionPane.this.selectedFilters.set(index, updatedFilter);
+				FiltersSelectionPane.this.selectedFiltersModel.set(index, updatedFilter);
 				boolean canSelect = (FiltersSelectionPane.this.jlSelectedFilters
 					.getSelectedIndex() >= 0);
 				FiltersSelectionPane.this.setButton.setEnabled(canSelect);
 				FiltersSelectionPane.this.remButton.setEnabled(canSelect);
-				FiltersSelectionPane.this.jlSelectedFilters.updateUI();
 			}
 		}
 	}
@@ -327,6 +334,12 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 		public void valueChanged(ListSelectionEvent e) {
 			FiltersSelectionPane.this.currentSelectedFilterCreator =
 				(FilterCreator) jlSelectedFilters.getSelectedValue();
+			if (FiltersSelectionPane.this.currentSelectedFilterCreator == null) {
+				FiltersSelectionPane.this.setButton.setEnabled(false);
+				FiltersSelectionPane.this.remButton.setEnabled(false);
+				FiltersSelectionPane.this.addButton.setEnabled(true);
+				return;
+			}
 			FiltersSelectionPane.this.jspOptions.setViewportView(
 				FiltersSelectionPane.this.currentSelectedFilterCreator
 					.getCreationPanel()
@@ -353,10 +366,11 @@ public class FiltersSelectionPane extends javax.swing.JDialog {
 				FilterCreator value,
 				int index,
 				boolean isSelected,
-				boolean cellHasFocus) {
+				boolean cellHasFocus
+    ) {
 			JLabel l = new JLabel() {
 				/**
-				 * 
+				 *
 				 */
 				private static final long serialVersionUID = 1L;
 

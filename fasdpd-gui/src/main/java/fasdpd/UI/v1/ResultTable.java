@@ -1,13 +1,15 @@
 package fasdpd.UI.v1;
 
+import java.awt.GridLayout;
+import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+
 import fasdpd.PrimerPair;
 import sequences.dna.Primer;
-import java.awt.GridLayout;
-import java.util.List;
 
 public class ResultTable extends JPanel {
 
