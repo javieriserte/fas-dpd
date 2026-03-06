@@ -14,30 +14,24 @@ import fasdpd.PriorityList;
  * Test Case.
  * Unfinished.
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
- * 
+ *
  */
 public class PriorityListTest {
 	private PriorityList<Integer> lp1;
-	
+
 	@BeforeEach
-	
+
 	protected void setUp() throws Exception {
 		lp1 = new PriorityList<Integer>(10);
 	}
 
 	@Test
-
-	
 	public void testListaDePrioridad() {
 		assertSame(PriorityList.class,lp1.getClass());
 	}
 
 
 	@Test
-
-
-	
-
 	public void testAddValue() {
 		lp1.addValue(1);
 		lp1.addValue(2);
@@ -52,15 +46,13 @@ public class PriorityListTest {
 		lp1.addValue(11);
 		lp1.addValue(0);
 		lp1.addValue(12);
-		
+
 		System.out.println(lp1.getCurrentFilled());
-		
+
 		assertEquals(10, lp1.getCurrentFilled());
 	}
 
 	@Test
-
-	
 	public void testExtractSortedList() {
 		lp1.addValue(1);
 		lp1.addValue(2);
@@ -75,9 +67,9 @@ public class PriorityListTest {
 		lp1.addValue(11);
 		lp1.addValue(0);
 		lp1.addValue(12);
-		
-		List<Integer> l = lp1.ExtractSortedList(); 
-		 
+
+		List<Integer> l = lp1.ExtractSortedList();
+
 		assertEquals(12, (int) l.get(0));
 		assertEquals(11, (int) l.get(1));
 		assertEquals(10, (int) l.get(2));
@@ -88,8 +80,7 @@ public class PriorityListTest {
 		assertEquals(5, (int) l.get(7));
 		assertEquals(4, (int) l.get(8));
 		assertEquals(3, (int) l.get(9));
-		
-		
+
 	}
 
 }
