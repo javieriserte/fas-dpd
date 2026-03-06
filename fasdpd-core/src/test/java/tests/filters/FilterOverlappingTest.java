@@ -44,17 +44,26 @@
 
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import filters.primerpair.FilterOverlapping;
 import filters.primerpair.FilterPrimerPair;
 import sequences.dna.Primer;
-import junit.framework.TestCase;
 
-public class FilterOverlappingTest extends TestCase {
+public class FilterOverlappingTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testValidate() {
 		Primer p1a = new Primer("ACTGCTACGTCGACTACGT", "desc", 5, 10, true);
 		Primer p1b = new Primer("ACTGCTACGTCGACTACGT", "desc", 25, 15, false);

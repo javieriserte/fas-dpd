@@ -2,8 +2,11 @@ package fasdpd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,14 +224,16 @@ public class FASDPDController {
 
 		try {
 			// Tries to write the profile
-			FileWriter fr = new FileWriter(outfile);
-
-			for (int i = 0; i < lastPos; i = i + 1) {
-				fr.write((i + 1) + "\t" + pos[i] + "\n");
-				// write each line to file.
+			try (BufferedWriter writer = Files.newBufferedWriter(
+				Path.of(outfile),
+				StandardCharsets.UTF_8
+			)) {
+				for (int i = 0; i < lastPos; i = i + 1) {
+					writer.write((i + 1) + "\t" + pos[i]);
+					writer.newLine();
+					// write each line to file.
+				}
 			}
-			fr.flush();
-			fr.close();
 
 		} catch (IOException e) {
 			System.out.println("There was an error in the file. No Profile file was generated.");
@@ -236,17 +241,24 @@ public class FASDPDController {
 
 		try {
 			// Tries to write the script file for Gnu-plot
-			FileWriter fr = new FileWriter(outfile + ".plt");
-			fr.write("set terminal postscript eps font \"Helvetica,20\"\n");
-			fr.write("set output \"" + outfile + ".ps\"\n");
-			fr.write("set yrange [0:" + ((int) max * 1.2) + "]\n");
-			fr.write("plot '" + outfile + "' with filledcurves below notitle lc rgb \"#000000\"\n");
-			fr.write("set terminal png font verdana 10 size 1024,768\n");
-			fr.write("set output \"" + outfile + ".png\"\n");
-			fr.write("replot");
-
-			fr.flush();
-			fr.close();
+			try (BufferedWriter writer = Files.newBufferedWriter(
+				Path.of(outfile + ".plt"),
+				StandardCharsets.UTF_8
+			)) {
+				writer.write("set terminal postscript eps font \"Helvetica,20\"");
+				writer.newLine();
+				writer.write("set output \"" + outfile + ".ps\"");
+				writer.newLine();
+				writer.write("set yrange [0:" + ((int) max * 1.2) + "]");
+				writer.newLine();
+				writer.write("plot '" + outfile + "' with filledcurves below notitle lc rgb \"#000000\"");
+				writer.newLine();
+				writer.write("set terminal png font verdana 10 size 1024,768");
+				writer.newLine();
+				writer.write("set output \"" + outfile + ".png\"");
+				writer.newLine();
+				writer.write("replot");
+			}
 		} catch (IOException e) {
 			System.out.println("There was an error in the file. No Profile file was generated.");
 		}

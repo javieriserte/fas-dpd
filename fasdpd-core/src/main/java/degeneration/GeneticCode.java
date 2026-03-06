@@ -1,9 +1,10 @@
 package degeneration;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -276,14 +277,14 @@ public class GeneticCode {
 	 * code.
 	 */
 	private void readTableFromFile(String pathfile) throws IOException {
-			File f = new File(pathfile);
-			BufferedReader reader = null;
-			String currentLine;
-			reader = new BufferedReader(new FileReader(f));
+		String currentLine;
+		try (BufferedReader reader = Files.newBufferedReader(
+			Path.of(pathfile),
+			StandardCharsets.UTF_8
+		)) {
 			while((currentLine = reader.readLine()) != null) {
 				String[] fields = currentLine.split(",");
 				if (fields.length <= 1) {
-					reader.close();
 					throw new IOException(
 						"Genetic Code file has a format error."
 					);
@@ -296,7 +297,7 @@ public class GeneticCode {
 				codons.forEach(c -> this.getCodonToAmino().put(c, amino));
 				this.getAminoToCodonList().put(amino,codons);
 			}
-			reader.close();
+		}
 	}
 
 	// GETTERS & SETTERS

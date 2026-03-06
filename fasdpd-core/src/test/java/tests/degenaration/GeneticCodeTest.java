@@ -1,17 +1,24 @@
 
 package tests.degenaration;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import org.junit.jupiter.api.Test;
+
 import degeneration.GeneticCode;
 
-import junit.framework.TestCase;
+public class GeneticCodeTest {
 
-public class GeneticCodeTest extends TestCase {
-
-	public void testGetRetroCodon() {
+  @Test
+		public void testGetRetroCodon() {
 		try {
 			GeneticCode gc = new GeneticCode("StandardCode");
 			assertEquals("GCN", gc.getRetroCodon("A"));
@@ -21,6 +28,8 @@ public class GeneticCodeTest extends TestCase {
 			fail(e.getLocalizedMessage());
 		}
 	}
+
+	@Test
 
 	public void testAddCodons(){
 		GeneticCode gc = new GeneticCode();
@@ -63,6 +72,7 @@ public class GeneticCodeTest extends TestCase {
 		assertTrue(cc.contains("GCA"));
 		assertTrue(cc.contains("GCG"));
 	}
+	@Test
 	public void testGetCodonArray() {
 		try {
 			GeneticCode gc = new GeneticCode("StandardCode");
@@ -77,6 +87,8 @@ public class GeneticCodeTest extends TestCase {
 		}
 	}
 
+	@Test
+
 	public void testTranslate() {
 		try {
 			GeneticCode gc = new GeneticCode("StandardCode");
@@ -88,6 +100,8 @@ public class GeneticCodeTest extends TestCase {
 			fail(e.getLocalizedMessage());
 		}
 	}
+
+	@Test
 
 	public void testPileUp() {
 		try {

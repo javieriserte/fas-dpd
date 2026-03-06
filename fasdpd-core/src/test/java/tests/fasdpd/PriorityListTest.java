@@ -1,10 +1,14 @@
 package tests.fasdpd;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 import fasdpd.PriorityList;
-
-import junit.framework.TestCase;
 
 /**
  * Test Case.
@@ -12,18 +16,27 @@ import junit.framework.TestCase;
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
  * 
  */
-public class PriorityListTest extends TestCase {
+public class PriorityListTest {
 	private PriorityList<Integer> lp1;
 	
+	@BeforeEach
+	
 	protected void setUp() throws Exception {
-		super.setUp();
 		lp1 = new PriorityList<Integer>(10);
 	}
 
+	@Test
+
+	
 	public void testListaDePrioridad() {
 		assertSame(PriorityList.class,lp1.getClass());
 	}
 
+
+	@Test
+
+
+	
 
 	public void testAddValue() {
 		lp1.addValue(1);
@@ -45,6 +58,9 @@ public class PriorityListTest extends TestCase {
 		assertEquals(10, lp1.getCurrentFilled());
 	}
 
+	@Test
+
+	
 	public void testExtractSortedList() {
 		lp1.addValue(1);
 		lp1.addValue(2);

@@ -1,16 +1,25 @@
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import filters.singlePrimer.FilterRepeatedEnd;
 import filters.singlePrimer.FilterSinglePrimer;
 import sequences.dna.Primer;
-import junit.framework.TestCase;
 
-public class FilterRepeatedEndTest extends TestCase {
+public class FilterRepeatedEndTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 	
+	@Test
+	
+		
 	public void testValidate() {
 	
 		Primer[] primers = new Primer[10];

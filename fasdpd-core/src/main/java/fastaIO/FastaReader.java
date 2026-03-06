@@ -4,9 +4,10 @@ package fastaIO;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 /**
  * This class is used to read sequences files with just one sequence.
  * By the moment, this class can not handle sequences with more than one line.  
@@ -20,10 +21,7 @@ public class FastaReader {
 	 * @return 
 	 */
 	public Pair<String, String> readFile(String filepath) {
-		
-		File f = new File(filepath);
-		
-		return this.readFile(f);
+		return this.readFile(Path.of(filepath));
 	}
 	
 	/**
@@ -32,9 +30,18 @@ public class FastaReader {
 	 * @return 
 	 */
 	public Pair<String, String> readFile(File file) {
+		return this.readFile(file.toPath());
+	}
+
+	public Pair<String, String> readFile(Path path) {
 		try {
-			return this.readBuffer(new BufferedReader( new FileReader(file)));
-		} catch (FileNotFoundException e) {
+			try (BufferedReader reader = Files.newBufferedReader(
+				path,
+				StandardCharsets.UTF_8
+			)) {
+				return this.readBuffer(reader);
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;

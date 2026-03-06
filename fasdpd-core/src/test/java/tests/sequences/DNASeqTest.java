@@ -1,17 +1,24 @@
 package tests.sequences;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import sequences.dna.DNASeq;
 import sequences.dna.Primer;
 import sequences.protein.ProtSeq;
 import degeneration.GeneticCode;
-import junit.framework.TestCase;
 /**
  * Test Case.
  *
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
  *
  */
-public class DNASeqTest extends TestCase {
+public class DNASeqTest {
 	private DNASeq myDNASeq = null;
 	private DNASeq myDNASeq2 = null;
 	private ProtSeq myProtSeq = null;
@@ -19,12 +26,9 @@ public class DNASeqTest extends TestCase {
 	private DNASeq gappedDNASeq = null;
 	private DNASeq unGappedDNASeq;
 
-	public DNASeqTest(String name) {
-		super(name);
-	}
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 		myDNASeq = new DNASeq(
 			"AAAAAAAAAAAAAAAAAAAAGCAGCAGCAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 			"Secuencia de prueba de 60 nt");
@@ -45,23 +49,36 @@ public class DNASeqTest extends TestCase {
 		myGC = new GeneticCode("StandardCode");
 	}
 
+	@AfterEach
+
 	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
+	@Test
+
+	
 	public void testDNASeq() {
 		assertEquals(myDNASeq.getClass(),DNASeq.class);
 	}
 
+	@Test
+
+	
 	public void testGetComplementary() {
 		assertEquals("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTCTGCTGCTGCTTTTTTTTTTTTTTTTTTTT",myDNASeq.getReverseComplementary().getSequence());
 	}
 
+	@Test
+
+	
 	public void testTraducir() {
  
 		assertEquals("KKKKKKKQQQKKKKKKKKKK",myDNASeq.translate(myGC).getSequence() );
 	}
 
+	@Test
+
+	
 	public void testApilarCon() {
 		assertEquals(
 			"WWWWWWWWWWWWWWWWWWWWKYWKYWKYWKWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
@@ -71,6 +88,9 @@ public class DNASeqTest extends TestCase {
 			);
 	}
 
+	@Test
+
+	
 	public void testPileUpWithGaps() {
 		assertEquals(
 			"NACGTT",
@@ -80,10 +100,16 @@ public class DNASeqTest extends TestCase {
 			);
 	}
 
+	@Test
+
+	
 	public void testApilarConDNAseq() {
 		assertEquals("WWWWWWWWWWWWWWWWWWWWKYWKYWKYWKWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",myDNASeq.pileUpWithDNAseq(myDNASeq2, myGC).getSequence());
 	}
 
+	@Test
+
+	
 	public void testApilarConProtseq() {
 		DNASeq a = myDNASeq.pileUpWith(myProtSeq, myGC);
 		System.out.println(a);
@@ -95,6 +121,9 @@ public class DNASeqTest extends TestCase {
 		);
 	}
 
+	@Test
+
+	
 	public void testDesignPrimer() {
 		Primer p1 = myDNASeq.designPrimer(21, 30, true);
 		Primer p2 = myDNASeq.getReverseComplementary().designPrimer(21, 30, false);
@@ -111,6 +140,9 @@ public class DNASeqTest extends TestCase {
 		
 	}
 
+	@Test
+
+	
 	public void testComplementary() {
 		assertEquals("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTCTGCTGCTGCTTTTTTTTTTTTTTTTTTTT",myDNASeq.getReverseComplementary().getSequence());
 	}

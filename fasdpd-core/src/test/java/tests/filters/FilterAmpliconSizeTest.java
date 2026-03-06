@@ -1,15 +1,24 @@
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import filters.primerpair.FilterAmpliconSize;
 import sequences.dna.Primer;
-import junit.framework.TestCase;
 
-public class FilterAmpliconSizeTest extends TestCase {
+public class FilterAmpliconSizeTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 	
+	@Test
+	
+		
 	public void testValidate() {
 	
 		Primer p1a = new Primer("ACTGCTACGTCGACTACGT", "desc", 1, 20, true);

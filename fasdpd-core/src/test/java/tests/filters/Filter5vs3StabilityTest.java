@@ -1,15 +1,22 @@
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import sequences.dna.Primer;
 import filters.singlePrimer.Filter5vs3Stability;
-import junit.framework.TestCase;
 
-public class Filter5vs3StabilityTest extends TestCase {
+public class Filter5vs3StabilityTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
-	public void testFilter() {
+	@Test
+		public void testFilter() {
 		Filter5vs3Stability a = Filter5vs3Stability.getStandard5vs3StabilityFilter();
 
 		Primer p1 = new Primer("CGCGCATATA", "", 1, 10, true);

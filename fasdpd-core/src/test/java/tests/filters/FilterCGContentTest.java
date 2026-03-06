@@ -1,12 +1,19 @@
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import filters.singlePrimer.FilterCGContent;
 import sequences.dna.Primer;
-import junit.framework.TestCase;
 
-public class FilterCGContentTest extends TestCase {
+public class FilterCGContentTest {
 		private FilterCGContent gc;
 		private Primer[] primers = new Primer[11];
+	
+	@BeforeEach
 	
 	protected void setUp() throws Exception {
 		
@@ -21,12 +28,14 @@ public class FilterCGContentTest extends TestCase {
 		primers[8]= new Primer("CGCGCGCGAT", "description", 1, 10, true);
 		primers[9]= new Primer("CGCGCGCGCT", "description", 1, 10, true);
 		primers[10]= new Primer("CGCGCGCGCG", "description", 1, 10, true);		
-		super.setUp();
 		
 		gc = new FilterCGContent(50,60);
 		
 	}
 
+	@Test
+
+	
 	public void testValidate() {
 		assertFalse(gc.filter(primers[0]));
 		assertFalse(gc.filter(primers[1]));

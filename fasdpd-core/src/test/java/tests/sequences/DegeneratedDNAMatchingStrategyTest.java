@@ -1,14 +1,23 @@
 package tests.sequences;
 
-import sequences.util.compare.DegeneratedDNAMatchingStrategy;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DegeneratedDNAMatchingStrategyTest extends TestCase {
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
+import sequences.util.compare.DegeneratedDNAMatchingStrategy;
+
+public class DegeneratedDNAMatchingStrategyTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testMatches() {
 		DegeneratedDNAMatchingStrategy nddms = new DegeneratedDNAMatchingStrategy();
 		

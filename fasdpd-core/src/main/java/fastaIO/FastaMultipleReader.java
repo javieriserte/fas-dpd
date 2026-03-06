@@ -3,9 +3,10 @@ package fastaIO;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -16,19 +17,27 @@ public class FastaMultipleReader {
 
 	public List<Pair<String, String>> readFile(
 			String filepath)
-			throws FileNotFoundException {
-		File f = new File(filepath);
-		return this.readFile(f);
+			throws IOException {
+		return this.readFile(Path.of(filepath));
 	}
 
 	/**
 	 * Reads a fasta file from a File Object
 	 * @param filepath
 	 * @return
-	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public List<Pair<String, String>> readFile(File file) throws FileNotFoundException {
-		return this.readBuffer(new BufferedReader( new FileReader(file)));
+	public List<Pair<String, String>> readFile(File file) throws IOException {
+		return this.readFile(file.toPath());
+	}
+
+	public List<Pair<String, String>> readFile(Path path) throws IOException {
+		try (BufferedReader reader = Files.newBufferedReader(
+			path,
+			StandardCharsets.UTF_8
+		)) {
+			return this.readBuffer(reader);
+		}
 	}
 
 	/**

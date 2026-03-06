@@ -1,15 +1,24 @@
 package tests.sequences;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import sequences.dna.Primer;
 import sequences.util.tmcalculator.SimpleTmEstimator;
-import junit.framework.TestCase;
 
-public class SimpleTmEstimatorTest extends TestCase {
+public class SimpleTmEstimatorTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testMean() {
 		
 		SimpleTmEstimator stme = new SimpleTmEstimator();
@@ -55,6 +64,9 @@ public class SimpleTmEstimatorTest extends TestCase {
 
 	}
 
+	@Test
+
+	
 	public void testMax() {
 		SimpleTmEstimator stme = new SimpleTmEstimator();
 		
@@ -91,6 +103,9 @@ public class SimpleTmEstimatorTest extends TestCase {
 		stme.calculateTM(p42); assertEquals(6d,stme.max());
 	}
 
+	@Test
+
+	
 	public void testMin() {
 		SimpleTmEstimator stme = new SimpleTmEstimator();
 		

@@ -2,14 +2,19 @@ package tests.filters;
 
 import filters.primerpair.FilterMinimumAmpliconSize;
 import sequences.dna.Primer;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class FilterMinimumAmpliconSizeTest extends TestCase {
+public class FilterMinimumAmpliconSizeTest {
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+		protected void setUp() throws Exception {
 	}
 
+	@Test
+
+	
 	public void testValidate() {
 		Primer p1a = new Primer("ACTGCTACGTCGACTACGT", "desc", 1, 20, true);
 		Primer p1b = new Primer("ACTGCTACGTCGACTACGT", "desc", 100, 80, false);

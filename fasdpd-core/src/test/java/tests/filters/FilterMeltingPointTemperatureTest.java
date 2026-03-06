@@ -1,18 +1,25 @@
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 
 import sequences.dna.Primer;
 import sequences.util.tmcalculator.TmEstimator;
 import filters.singlePrimer.FilterMeltingPointTemperature;
 import filters.singlePrimer.FilterSinglePrimer;
-import junit.framework.TestCase;
 
-public class FilterMeltingPointTemperatureTest extends TestCase {
+public class FilterMeltingPointTemperatureTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
-	public void testValidate() {
+	@Test
+		public void testValidate() {
 		
 		Primer p1 = new Primer("AA", "", 1, 10, true);
 		Primer p2 = new Primer("AAA", "", 1, 10, true);

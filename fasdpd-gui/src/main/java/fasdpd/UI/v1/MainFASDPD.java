@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.swing.*;
@@ -185,7 +185,7 @@ public class MainFASDPD extends javax.swing.JFrame {
 			} else {
 				seqPairs = new ArrayList<>();
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		if (seqPairs != null) {
@@ -544,14 +544,16 @@ public class MainFASDPD extends javax.swing.JFrame {
 		}
 		File selected = fc.getSelectedFile();
 		try {
-			PrintWriter writer = new PrintWriter(selected, "UTF-8");
-			for (FilterCreator f: filterCreators) {
-			writer.println(f);
+			try (BufferedWriter writer = Files.newBufferedWriter(
+				selected.toPath(),
+				StandardCharsets.UTF_8
+			)) {
+				for (FilterCreator f: filterCreators) {
+					writer.write(String.valueOf(f));
+					writer.newLine();
+				}
 			}
-			writer.close();
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
+		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		}

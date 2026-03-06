@@ -1,16 +1,24 @@
 package tests.sequences;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 
 import sequences.util.gccontent.GCContent;
 
-import junit.framework.TestCase;
+public class GCContentTest {
 
-public class GCContentTest extends TestCase {
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testCalculateGCContent() {
 		
 		assertEquals( 0f     	, GCContent.calculateGCContent( "ATTT" ) );

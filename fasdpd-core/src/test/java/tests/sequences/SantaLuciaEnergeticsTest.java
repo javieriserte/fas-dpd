@@ -1,15 +1,23 @@
 package tests.sequences;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
 import sequences.dna.Primer;
 import sequences.util.tmcalculator.SantaluciaTmEstimator;
 
-public class SantaLuciaEnergeticsTest extends TestCase {
+public class SantaLuciaEnergeticsTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testCalculatePolyAPrimer() {
 		SantaluciaTmEstimator tme = new SantaluciaTmEstimator();
 		Primer primer = new Primer("AAAAAAAAAAAAAAAAAAAA", "polyA", 0, 0, true);
@@ -18,6 +26,9 @@ public class SantaLuciaEnergeticsTest extends TestCase {
 		assertEquals(tm, 37.78, 0.05);
 	}
 
+	@Test
+
+	
 	public void testCalculatePolyGPrimer() {
 		SantaluciaTmEstimator tme = new SantaluciaTmEstimator();
 		Primer primer = new Primer("GGGGGGGGGGGGGGGGGGGG", "polyA", 0, 0, true);

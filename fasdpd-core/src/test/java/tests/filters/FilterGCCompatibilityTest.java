@@ -1,14 +1,21 @@
 
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import sequences.dna.Primer;
 import filters.primerpair.FilterGCCompatibility;
 import filters.primerpair.FilterPrimerPair;
-import junit.framework.TestCase;
 
-public class FilterGCCompatibilityTest extends TestCase {
+public class FilterGCCompatibilityTest {
 
 	private Primer[] primers = new Primer[11];
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
 
@@ -28,6 +35,9 @@ public class FilterGCCompatibilityTest extends TestCase {
 		
 	}
 
+	@Test
+
+	
 	public void testValidate() {
 		
 		FilterPrimerPair filter10 = new FilterGCCompatibility(10);

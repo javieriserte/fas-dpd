@@ -2,14 +2,19 @@ package tests.sequences;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import sequences.dna.DegeneratedPrimerIterator;
 
-public class DegeneratedPrimerIteratorTest extends TestCase {
-    protected void setUp() throws Exception {
-		super.setUp();
+public class DegeneratedPrimerIteratorTest {
+    @BeforeEach
+		protected void setUp() throws Exception {
 	}
 
+    @Test
+
+    
     public void testIterateOverOneCharNonDegenerateSequence() {
         DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("A");
         HashMap<String, Integer> collected = new HashMap<String, Integer>();
@@ -23,6 +28,9 @@ public class DegeneratedPrimerIteratorTest extends TestCase {
         assertTrue(collected.containsKey("A"));
     }
 
+    @Test
+
+    
     public void testIterateOverOneCharDegenerateSequence() {
         DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("N");
         HashMap<String, Integer> collected = new HashMap<String, Integer>();
@@ -39,6 +47,11 @@ public class DegeneratedPrimerIteratorTest extends TestCase {
         assertTrue(collected.containsKey("T"));
     }
 
+
+    @Test
+
+
+    
 
     public void testIterateOverTwoCharDegenerateSequence() {
         DegeneratedPrimerIterator dpi = new DegeneratedPrimerIterator("NR");

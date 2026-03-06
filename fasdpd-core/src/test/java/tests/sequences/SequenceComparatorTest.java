@@ -1,13 +1,18 @@
 
 package tests.sequences;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import sequences.util.compare.SequenceComparator;
-import junit.framework.TestCase;
 
-public class SequenceComparatorTest extends TestCase {
+public class SequenceComparatorTest {
 	private String seq1 = "AGT";
 	private String seq1a = "AAGT";
 	private String seq1b = "AAGTA";
@@ -27,10 +32,15 @@ public class SequenceComparatorTest extends TestCase {
 	private String seq6b = "AGTAAAGTACT";
 	
 	
+	@BeforeEach
+	
+	
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testGetListOfNonGappedComplementaryRegions() {
 
 		List<String> result = SequenceComparator.getListOfNonGappedComplementaryRegions(seq1,seq2, 12, new DegeneratedDNAMatchingStrategy());
@@ -88,6 +98,9 @@ public class SequenceComparatorTest extends TestCase {
 		
 	}
 
+	@Test
+
+	
 	public void testHaveNonGappedComplementaryRegions() {
 
 		assertEquals(true, SequenceComparator.haveNonGappedComplementaryRegions(seq1, seq2, 2, new DegeneratedDNAMatchingStrategy()));
@@ -98,6 +111,9 @@ public class SequenceComparatorTest extends TestCase {
 		
 	}
 
+	@Test
+
+	
 	public void testGetListOfNonGappedComplementaryRegionsWithFixed3End() {
 
 		List<String> result = null;
@@ -118,6 +134,9 @@ public class SequenceComparatorTest extends TestCase {
 		
 	}
 
+	@Test
+
+	
 	public void testHaveNonGappedComplementaryRegionsWithFixed3End() {
 		boolean result;
 		

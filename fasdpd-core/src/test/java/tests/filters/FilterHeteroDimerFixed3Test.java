@@ -1,18 +1,27 @@
 
 package tests.filters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 import sequences.dna.Primer;
 import sequences.util.compare.DegeneratedDNAMatchingStrategy;
 import filters.primerpair.FilterHeteroDimerFixed3;
 import filters.primerpair.FilterPrimerPair;
-import junit.framework.TestCase;
 
-public class FilterHeteroDimerFixed3Test extends TestCase {
+public class FilterHeteroDimerFixed3Test {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 	
+	@Test
+	
+		
 	public void testValidate() {
 		
 		Primer p1a = new Primer("ACTG", "desc", 1, 20, true);

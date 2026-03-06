@@ -1,15 +1,24 @@
 
 package tests.sequences;
 
-import sequences.util.compare.NonDegeneratedDNAMatchingStrategy;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class NonDegeneratedDNAMatchingStrategyTest extends TestCase {
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
+import sequences.util.compare.NonDegeneratedDNAMatchingStrategy;
+
+public class NonDegeneratedDNAMatchingStrategyTest {
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void testMatches() {
 		NonDegeneratedDNAMatchingStrategy nddms = new NonDegeneratedDNAMatchingStrategy();
 		

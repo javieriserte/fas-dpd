@@ -1,11 +1,16 @@
 package tests.sequences;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+
 // import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
 import degeneration.GeneticCode;
-import junit.framework.TestCase;
 import sequences.Sequence;
 import sequences.alignment.Alignment;
 // import sequences.alignment.htmlproducer.AlignmentHTMLProducer;
@@ -14,20 +19,24 @@ import sequences.dna.DNASeq;
  * Test Case
  * @author "Javier Iserte <jiserte@unq.edu.ar>"
  */
-public class AlignmentTest extends TestCase {
+public class AlignmentTest {
 	private DNASeq ds1;
 	private DNASeq ds2;
 	private DNASeq ds3;
 	private Alignment alin1;
+
+	@BeforeEach
 
 	protected void setUp() throws Exception {
 		ds1 = new DNASeq("ACTGTG","ds1");
 		ds2 = new DNASeq("AAAAAA","ds2");
 		ds3 = new DNASeq("TTTTTT","ds3");
 		alin1 = new Alignment();
-		super.setUp();
 	}
 
+	@Test
+
+	
 	public void getSeq_WhenTheAlignmentIsNew_HaveNoSequences() {
 		//Arrange
 		alin1 = new Alignment();
@@ -36,7 +45,8 @@ public class AlignmentTest extends TestCase {
 		//Assert
 		assertEquals(sequences.size(), 0);
 	}
-	public void getSeq_GetTheSequencesList() {
+	@Test
+		public void getSeq_GetTheSequencesList() {
 		alin1.addSequence(ds1);
 		assertEquals(alin1.getSeq().size(), 1);
 		alin1.addSequence(ds2);
@@ -45,6 +55,9 @@ public class AlignmentTest extends TestCase {
 		assertEquals(alin1.getSeq().size(), 3);
 	}
 
+	@Test
+
+	
 	public void testRemoveSequence() {
 		alin1.addSequence(ds1);
 		alin1.addSequence(ds2);
@@ -54,6 +67,9 @@ public class AlignmentTest extends TestCase {
 		assertEquals(alin1.getSeq().size(), 2);
 	}
 
+	@Test
+
+	
 	public void testVerifyDifferentDescriptions() {
 		alin1.addSequence(ds1);
 		alin1.addSequence(ds2);
@@ -63,6 +79,9 @@ public class AlignmentTest extends TestCase {
 		assertFalse(alin1.verifyDifferentDescriptions());
 	}
 
+	@Test
+
+	
 	public void testPileUp() {
 		alin1.addSequence(ds1);
 		alin1.addSequence(ds2);
